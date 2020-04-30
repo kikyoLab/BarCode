@@ -1,0 +1,865 @@
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>BarCode</title>
+    <link rel="stylesheet" href="./umeditor/themes/default/css/umeditor.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/ruler.min.css" />
+    <link rel="stylesheet" href="//printjs-4de6.kxcdn.com/print.min.css" />
+    <style>
+      #ruler {
+        margin: 20px 0 0 150px;
+        height: 700px;
+        width: 1200px;
+        border: 1px solid rgb(21, 139, 155);
+        position: absolute;
+        z-index: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      class="d-flex flex-column flex-md-row align-items-center px-md-4 bg-white border-bottom box-shadow"
+    >
+      <h5 class="my-0 mr-md-auto">Bar code</h5>
+      <nav>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="textBtn"
+              ><img src="icon/text.png" width="30" title="文本"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="#"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              id="BarCodeFormModel"
+              ><img src="icon/barcode.png" width="30" title="一维码表单"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="QarCodeFormModel"
+              ><img src="icon/qarcode.png" width="30" title="二维码表单"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="print"
+              ><img src="icon/print.png" width="30" title="打印"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="template"
+              ><img src="icon/model.png" width="30" title="模板"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="save"
+              ><img src="icon/save.png" width="30" title="保存模板"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="img">
+              <input id="img_input2" type="file" accept="image/*" />
+              <label for="img_input2" id="img_label2"
+                ><img src="icon/upload.png" width="30" title="图片上传"
+              /></label>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="line"
+              ><img src="icon/line.png" width="30" title="线条"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="box"
+              ><img src="icon/box.png" width="30" title="边框"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="pull"
+              ><img src="icon/pull.png" width="30" title="拉取"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="setting"
+              ><img src="icon/attribute.png" width="30" title="标签属性"
+            /></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="clean"
+              ><img src="icon/clean.png" width="30" title="清空"
+            /></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div id="main">
+      <!-- 富文本模态框 -->
+      <div
+        class="modal fade bd-example-modal-xm"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-lg modal-dialog-centered"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-body">
+              <script id="container" name="content" type="text/plain">
+                Text
+              </script>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-danger" id="textdel">
+                删除
+              </button>
+              <button type="button" class="btn btn-primary" id="update">
+                保存
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模板选择模态框 -->
+    <div id="tem">
+      <div
+        class="modal fade bd-example-modal-xm"
+        id="templatemodel"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="templatemodelTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-lg modal-dialog-centered"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createFileTitle">模板</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div id="modelDiv">
+              <main role="main">
+                <div class="container">
+                  <div class="row"></div>
+                </div>
+              </main>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                id="back"
+              >
+                取消
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div id="saveCode">
+      <div id="ruler"></div>
+      <div id="codemain"></div>
+
+      <!-- 保存模板模态框 -->
+      <div
+        class="modal fade"
+        id="createFileModal"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createFileTitle">创建模板</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <label for="fileName" class="col-form-label">模板名称</label>
+                  <input
+                    type="text"
+                    autofocus
+                    class="form-control"
+                    id="fileName"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="createFileSureBut"
+              >
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 一维码表单模态框 -->
+      <div
+        class="modal fade"
+        id="barcodeformModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="formeModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <canvas
+                id="BarCodeView"
+                style="display: block; margin: auto;"
+              ></canvas>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="BarCodeForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">商品ID</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="BarCodeProductID"
+                    placeholder="商品名称"
+                  />
+                </div>
+                <label for="exampleInputPassword1">条码ID</label>
+                <div class="form-group form-inline mb-2">
+                  <div class="form-group mb-2">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="BarCodeID"
+                      placeholder="条码数据"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary mx-sm-3 mb-2"
+                    id="loadBarCodeID"
+                  >
+                    拉取数据
+                  </button>
+                  <span id="BarCodeError" style="color: red;"></span>
+                </div>
+                <div class="form-group">
+                  <label for="inputState">条码类型</label>
+                  <select id="BarCodeType" class="form-control">
+                    <option selected>CODE128</option>
+                    <option>CODE128A</option>
+                    <option>CODE128B</option>
+                    <option>CODE128C</option>
+                    <option>EAN13</option>
+                    <option>EAN8</option>
+                    <option>EAN5</option>
+                    <option>EAN2</option>
+                    <option>UPC</option>
+                    <option>CODE39</option>
+                    <option>ITF</option>
+                    <option>ITF14</option>
+                    <option>MSI10</option>
+                    <option>MSI11</option>
+                    <option>MSI1010</option>
+                    <option>MSI1110</option>
+                    <option>pharmacode</option>
+                    <option>codabar</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="customRange2">条码宽度</label>
+                  <input
+                    type="range"
+                    class="custom-range"
+                    min="1"
+                    max="4"
+                    id="BarCodeWidth"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="customRange2">条码高度</label>
+                  <input
+                    type="range"
+                    class="custom-range"
+                    min="10"
+                    max="150"
+                    id="BarCodeHeight"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-primary" id="BarCodeFormok">
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 一维码修改模态框 -->
+      <div
+        class="modal fade"
+        id="EditbarcodeformModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="formeModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <canvas
+                id="EditBarCodeView"
+                style="display: block; margin: auto;"
+              ></canvas>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="EditBarCodeForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">商品ID</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="EditBarCodeProductID"
+                    placeholder="商品名称"
+                  />
+                </div>
+                <label for="exampleInputPassword1">条码ID</label>
+                <div class="form-group form-inline mb-2">
+                  <div class="form-group mb-2">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="EditBarCodeID"
+                      placeholder="条码数据"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary mx-sm-3 mb-2"
+                    id="EditloadBarCodeID"
+                  >
+                    拉取数据
+                  </button>
+                  <span id="EditBarCodeError"></span>
+                </div>
+                <div class="form-group">
+                  <label for="inputState">条码类型</label>
+                  <select id="EditBarCodeType" class="form-control">
+                    <option selected>CODE128</option>
+                    <option>CODE128A</option>
+                    <option>CODE128B</option>
+                    <option>CODE128C</option>
+                    <option>EAN13</option>
+                    <option>EAN8</option>
+                    <option>EAN5</option>
+                    <option>EAN2</option>
+                    <option>UPC</option>
+                    <option>CODE39</option>
+                    <option>ITF</option>
+                    <option>ITF14</option>
+                    <option>MSI10</option>
+                    <option>MSI11</option>
+                    <option>MSI1010</option>
+                    <option>MSI1110</option>
+                    <option>pharmacode</option>
+                    <option>codabar</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="customRange2">条码宽度</label>
+                  <input
+                    type="range"
+                    class="custom-range"
+                    min="1"
+                    max="4"
+                    id="EditBarCodeWidth"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="customRange2">条码高度</label>
+                  <input
+                    type="range"
+                    class="custom-range"
+                    min="10"
+                    max="150"
+                    id="EditBarCodeHeight"
+                  />
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-danger" id="BarCodeDel">
+                删除
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="EditBarCodeFormok"
+              >
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 二维码表单模态框 -->
+      <div
+        class="modal fade"
+        id="qarcodeformModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="formeModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <canvas
+                id="QarCodeView"
+                style="display: block; margin: auto;"
+              ></canvas>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="QarCodeForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">商品ID</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="QarCodeProductID"
+                    placeholder="商品名称"
+                  />
+                </div>
+                <label for="exampleInputPassword1">条码ID</label>
+                <div class="form-group form-inline mb-2">
+                  <div class="form-group mb-2">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="QarCodeID"
+                      placeholder="条码数据"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary mx-sm-3 mb-2"
+                    id="loadQarCodeID"
+                  >
+                    拉取数据
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-primary" id="QarCodeFormok">
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 二维码修改模态框 -->
+      <div
+        class="modal fade"
+        id="EditqarcodeformModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="formeModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <canvas
+                id="EditQarCodeView"
+                style="display: block; margin: auto;"
+              ></canvas>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="EditQarCodeForm">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">商品ID</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="EditQarCodeProductID"
+                    placeholder="商品名称"
+                  />
+                </div>
+                <label for="exampleInputPassword1">条码ID</label>
+                <div class="form-group form-inline mb-2">
+                  <div class="form-group mb-2">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="EditQarCodeID"
+                      placeholder="条码数据"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary mx-sm-3 mb-2"
+                    id="EditloadQarCodeID"
+                  >
+                    拉取数据
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-danger" id="QarCodeDel">
+                删除
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="EditQarCodeFormok"
+              >
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 条码设置模态框 -->
+      <div
+        class="modal fade"
+        id="codeSetting"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="codeSettingTitle">标签属性设置</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="settingForm">
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >页面高度</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageHeight"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputPassword3" class="col-sm-3 col-form-label"
+                    >页面宽度</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageWidth"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >左边距</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageMarginLeft"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >右边距</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageMarginRight"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >上边距</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageMarginTop"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >下边距</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="pageMarginBottom"
+                      min="0"
+                      value=""
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >标签行数</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="labelRow"
+                      min="0"
+                      value="1"
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >标签列数</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="labelColumn"
+                      min="0"
+                      value="1"
+                    />
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >标签高度</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="labelHeight"
+                      min="0"
+                      step="0.01"
+                      value=""
+                    />
+                    <span id="labelColumnError" style="color: red;"></span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >标签宽度</label
+                  >
+                  <div class="col-sm-9">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="labelWidth"
+                      min="0"
+                      step="0.01"
+                      value=""
+                    />
+                    <span id="labelRowError" style="color: red;"></span>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputEmail3" class="col-sm-3 col-form-label"
+                    >打印机</label
+                  >
+                  <div class="col-sm-9">
+                    <select id="inputState" class="form-control">
+                      <option selected>1</option>
+                      <option>2</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-primary" id="settingok">
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="umeditor/third-party/jquery.min.js"></script>
+    <script src="//code.z01.com/v4/dist/js/popper.min.js"></script>
+    <script src="//code.z01.com/v4/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="umeditor/umeditor.config.js"></script>
+    <script type="text/javascript" src="umeditor/umeditor.js"></script>
+    <script type="text/javascript" src="umeditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="js/JsBarcode.all.min.js"></script>
+    <script src="js/qrcode.min.js"></script>
+    <script src="js/html2canvas.js"></script>
+    <script src="js/ref-line.min.js"></script>
+    <script src="js/z-Dragify.js"></script>
+    <script src="js/ruler.js"></script>
+    <script src="//printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+      var myRuler = new ruler({
+        container: document.querySelector("#ruler"),
+        rulerHeight: 20,
+        fontFamily: "arial",
+        fontSize: "9px",
+        strokeStyle: "black",
+        lineWidth: 1,
+        enableMouseTracking: true,
+        enableToolTip: true,
+      });
+    </script>
+  </body>
+</html>

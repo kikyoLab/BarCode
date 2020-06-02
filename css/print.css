@@ -1,0 +1,44 @@
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  h1 {
+    page-break-before: always;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  thead,
+  tfoot,
+  tr,
+  th,
+  td,
+  li {
+    page-break-inside: avoid;
+  }
+
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  nav,
+  aside {
+    display: none;
+  }
+
+  a::after {
+    content: "(" attr(href) ")";
+  }
+
+  thead,
+  tfoot {
+    display: table-row-group;
+  }
+}

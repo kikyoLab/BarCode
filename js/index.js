@@ -353,6 +353,7 @@ pullData.onclick = function () {
 */
 $(function () {
     $multPrint.click(function () {
+
         /* get all choose */
         const chooseData = $table.bootstrapTable("getSelections")
 
@@ -363,6 +364,8 @@ $(function () {
         const pageText = $("#printmain").children("div .editable");
         const pageBarCode = $("#printmain").children("div .BarCodedbclick");
         const pageQarCode = $("#printmain").children("div .QarCodedbclick");
+        const pageLine = $("#printmain").children("div .Line");
+        const pageBox = $("#printmain").children("div .Box");
 
         /* get data */
         for (var c = 0; c < chooseData.length; c++) {
@@ -400,6 +403,7 @@ $(function () {
                             newBarCode[0].firstElementChild.id.slice(0, newBarCode[0].firstElementChild.id.length - 1) + nums
 
                         $("#printmain").append(newBarCode[0]);
+                        $("#printmain").css({ "height": `${newBarCode[0].style.top}` })
                         JsBarcode("#BarCode" + nums, chooseData[i][name], {
                             format: 'CODE128',
                             height: 20,
@@ -422,7 +426,7 @@ $(function () {
                             newQarCode[0].firstElementChild.id.slice(0, newQarCode[0].firstElementChild.id.length - 1) + nums
 
                         $("#printmain").append(newQarCode[0]);
-                        QRCode.toCanvas(document.getElementById("QarCode" + nums), toString(chooseData[i][name]), {
+                        QRCode.toCanvas(document.getElementById("QarCode" + nums), chooseData[i][name], {
                             margin: 1,
                             width: 64,
                         });
@@ -443,6 +447,7 @@ $(function () {
             let pullDataValue = dataValueList[i]
             for (var j = 0; j < pageText.length; j++) {
                 let newText = pageText.clone()
+
                 newText[j].style.top =
                     Number(newText[j].style.top.slice(0, newText[j].style.top.length - 2)) +
                     Number(boxheight * i) + "px"
@@ -452,6 +457,32 @@ $(function () {
                 console.log(`第${j}个文本框 => ${pullData[j]}:${pullDataValue[pullData[j]]}`)
             }
         }
+
+        for (var i = 1; i < chooseData.length; i++) {
+            console.log(`第${i}个模板`)
+            for (var j = 0; j < pageBox.length; j++) {
+                let newBox = pageBox.clone()
+
+                newBox[j].style.top =
+                    Number(newBox[j].style.top.slice(0, newBox[j].style.top.length - 2)) +
+                    Number(boxheight * i) + "px"
+
+                $("#printmain").append(newBox[j])
+                console.log(`第${i}个边框`)
+            }
+
+            for (var l = 0; l < pageLine.length; l++) {
+                let newLine = pageLine.clone()
+
+                newLine[l].style.top =
+                    Number(newLine[l].style.top.slice(0, newLine[l].style.top.length - 2)) +
+                    Number(boxheight * i) + "px"
+
+                $("#printmain").append(newLine[l])
+                console.log(`第${i}个线条`)
+            }
+        }
+        $("#tableview").modal('hide')
     })
 })
 
@@ -708,8 +739,8 @@ QarCodeFormok.onclick = function () {
         margin: 1,
         width: $("#QarCodeWidth").val(),
     });
-    $("#QarCode" + k).click()
 
+    $("#QarCode" + k).click()
     $("#qarcodeformModalCenter").modal("hide");
     const qrcodeval = {
         id: "QrCode" + k,
@@ -810,7 +841,8 @@ Print.onclick = function () {
     printJS({
         printable: "printmain",
         type: "html",
-        css: '/css/printjs.css'
+        css: '/css/printjs.css',
+        scanStyles: false
     });
 };
 
@@ -1323,5 +1355,4 @@ saveTemplate.onclick = function () {
 
         $("#createFileModal").modal("hide");
     };
-};
-
+}; 

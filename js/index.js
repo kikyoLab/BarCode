@@ -486,6 +486,8 @@ $(function () {
     })
 })
 
+let chooseBdata
+let chooseQdata
 $(function () {
     $button.click(function () {
         console.log('pulling~')
@@ -519,6 +521,7 @@ $(function () {
                     </div>`
                 );
 
+                chooseBdata = newData[name]
                 JsBarcode("#BarCode" + j, newData[name], {
                     format: 'CODE128',
                     height: 25,
@@ -531,7 +534,8 @@ $(function () {
             if (name == 'qarcode') {
                 $("#printmain").append(`<div id=${"QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;z-index:2" class="QarCodedbclick refbox"><canvas id=${"QarCode" + k}></canvas></div>`);
 
-                QRCode.toCanvas(document.getElementById("QarCode" + k), toString(newData[name]), {
+                chooseQdata = newData[name]
+                QRCode.toCanvas(document.getElementById("QarCode" + k), newData[name], {
                     margin: 1,
                     width: 64,
                 });
@@ -1018,20 +1022,20 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
                         if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = $("#BarCodeID").val() || 'data';
+                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'data';
                             barcodeformat = $("#BarCodeType").val();
                             barcodeheight = $("#BarCodeHeight").val();
                             barcodewidth = $("#BarCodeWidth").val();
                         } else {
-                            barcodevalue = $("#EditBarCodeID").val() || 'data';
+                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'data';
                             barcodeformat = $("#EditBarCodeType").val();
                             barcodeheight = $("#EditBarCodeHeight").val();
                             barcodewidth = $("#EditBarCodeWidth").val();
                         }
                         JsBarcode("#BarCode" + randomNum, barcodevalue, {
                             format: barcodeformat,
-                            height: barcodeheight,
-                            width: barcodewidth,
+                            height: 25 || barcodeheight,
+                            width: 2 || barcodewidth,
                         });
                         injectDragger(document.getElementById("Code" + randomNum), { minSize: 52 });
                         randomNum--
@@ -1056,15 +1060,15 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let qarcodevalue, qarcodewidth;
                         if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = $("#QarCodeID").val() || 'data';
+                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'data';
                             qarcodewidth = $("#QarCodeWidth").val();
                         } else {
-                            qarcodevalue = $("#EditQarCodeID").val() || 'data';
+                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'data';
                             qarcodewidth = $("#EditQarCodeWidth").val();
                         }
                         QRCode.toCanvas(document.getElementById("QarCode" + randomNum), qarcodevalue, {
                             margin: 1,
-                            width: qarcodewidth
+                            width: 64 || qarcodewidth
                         });
 
                         injectDragger(document.getElementById("QrCode" + randomNum), { minSize: 30 });
@@ -1159,20 +1163,20 @@ pageSet.onclick = function () {
                         $("#printmain").append(newcolumnBarCode[i]);
                         let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
                         if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = $("#BarCodeID").val() || 'data';
+                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'data';
                             barcodeformat = $("#BarCodeType").val();
                             barcodeheight = $("#BarCodeHeight").val();
                             barcodewidth = $("#BarCodeWidth").val();
                         } else {
-                            barcodevalue = $("#EditBarCodeID").val() || 'data';
+                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'data';
                             barcodeformat = $("#EditBarCodeType").val();
                             barcodeheight = $("#EditBarCodeHeight").val();
                             barcodewidth = $("#EditBarCodeWidth").val();
                         }
                         JsBarcode("#BarCode" + columnRandomNum, barcodevalue, {
                             format: barcodeformat,
-                            height: barcodeheight,
-                            width: barcodewidth,
+                            height: 25 || barcodeheight,
+                            width: 2 || barcodewidth,
                         });
 
                         injectDragger(document.getElementById("Code" + columnRandomNum), { minSize: 52 });
@@ -1203,16 +1207,16 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let qarcodevalue, qarcodewidth;
                         if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = $("#QarCodeID").val() || 'data';
+                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'data';
                             qarcodewidth = $("#QarCodeWidth").val();
                         } else {
-                            qarcodevalue = $("#EditQarCodeID").val() || 'data';
+                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'data';
                             qarcodewidth = $("#EditQarCodeWidth").val();
                         }
                         QRCode.toCanvas(
                             document.getElementById("QarCode" + columnRandomNum), qarcodevalue, {
                             margin: 1,
-                            width: qarcodewidth
+                            width: 64 || qarcodewidth
                         });
 
                         injectDragger(document.getElementById("QrCode" + columnRandomNum), { minSize: 30 });

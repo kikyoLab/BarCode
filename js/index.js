@@ -319,7 +319,6 @@ function renderCorner ({ width, height }) {
 const pullData = document.getElementById("pull");
 const $table = $("#table");
 const $button = $("#button");
-const $multPrint = $("#multPrint")
 const allData = (function () {
     let result;
     $.ajax({
@@ -351,143 +350,7 @@ pullData.onclick = function () {
  * @param {Number} pageLength page ==> TextBox.length
  * @param {Number} pullLength data ==> TextBox.length
 */
-$(function () {
-    $multPrint.click(function () {
 
-        /* get all choose */
-        const chooseData = $table.bootstrapTable("getSelections")
-
-        /* get all hidden */
-        const hiddenData = $table.bootstrapTable('getHiddenColumns').map(x => x.field)
-
-        /* get page TextBox */
-        const pageText = $("#printmain").children("div .editable");
-        const pageBarCode = $("#printmain").children("div .BarCodedbclick");
-        const pageQarCode = $("#printmain").children("div .QarCodedbclick");
-        const pageLine = $("#printmain").children("div .Line");
-        const pageBox = $("#printmain").children("div .Box");
-
-        /* get data */
-        for (var c = 0; c < chooseData.length; c++) {
-            for (var h = 0; h < hiddenData.length; h++) {
-                delete chooseData[c][hiddenData[h]]
-            }
-        }
-
-        /* get data id value */
-        const dataList = chooseData.map(x =>
-            Object.keys(x).filter(y => y !== 'id' && y !== 'barcode' && y !== 'qarcode' && y !== 'state'))
-
-        const dataValueList = Object.values(chooseData)
-
-        const firstBox = document.getElementById("demo");
-        let height = firstBox.style.height;
-        let boxheight = height.slice(0, height.length - 2);
-        let nums = 200
-        for (var i = 1; i < chooseData.length; i++) {
-            console.log(`第${i}个模板`)
-            let newBarCode = pageBarCode.clone()
-            let newQarCode = pageQarCode.clone()
-            for (var name in chooseData[i]) {
-                /* barcode setting */
-                if (name == 'barcode') {
-                    if (newBarCode.length > 0) {
-                        console.log(`第${i}个一维码`)
-                        newBarCode[0].id = newBarCode[0].id.slice(0, newBarCode[0].id.length - 1) + nums
-
-                        newBarCode[0].style.top =
-                            Number(newBarCode[0].style.top.slice(0, newBarCode[0].style.top.length - 2)) +
-                            Number(boxheight * i) + "px"
-
-                        newBarCode[0].firstElementChild.id =
-                            newBarCode[0].firstElementChild.id.slice(0, newBarCode[0].firstElementChild.id.length - 1) + nums
-
-                        $("#printmain").append(newBarCode[0]);
-                        $("#printmain").css({ "height": `${newBarCode[0].style.top}` })
-                        JsBarcode("#BarCode" + nums, chooseData[i][name], {
-                            format: 'CODE128',
-                            height: 20,
-                            width: 2,
-                        });
-                    }
-                }
-
-                /* qarcode setting */
-                if (name == 'qarcode') {
-                    if (newQarCode.length > 0) {
-                        console.log(`第${i}个二维码`)
-                        newQarCode[0].id = newQarCode[0].id.slice(0, newQarCode[0].id.length - 1) + nums
-
-                        newQarCode[0].style.top =
-                            Number(newQarCode[0].style.top.slice(0, newQarCode[0].style.top.length - 2)) +
-                            Number(boxheight * i) + "px"
-
-                        newQarCode[0].firstElementChild.id =
-                            newQarCode[0].firstElementChild.id.slice(0, newQarCode[0].firstElementChild.id.length - 1) + nums
-
-                        $("#printmain").append(newQarCode[0]);
-                        QRCode.toCanvas(document.getElementById("QarCode" + nums), chooseData[i][name], {
-                            margin: 1,
-                            width: 64,
-                        });
-                    }
-                }
-            }
-            nums--
-        }
-
-        /* textBox setting */
-        for (var i = 0; i < pageText.length; i++) {
-            pageText[i].firstChild.innerHTML = `${dataList[0][i]}:${dataValueList[0][dataList[0][i]]}`
-        }
-
-        for (var i = 1; i < dataList.length; i++) {
-            console.log(`第${i}个模板`)
-            let pullData = dataList[i]
-            let pullDataValue = dataValueList[i]
-            for (var j = 0; j < pageText.length; j++) {
-                let newText = pageText.clone()
-
-                newText[j].style.top =
-                    Number(newText[j].style.top.slice(0, newText[j].style.top.length - 2)) +
-                    Number(boxheight * i) + "px"
-
-                $("#printmain").append(newText[j])
-                newText[j].firstChild.innerHTML = `${pullData[j]}:${pullDataValue[pullData[j]]}`;
-                console.log(`第${j}个文本框 => ${pullData[j]}:${pullDataValue[pullData[j]]}`)
-            }
-        }
-
-        for (var i = 1; i < chooseData.length; i++) {
-            console.log(`第${i}个模板`)
-            for (var j = 0; j < pageBox.length; j++) {
-                let newBox = pageBox.clone()
-
-                newBox[j].style.top =
-                    Number(newBox[j].style.top.slice(0, newBox[j].style.top.length - 2)) +
-                    Number(boxheight * i) + "px"
-
-                $("#printmain").append(newBox[j])
-                console.log(`第${i}个边框`)
-            }
-
-            for (var l = 0; l < pageLine.length; l++) {
-                let newLine = pageLine.clone()
-
-                newLine[l].style.top =
-                    Number(newLine[l].style.top.slice(0, newLine[l].style.top.length - 2)) +
-                    Number(boxheight * i) + "px"
-
-                $("#printmain").append(newLine[l])
-                console.log(`第${i}个线条`)
-            }
-        }
-        $("#tableview").modal('hide')
-    })
-})
-
-let chooseBdata
-let chooseQdata
 $(function () {
     $button.click(function () {
         console.log('pulling~')
@@ -515,32 +378,7 @@ $(function () {
             }
 
             if (name == 'barcode') {
-                $("#printmain").append(
-                    `<div id=${"Code" + j} style="position: fixed; margin: 0; overflow: hidden;z-index:2" class="BarCodedbclick refbox">
-                    <canvas id=${"BarCode" + j}></canvas>
-                    </div>`
-                );
 
-                chooseBdata = newData[name]
-                JsBarcode("#BarCode" + j, newData[name], {
-                    format: 'CODE128',
-                    height: 25,
-                    width: 2,
-                });
-                injectDragger(document.getElementById("Code" + j), { minSize: 52 });
-                j++
-            }
-
-            if (name == 'qarcode') {
-                $("#printmain").append(`<div id=${"QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;z-index:2" class="QarCodedbclick refbox"><canvas id=${"QarCode" + k}></canvas></div>`);
-
-                chooseQdata = newData[name]
-                QRCode.toCanvas(document.getElementById("QarCode" + k), newData[name], {
-                    margin: 1,
-                    width: 64,
-                });
-                injectDragger(document.getElementById("QrCode" + k), { minSize: 30 });
-                k++
             }
         }
 
@@ -743,8 +581,8 @@ QarCodeFormok.onclick = function () {
         margin: 1,
         width: $("#QarCodeWidth").val(),
     });
-
     $("#QarCode" + k).click()
+
     $("#qarcodeformModalCenter").modal("hide");
     const qrcodeval = {
         id: "QrCode" + k,
@@ -845,8 +683,7 @@ Print.onclick = function () {
     printJS({
         printable: "printmain",
         type: "html",
-        css: '/css/printjs.css',
-        scanStyles: false
+        css: '/css/printjs.css'
     });
 };
 
@@ -1022,20 +859,20 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
                         if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'data';
+                            barcodevalue = $("#BarCodeID").val() || 'data';
                             barcodeformat = $("#BarCodeType").val();
                             barcodeheight = $("#BarCodeHeight").val();
                             barcodewidth = $("#BarCodeWidth").val();
                         } else {
-                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'data';
+                            barcodevalue = $("#EditBarCodeID").val() || 'data';
                             barcodeformat = $("#EditBarCodeType").val();
                             barcodeheight = $("#EditBarCodeHeight").val();
                             barcodewidth = $("#EditBarCodeWidth").val();
                         }
                         JsBarcode("#BarCode" + randomNum, barcodevalue, {
                             format: barcodeformat,
-                            height: 25 || barcodeheight,
-                            width: 2 || barcodewidth,
+                            height: barcodeheight,
+                            width: barcodewidth,
                         });
                         injectDragger(document.getElementById("Code" + randomNum), { minSize: 52 });
                         randomNum--
@@ -1060,15 +897,15 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let qarcodevalue, qarcodewidth;
                         if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'data';
+                            qarcodevalue = $("#QarCodeID").val() || 'data';
                             qarcodewidth = $("#QarCodeWidth").val();
                         } else {
-                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'data';
+                            qarcodevalue = $("#EditQarCodeID").val() || 'data';
                             qarcodewidth = $("#EditQarCodeWidth").val();
                         }
                         QRCode.toCanvas(document.getElementById("QarCode" + randomNum), qarcodevalue, {
                             margin: 1,
-                            width: 64 || qarcodewidth
+                            width: qarcodewidth
                         });
 
                         injectDragger(document.getElementById("QrCode" + randomNum), { minSize: 30 });
@@ -1163,20 +1000,20 @@ pageSet.onclick = function () {
                         $("#printmain").append(newcolumnBarCode[i]);
                         let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
                         if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'data';
+                            barcodevalue = $("#BarCodeID").val() || 'data';
                             barcodeformat = $("#BarCodeType").val();
                             barcodeheight = $("#BarCodeHeight").val();
                             barcodewidth = $("#BarCodeWidth").val();
                         } else {
-                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'data';
+                            barcodevalue = $("#EditBarCodeID").val() || 'data';
                             barcodeformat = $("#EditBarCodeType").val();
                             barcodeheight = $("#EditBarCodeHeight").val();
                             barcodewidth = $("#EditBarCodeWidth").val();
                         }
                         JsBarcode("#BarCode" + columnRandomNum, barcodevalue, {
                             format: barcodeformat,
-                            height: 25 || barcodeheight,
-                            width: 2 || barcodewidth,
+                            height: barcodeheight,
+                            width: barcodewidth,
                         });
 
                         injectDragger(document.getElementById("Code" + columnRandomNum), { minSize: 52 });
@@ -1207,16 +1044,16 @@ pageSet.onclick = function () {
                         /* data | editor data */
                         let qarcodevalue, qarcodewidth;
                         if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'data';
+                            qarcodevalue = $("#QarCodeID").val() || 'data';
                             qarcodewidth = $("#QarCodeWidth").val();
                         } else {
-                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'data';
+                            qarcodevalue = $("#EditQarCodeID").val() || 'data';
                             qarcodewidth = $("#EditQarCodeWidth").val();
                         }
                         QRCode.toCanvas(
                             document.getElementById("QarCode" + columnRandomNum), qarcodevalue, {
                             margin: 1,
-                            width: 64 || qarcodewidth
+                            width: qarcodewidth
                         });
 
                         injectDragger(document.getElementById("QrCode" + columnRandomNum), { minSize: 30 });
@@ -1359,4 +1196,5 @@ saveTemplate.onclick = function () {
 
         $("#createFileModal").modal("hide");
     };
-}; 
+};
+

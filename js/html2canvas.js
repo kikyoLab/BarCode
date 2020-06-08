@@ -5,9 +5,10 @@
  */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.html2canvas = factory());
-}(this, function () { 'use strict';
+        typeof define === 'function' && define.amd ? define(factory) :
+            (global = global || self, global.html2canvas = factory());
+}(this, function () {
+    'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -25,21 +26,21 @@
     ***************************************************************************** */
     /* global Reflect, Promise */
 
-    var extendStatics = function(d, b) {
+    var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
 
-    function __extends(d, b) {
+    function __extends (d, b) {
         extendStatics(d, b);
-        function __() { this.constructor = d; }
+        function __ () { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
 
-    var __assign = function() {
-        __assign = Object.assign || function __assign(t) {
+    var __assign = function () {
+        __assign = Object.assign || function __assign (t) {
             for (var s, i = 1, n = arguments.length; i < n; i++) {
                 s = arguments[i];
                 for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
@@ -49,20 +50,20 @@
         return __assign.apply(this, arguments);
     };
 
-    function __awaiter(thisArg, _arguments, P, generator) {
+    function __awaiter (thisArg, _arguments, P, generator) {
         return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            function fulfilled (value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected (value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step (result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     }
 
-    function __generator(thisArg, body) {
-        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-        function verb(n) { return function (v) { return step([n, v]); }; }
-        function step(op) {
+    function __generator (thisArg, body) {
+        var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
+        function verb (n) { return function (v) { return step([n, v]); }; }
+        function step (op) {
             if (f) throw new TypeError("Generator is already executing.");
             while (_) try {
                 if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
@@ -87,7 +88,7 @@
     }
 
     var Bounds = /** @class */ (function () {
-        function Bounds(x, y, w, h) {
+        function Bounds (x, y, w, h) {
             this.left = x;
             this.top = y;
             this.width = w;
@@ -303,7 +304,7 @@
         return new Trie(view32[0], view32[1], view32[2], view32[3], index, data);
     };
     var Trie = /** @class */ (function () {
-        function Trie(initialValue, errorValue, highStart, highValueIndex, index, data) {
+        function Trie (initialValue, errorValue, highStart, highValueIndex, index, data) {
             this.initialValue = initialValue;
             this.errorValue = errorValue;
             this.highStart = highStart;
@@ -648,9 +649,9 @@
         }
         // LB25 Do not break between the following pairs of classes relevant to numbers:
         if (
-        // (PR | PO) × ( OP | HY )? NU
-        ([PR, PO].indexOf(current) !== -1 &&
-            (next === NU || ([OP, HY].indexOf(next) !== -1 && classTypes[afterIndex + 1] === NU))) ||
+            // (PR | PO) × ( OP | HY )? NU
+            ([PR, PO].indexOf(current) !== -1 &&
+                (next === NU || ([OP, HY].indexOf(next) !== -1 && classTypes[afterIndex + 1] === NU))) ||
             // ( OP | HY ) × NU
             ([OP, HY].indexOf(current) !== -1 && next === NU) ||
             // NU ×	(NU | SY | IS)
@@ -753,7 +754,7 @@
         return [indicies, classTypes, forbiddenBreakpoints];
     };
     var Break = /** @class */ (function () {
-        function Break(codePoints, lineBreak, start, end) {
+        function Break (codePoints, lineBreak, start, end) {
             this.codePoints = codePoints;
             this.required = lineBreak === BREAK_MANDATORY;
             this.start = start;
@@ -778,7 +779,7 @@
                 var lineBreak = BREAK_NOT_ALLOWED;
                 while (nextIndex < length &&
                     (lineBreak = _lineBreakAtIndex(codePoints, classTypes, indicies, ++nextIndex, forbiddenBreakpoints)) ===
-                        BREAK_NOT_ALLOWED) { }
+                    BREAK_NOT_ALLOWED) { }
                 if (lineBreak !== BREAK_NOT_ALLOWED || nextIndex === length) {
                     var value = new Break(codePoints, lineBreak, lastEnd, nextIndex);
                     lastEnd = nextIndex;
@@ -1011,7 +1012,7 @@
     var WHITESPACE_TOKEN = { type: TokenType.WHITESPACE_TOKEN };
     var EOF_TOKEN = { type: TokenType.EOF_TOKEN };
     var Tokenizer = /** @class */ (function () {
-        function Tokenizer() {
+        function Tokenizer () {
             this._value = [];
         }
         Tokenizer.prototype.write = function (chunk) {
@@ -1451,7 +1452,7 @@
     }());
 
     var Parser = /** @class */ (function () {
-        function Parser(tokens) {
+        function Parser (tokens) {
             this._tokens = tokens;
         }
         Parser.create = function (value) {
@@ -1783,7 +1784,7 @@
         }
         return 0;
     };
-    function hue2rgb(t1, t2, hue) {
+    function hue2rgb (t1, t2, hue) {
         if (hue < 0) {
             hue += 1;
         }
@@ -2280,23 +2281,23 @@
         ctx.fillRect(0, 0, size, size);
         return loadSerializedSVG(svg)
             .then(function (img) {
-            ctx.drawImage(img, 0, 0);
-            var data = ctx.getImageData(0, 0, size, size).data;
-            ctx.fillStyle = 'red';
-            ctx.fillRect(0, 0, size, size);
-            var node = document.createElement('div');
-            node.style.backgroundImage = "url(" + greenImageSrc + ")";
-            node.style.height = size + "px";
-            // Firefox 55 does not render inline <img /> tags
-            return isGreenPixel(data)
-                ? loadSerializedSVG(createForeignObjectSVG(size, size, 0, 0, node))
-                : Promise.reject(false);
-        })
+                ctx.drawImage(img, 0, 0);
+                var data = ctx.getImageData(0, 0, size, size).data;
+                ctx.fillStyle = 'red';
+                ctx.fillRect(0, 0, size, size);
+                var node = document.createElement('div');
+                node.style.backgroundImage = "url(" + greenImageSrc + ")";
+                node.style.height = size + "px";
+                // Firefox 55 does not render inline <img /> tags
+                return isGreenPixel(data)
+                    ? loadSerializedSVG(createForeignObjectSVG(size, size, 0, 0, node))
+                    : Promise.reject(false);
+            })
             .then(function (img) {
-            ctx.drawImage(img, 0, 0);
-            // Edge does not render background-images
-            return isGreenPixel(ctx.getImageData(0, 0, size, size).data);
-        })
+                ctx.drawImage(img, 0, 0);
+                // Edge does not render background-images
+                return isGreenPixel(ctx.getImageData(0, 0, size, size).data);
+            })
             .catch(function () { return false; });
     };
     var createForeignObjectSVG = function (width, height, x, y, node) {
@@ -2323,34 +2324,34 @@
         });
     };
     var FEATURES = {
-        get SUPPORT_RANGE_BOUNDS() {
+        get SUPPORT_RANGE_BOUNDS () {
             var value = testRangeBounds(document);
             Object.defineProperty(FEATURES, 'SUPPORT_RANGE_BOUNDS', { value: value });
             return value;
         },
-        get SUPPORT_SVG_DRAWING() {
+        get SUPPORT_SVG_DRAWING () {
             var value = testSVG(document);
             Object.defineProperty(FEATURES, 'SUPPORT_SVG_DRAWING', { value: value });
             return value;
         },
-        get SUPPORT_FOREIGNOBJECT_DRAWING() {
+        get SUPPORT_FOREIGNOBJECT_DRAWING () {
             var value = typeof Array.from === 'function' && typeof window.fetch === 'function'
                 ? testForeignObject(document)
                 : Promise.resolve(false);
             Object.defineProperty(FEATURES, 'SUPPORT_FOREIGNOBJECT_DRAWING', { value: value });
             return value;
         },
-        get SUPPORT_CORS_IMAGES() {
+        get SUPPORT_CORS_IMAGES () {
             var value = testCORS();
             Object.defineProperty(FEATURES, 'SUPPORT_CORS_IMAGES', { value: value });
             return value;
         },
-        get SUPPORT_RESPONSE_TYPE() {
+        get SUPPORT_RESPONSE_TYPE () {
             var value = testResponseType();
             Object.defineProperty(FEATURES, 'SUPPORT_RESPONSE_TYPE', { value: value });
             return value;
         },
-        get SUPPORT_CORS_XHR() {
+        get SUPPORT_CORS_XHR () {
             var value = 'withCredentials' in new XMLHttpRequest();
             Object.defineProperty(FEATURES, 'SUPPORT_CORS_XHR', { value: value });
             return value;
@@ -2358,7 +2359,7 @@
     };
 
     var Logger = /** @class */ (function () {
-        function Logger(_a) {
+        function Logger (_a) {
             var id = _a.id, enabled = _a.enabled;
             this.id = id;
             this.enabled = enabled;
@@ -2433,7 +2434,7 @@
     }());
 
     var CacheStorage = /** @class */ (function () {
-        function CacheStorage() {
+        function CacheStorage () {
         }
         CacheStorage.create = function (name, options) {
             return (CacheStorage._caches[name] = new Cache(name, options));
@@ -2483,7 +2484,7 @@
         return CacheStorage;
     }());
     var Cache = /** @class */ (function () {
-        function Cache(id, options) {
+        function Cache (id, options) {
             this.id = id;
             this._options = options;
             this._cache = {};
@@ -2529,22 +2530,22 @@
                         case 2:
                             Logger.getInstance(this.id).debug("Added image " + key.substring(0, 256));
                             return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                    var img = new Image();
-                                    img.onload = function () { return resolve(img); };
-                                    img.onerror = reject;
-                                    //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
-                                    if (isInlineBase64Image(src) || useCORS) {
-                                        img.crossOrigin = 'anonymous';
-                                    }
-                                    img.src = src;
-                                    if (img.complete === true) {
-                                        // Inline XML images may fail to parse, throwing an Error later on
-                                        setTimeout(function () { return resolve(img); }, 500);
-                                    }
-                                    if (_this._options.imageTimeout > 0) {
-                                        setTimeout(function () { return reject("Timed out (" + _this._options.imageTimeout + "ms) loading image"); }, _this._options.imageTimeout);
-                                    }
-                                })];
+                                var img = new Image();
+                                img.onload = function () { return resolve(img); };
+                                img.onerror = reject;
+                                //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
+                                if (isInlineBase64Image(src) || useCORS) {
+                                    img.crossOrigin = 'anonymous';
+                                }
+                                img.src = src;
+                                if (img.complete === true) {
+                                    // Inline XML images may fail to parse, throwing an Error later on
+                                    setTimeout(function () { return resolve(img); }, 500);
+                                }
+                                if (_this._options.imageTimeout > 0) {
+                                    setTimeout(function () { return reject("Timed out (" + _this._options.imageTimeout + "ms) loading image"); }, _this._options.imageTimeout);
+                                }
+                            })];
                         case 3: return [2 /*return*/, _a.sent()];
                     }
                 });
@@ -2858,7 +2859,7 @@
             throw new Error("Unsupported image type");
         }
     };
-    function isSupportedImage(value) {
+    function isSupportedImage (value) {
         return value.type !== TokenType.FUNCTION || SUPPORTED_IMAGE_FUNCTIONS[value.name];
     }
     var SUPPORTED_IMAGE_FUNCTIONS = {
@@ -2939,11 +2940,11 @@
         parse: function (tokens) {
             return parseFunctionArgs(tokens)
                 .map(function (values) {
-                return values
-                    .filter(isIdentToken)
-                    .map(function (token) { return token.value; })
-                    .join(' ');
-            })
+                    return values
+                        .filter(isIdentToken)
+                        .map(function (token) { return token.value; })
+                        .join(' ');
+                })
                 .map(parseBackgroundRepeat);
         }
     };
@@ -2982,25 +2983,29 @@
         return isIdentToken(value) || isLengthPercentage(value);
     };
 
-    var borderColorForSide = function (side) { return ({
-        name: "border-" + side + "-color",
-        initialValue: 'transparent',
-        prefix: false,
-        type: PropertyDescriptorParsingType.TYPE_VALUE,
-        format: 'color'
-    }); };
+    var borderColorForSide = function (side) {
+        return ({
+            name: "border-" + side + "-color",
+            initialValue: 'transparent',
+            prefix: false,
+            type: PropertyDescriptorParsingType.TYPE_VALUE,
+            format: 'color'
+        });
+    };
     var borderTopColor = borderColorForSide('top');
     var borderRightColor = borderColorForSide('right');
     var borderBottomColor = borderColorForSide('bottom');
     var borderLeftColor = borderColorForSide('left');
 
-    var borderRadiusForSide = function (side) { return ({
-        name: "border-radius-" + side,
-        initialValue: '0 0',
-        prefix: false,
-        type: PropertyDescriptorParsingType.LIST,
-        parse: function (tokens) { return parseLengthPercentageTuple(tokens.filter(isLengthPercentage)); }
-    }); };
+    var borderRadiusForSide = function (side) {
+        return ({
+            name: "border-radius-" + side,
+            initialValue: '0 0',
+            prefix: false,
+            type: PropertyDescriptorParsingType.LIST,
+            parse: function (tokens) { return parseLengthPercentageTuple(tokens.filter(isLengthPercentage)); }
+        });
+    };
     var borderTopLeftRadius = borderRadiusForSide('top-left');
     var borderTopRightRadius = borderRadiusForSide('top-right');
     var borderBottomRightRadius = borderRadiusForSide('bottom-right');
@@ -3011,36 +3016,40 @@
         BORDER_STYLE[BORDER_STYLE["NONE"] = 0] = "NONE";
         BORDER_STYLE[BORDER_STYLE["SOLID"] = 1] = "SOLID";
     })(BORDER_STYLE || (BORDER_STYLE = {}));
-    var borderStyleForSide = function (side) { return ({
-        name: "border-" + side + "-style",
-        initialValue: 'solid',
-        prefix: false,
-        type: PropertyDescriptorParsingType.IDENT_VALUE,
-        parse: function (style) {
-            switch (style) {
-                case 'none':
-                    return BORDER_STYLE.NONE;
+    var borderStyleForSide = function (side) {
+        return ({
+            name: "border-" + side + "-style",
+            initialValue: 'solid',
+            prefix: false,
+            type: PropertyDescriptorParsingType.IDENT_VALUE,
+            parse: function (style) {
+                switch (style) {
+                    case 'none':
+                        return BORDER_STYLE.NONE;
+                }
+                return BORDER_STYLE.SOLID;
             }
-            return BORDER_STYLE.SOLID;
-        }
-    }); };
+        });
+    };
     var borderTopStyle = borderStyleForSide('top');
     var borderRightStyle = borderStyleForSide('right');
     var borderBottomStyle = borderStyleForSide('bottom');
     var borderLeftStyle = borderStyleForSide('left');
 
-    var borderWidthForSide = function (side) { return ({
-        name: "border-" + side + "-width",
-        initialValue: '0',
-        type: PropertyDescriptorParsingType.VALUE,
-        prefix: false,
-        parse: function (token) {
-            if (isDimensionToken(token)) {
-                return token.number;
+    var borderWidthForSide = function (side) {
+        return ({
+            name: "border-" + side + "-width",
+            initialValue: '0',
+            type: PropertyDescriptorParsingType.VALUE,
+            prefix: false,
+            parse: function (token) {
+                if (isDimensionToken(token)) {
+                    return token.number;
+                }
+                return 0;
             }
-            return 0;
-        }
-    }); };
+        });
+    };
     var borderTopWidth = borderWidthForSide('top');
     var borderRightWidth = borderWidthForSide('right');
     var borderBottomWidth = borderWidthForSide('bottom');
@@ -3429,12 +3438,14 @@
         }
     };
 
-    var marginForSide = function (side) { return ({
-        name: "margin-" + side,
-        initialValue: '0',
-        prefix: false,
-        type: PropertyDescriptorParsingType.TOKEN_VALUE
-    }); };
+    var marginForSide = function (side) {
+        return ({
+            name: "margin-" + side,
+            initialValue: '0',
+            prefix: false,
+            type: PropertyDescriptorParsingType.TOKEN_VALUE
+        });
+    };
     var marginTop = marginForSide('top');
     var marginRight = marginForSide('right');
     var marginBottom = marginForSide('bottom');
@@ -3490,13 +3501,15 @@
         }
     };
 
-    var paddingForSide = function (side) { return ({
-        name: "padding-" + side,
-        initialValue: '0',
-        prefix: false,
-        type: PropertyDescriptorParsingType.TYPE_VALUE,
-        format: 'length-percentage'
-    }); };
+    var paddingForSide = function (side) {
+        return ({
+            name: "padding-" + side,
+            initialValue: '0',
+            prefix: false,
+            type: PropertyDescriptorParsingType.TYPE_VALUE,
+            format: 'length-percentage'
+        });
+    };
     var paddingTop = paddingForSide('top');
     var paddingRight = paddingForSide('right');
     var paddingBottom = paddingForSide('bottom');
@@ -3768,18 +3781,18 @@
             return tokens
                 .filter(isIdentToken)
                 .map(function (token) {
-                switch (token.value) {
-                    case 'underline':
-                        return 1 /* UNDERLINE */;
-                    case 'overline':
-                        return 2 /* OVERLINE */;
-                    case 'line-through':
-                        return 3 /* LINE_THROUGH */;
-                    case 'none':
-                        return 4 /* BLINK */;
-                }
-                return 0 /* NONE */;
-            })
+                    switch (token.value) {
+                        case 'underline':
+                            return 1 /* UNDERLINE */;
+                        case 'overline':
+                            return 2 /* OVERLINE */;
+                        case 'line-through':
+                            return 3 /* LINE_THROUGH */;
+                        case 'none':
+                            return 4 /* BLINK */;
+                    }
+                    return 0 /* NONE */;
+                })
                 .filter(function (line) { return line !== 0 /* NONE */; });
         }
     };
@@ -4016,7 +4029,7 @@
     };
 
     var CSSParsedDeclaration = /** @class */ (function () {
-        function CSSParsedDeclaration(declaration) {
+        function CSSParsedDeclaration (declaration) {
             this.backgroundClip = parse(backgroundClip, declaration.backgroundClip);
             this.backgroundColor = parse(backgroundColor, declaration.backgroundColor);
             this.backgroundImage = parse(backgroundImage, declaration.backgroundImage);
@@ -4109,14 +4122,14 @@
         return CSSParsedDeclaration;
     }());
     var CSSParsedPseudoDeclaration = /** @class */ (function () {
-        function CSSParsedPseudoDeclaration(declaration) {
+        function CSSParsedPseudoDeclaration (declaration) {
             this.content = parse(content, declaration.content);
             this.quotes = parse(quotes, declaration.quotes);
         }
         return CSSParsedPseudoDeclaration;
     }());
     var CSSParsedCounterDeclaration = /** @class */ (function () {
-        function CSSParsedCounterDeclaration(declaration) {
+        function CSSParsedCounterDeclaration (declaration) {
             this.counterIncrement = parse(counterIncrement, declaration.counterIncrement);
             this.counterReset = parse(counterReset, declaration.counterReset);
         }
@@ -4158,7 +4171,7 @@
     };
 
     var ElementContainer = /** @class */ (function () {
-        function ElementContainer(element) {
+        function ElementContainer (element) {
             this.styles = new CSSParsedDeclaration(window.getComputedStyle(element, null));
             this.textNodes = [];
             this.elements = [];
@@ -4173,7 +4186,7 @@
     }());
 
     var TextBounds = /** @class */ (function () {
-        function TextBounds(text, bounds) {
+        function TextBounds (text, bounds) {
             this.text = text;
             this.bounds = bounds;
         }
@@ -4247,7 +4260,7 @@
     };
 
     var TextContainer = /** @class */ (function () {
-        function TextContainer(node, styles) {
+        function TextContainer (node, styles) {
             this.text = transform$1(node.data, styles.textTransform);
             this.textBounds = parseTextBounds(this.text, styles, node);
         }
@@ -4275,7 +4288,7 @@
 
     var ImageElementContainer = /** @class */ (function (_super) {
         __extends(ImageElementContainer, _super);
-        function ImageElementContainer(img) {
+        function ImageElementContainer (img) {
             var _this = _super.call(this, img) || this;
             _this.src = img.currentSrc || img.src;
             _this.intrinsicWidth = img.naturalWidth;
@@ -4288,7 +4301,7 @@
 
     var CanvasElementContainer = /** @class */ (function (_super) {
         __extends(CanvasElementContainer, _super);
-        function CanvasElementContainer(canvas) {
+        function CanvasElementContainer (canvas) {
             var _this = _super.call(this, canvas) || this;
             _this.canvas = canvas;
             _this.intrinsicWidth = canvas.width;
@@ -4300,7 +4313,7 @@
 
     var SVGElementContainer = /** @class */ (function (_super) {
         __extends(SVGElementContainer, _super);
-        function SVGElementContainer(img) {
+        function SVGElementContainer (img) {
             var _this = _super.call(this, img) || this;
             var s = new XMLSerializer();
             _this.svg = "data:image/svg+xml," + encodeURIComponent(s.serializeToString(img));
@@ -4314,7 +4327,7 @@
 
     var LIElementContainer = /** @class */ (function (_super) {
         __extends(LIElementContainer, _super);
-        function LIElementContainer(element) {
+        function LIElementContainer (element) {
             var _this = _super.call(this, element) || this;
             _this.value = element.value;
             return _this;
@@ -4324,7 +4337,7 @@
 
     var OLElementContainer = /** @class */ (function (_super) {
         __extends(OLElementContainer, _super);
-        function OLElementContainer(element) {
+        function OLElementContainer (element) {
             var _this = _super.call(this, element) || this;
             _this.start = element.start;
             _this.reversed = typeof element.reversed === 'boolean' && element.reversed === true;
@@ -4367,7 +4380,7 @@
     var INPUT_COLOR = 0x2a2a2aff;
     var InputElementContainer = /** @class */ (function (_super) {
         __extends(InputElementContainer, _super);
-        function InputElementContainer(input) {
+        function InputElementContainer (input) {
             var _this = _super.call(this, input) || this;
             _this.type = input.type.toLowerCase();
             _this.checked = input.checked;
@@ -4397,7 +4410,7 @@
 
     var SelectElementContainer = /** @class */ (function (_super) {
         __extends(SelectElementContainer, _super);
-        function SelectElementContainer(element) {
+        function SelectElementContainer (element) {
             var _this = _super.call(this, element) || this;
             var option = element.options[element.selectedIndex || 0];
             _this.value = option ? option.text || '' : '';
@@ -4408,7 +4421,7 @@
 
     var TextareaElementContainer = /** @class */ (function (_super) {
         __extends(TextareaElementContainer, _super);
-        function TextareaElementContainer(element) {
+        function TextareaElementContainer (element) {
             var _this = _super.call(this, element) || this;
             _this.value = element.value;
             return _this;
@@ -4419,7 +4432,7 @@
     var parseColor = function (value) { return color.parse(Parser.create(value).parseComponentValue()); };
     var IFrameElementContainer = /** @class */ (function (_super) {
         __extends(IFrameElementContainer, _super);
-        function IFrameElementContainer(iframe) {
+        function IFrameElementContainer (iframe) {
             var _this = _super.call(this, iframe) || this;
             _this.src = iframe.src;
             _this.width = parseInt(iframe.width, 10) || 0;
@@ -4541,7 +4554,7 @@
     var isSelectElement = function (node) { return node.tagName === 'SELECT'; };
 
     var CounterState = /** @class */ (function () {
-        function CounterState() {
+        function CounterState () {
             this.counters = {};
         }
         CounterState.prototype.getCounterValue = function (name) {
@@ -5010,7 +5023,7 @@
 
     var IGNORE_ATTRIBUTE = 'data-html2canvas-ignore';
     var DocumentCloner = /** @class */ (function () {
-        function DocumentCloner(element, options) {
+        function DocumentCloner (element, options) {
             this.options = options;
             this.scrolledElements = [];
             this.referenceElement = element;
@@ -5034,40 +5047,42 @@
             /* Chrome doesn't detect relative background-images assigned in inline <style> sheets when fetched through getComputedStyle
              if window url is about:blank, we can assign the url to current by writing onto the document
              */
-            var iframeLoad = iframeLoader(iframe).then(function () { return __awaiter(_this, void 0, void 0, function () {
-                var onclone;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            this.scrolledElements.forEach(restoreNodeScroll);
-                            if (cloneWindow) {
-                                cloneWindow.scrollTo(windowSize.left, windowSize.top);
-                                if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent) &&
-                                    (cloneWindow.scrollY !== windowSize.top || cloneWindow.scrollX !== windowSize.left)) {
-                                    documentClone.documentElement.style.top = -windowSize.top + 'px';
-                                    documentClone.documentElement.style.left = -windowSize.left + 'px';
-                                    documentClone.documentElement.style.position = 'absolute';
+            var iframeLoad = iframeLoader(iframe).then(function () {
+                return __awaiter(_this, void 0, void 0, function () {
+                    var onclone;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.scrolledElements.forEach(restoreNodeScroll);
+                                if (cloneWindow) {
+                                    cloneWindow.scrollTo(windowSize.left, windowSize.top);
+                                    if (/(iPad|iPhone|iPod)/g.test(navigator.userAgent) &&
+                                        (cloneWindow.scrollY !== windowSize.top || cloneWindow.scrollX !== windowSize.left)) {
+                                        documentClone.documentElement.style.top = -windowSize.top + 'px';
+                                        documentClone.documentElement.style.left = -windowSize.left + 'px';
+                                        documentClone.documentElement.style.position = 'absolute';
+                                    }
                                 }
-                            }
-                            onclone = this.options.onclone;
-                            if (typeof this.clonedReferenceElement === 'undefined') {
-                                return [2 /*return*/, Promise.reject("Error finding the " + this.referenceElement.nodeName + " in the cloned document")];
-                            }
-                            if (!(documentClone.fonts && documentClone.fonts.ready)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, documentClone.fonts.ready];
-                        case 1:
-                            _a.sent();
-                            _a.label = 2;
-                        case 2:
-                            if (typeof onclone === 'function') {
-                                return [2 /*return*/, Promise.resolve()
+                                onclone = this.options.onclone;
+                                if (typeof this.clonedReferenceElement === 'undefined') {
+                                    return [2 /*return*/, Promise.reject("Error finding the " + this.referenceElement.nodeName + " in the cloned document")];
+                                }
+                                if (!(documentClone.fonts && documentClone.fonts.ready)) return [3 /*break*/, 2];
+                                return [4 /*yield*/, documentClone.fonts.ready];
+                            case 1:
+                                _a.sent();
+                                _a.label = 2;
+                            case 2:
+                                if (typeof onclone === 'function') {
+                                    return [2 /*return*/, Promise.resolve()
                                         .then(function () { return onclone(documentClone); })
                                         .then(function () { return iframe; })];
-                            }
-                            return [2 /*return*/, iframe];
-                    }
+                                }
+                                return [2 /*return*/, iframe];
+                        }
+                    });
                 });
-            }); });
+            });
             documentClone.open();
             documentClone.write(serializeDoctype(document.doctype) + "<html></html>");
             // Chrome scrolls the parent document for some reason after the write to the cloned window???
@@ -5471,7 +5486,7 @@
     };
 
     var Vector = /** @class */ (function () {
-        function Vector(x, y) {
+        function Vector (x, y) {
             this.type = PathType.VECTOR;
             this.x = x;
             this.y = y;
@@ -5486,7 +5501,7 @@
         return new Vector(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
     };
     var BezierCurve = /** @class */ (function () {
-        function BezierCurve(start, startControl, endControl, end) {
+        function BezierCurve (start, startControl, endControl, end) {
             this.type = PathType.BEZIER_CURVE;
             this.start = start;
             this.startControl = startControl;
@@ -5513,7 +5528,7 @@
     var isBezierCurve = function (path) { return path.type === PathType.BEZIER_CURVE; };
 
     var BoundCurves = /** @class */ (function () {
-        function BoundCurves(element) {
+        function BoundCurves (element) {
             var styles = element.styles;
             var bounds = element.bounds;
             var _a = getAbsoluteValueForTuple(styles.borderTopLeftRadius, bounds.width, bounds.height), tlh = _a[0], tlv = _a[1];
@@ -5645,7 +5660,7 @@
     };
 
     var TransformEffect = /** @class */ (function () {
-        function TransformEffect(offsetX, offsetY, matrix) {
+        function TransformEffect (offsetX, offsetY, matrix) {
             this.type = 0 /* TRANSFORM */;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
@@ -5655,7 +5670,7 @@
         return TransformEffect;
     }());
     var ClipEffect = /** @class */ (function () {
-        function ClipEffect(path, target) {
+        function ClipEffect (path, target) {
             this.type = 1 /* CLIP */;
             this.target = target;
             this.path = path;
@@ -5668,7 +5683,7 @@
     var isClipEffect = function (effect) { return effect.type === 1 /* CLIP */; };
 
     var StackingContext = /** @class */ (function () {
-        function StackingContext(container) {
+        function StackingContext (container) {
             this.element = container;
             this.inlineLevel = [];
             this.nonInlineLevel = [];
@@ -5681,7 +5696,7 @@
         return StackingContext;
     }());
     var ElementPaint = /** @class */ (function () {
-        function ElementPaint(element, parentStack) {
+        function ElementPaint (element, parentStack) {
             this.container = element;
             this.effects = parentStack.slice(0);
             this.curves = new BoundCurves(element);
@@ -6039,7 +6054,7 @@
 
     var SAMPLE_TEXT = 'Hidden Text';
     var FontMetrics = /** @class */ (function () {
-        function FontMetrics(document) {
+        function FontMetrics (document) {
             this._data = {};
             this._document = document;
         }
@@ -6088,7 +6103,7 @@
 
     var MASK_OFFSET = 10000;
     var CanvasRenderer = /** @class */ (function () {
-        function CanvasRenderer(options) {
+        function CanvasRenderer (options) {
             this._activeEffects = [];
             this.canvas = options.canvas ? options.canvas : document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
@@ -6209,12 +6224,12 @@
                                 .slice(0)
                                 .reverse()
                                 .forEach(function (textShadow) {
-                                _this.ctx.shadowColor = asString(textShadow.color);
-                                _this.ctx.shadowOffsetX = textShadow.offsetX.number * _this.options.scale;
-                                _this.ctx.shadowOffsetY = textShadow.offsetY.number * _this.options.scale;
-                                _this.ctx.shadowBlur = textShadow.blur.number;
-                                _this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + text.bounds.height);
-                            });
+                                    _this.ctx.shadowColor = asString(textShadow.color);
+                                    _this.ctx.shadowOffsetX = textShadow.offsetX.number * _this.options.scale;
+                                    _this.ctx.shadowOffsetY = textShadow.offsetY.number * _this.options.scale;
+                                    _this.ctx.shadowBlur = textShadow.blur.number;
+                                    _this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + text.bounds.height);
+                                });
                             _this.ctx.shadowColor = '';
                             _this.ctx.shadowOffsetX = 0;
                             _this.ctx.shadowOffsetY = 0;
@@ -6435,10 +6450,10 @@
                 var _i, _a, child, _b, _c, child, _d, _e, child, _f, _g, child, _h, _j, child, _k, _l, child, _m, _o, child;
                 return __generator(this, function (_p) {
                     switch (_p.label) {
-                        case 0: 
-                        // https://www.w3.org/TR/css-position-3/#painting-order
-                        // 1. the background and borders of the element forming the stacking context.
-                        return [4 /*yield*/, this.renderNodeBackgroundAndBorders(stack.element)];
+                        case 0:
+                            // https://www.w3.org/TR/css-position-3/#painting-order
+                            // 1. the background and borders of the element forming the stacking context.
+                            return [4 /*yield*/, this.renderNodeBackgroundAndBorders(stack.element)];
                         case 1:
                             // https://www.w3.org/TR/css-position-3/#painting-order
                             // 1. the background and borders of the element forming the stacking context.
@@ -6455,9 +6470,9 @@
                         case 4:
                             _i++;
                             return [3 /*break*/, 2];
-                        case 5: 
-                        // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
-                        return [4 /*yield*/, this.renderNodeContent(stack.element)];
+                        case 5:
+                            // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
+                            return [4 /*yield*/, this.renderNodeContent(stack.element)];
                         case 6:
                             // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
                             _p.sent();
@@ -6749,28 +6764,28 @@
                                 .slice(0)
                                 .reverse()
                                 .forEach(function (shadow) {
-                                _this.ctx.save();
-                                var borderBoxArea = calculateBorderBoxPath(paint.curves);
-                                var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
-                                var shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
-                                if (shadow.inset) {
-                                    _this.path(borderBoxArea);
-                                    _this.ctx.clip();
-                                    _this.mask(shadowPaintingArea);
-                                }
-                                else {
-                                    _this.mask(borderBoxArea);
-                                    _this.ctx.clip();
-                                    _this.path(shadowPaintingArea);
-                                }
-                                _this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
-                                _this.ctx.shadowOffsetY = shadow.offsetY.number;
-                                _this.ctx.shadowColor = asString(shadow.color);
-                                _this.ctx.shadowBlur = shadow.blur.number;
-                                _this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
-                                _this.ctx.fill();
-                                _this.ctx.restore();
-                            });
+                                    _this.ctx.save();
+                                    var borderBoxArea = calculateBorderBoxPath(paint.curves);
+                                    var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
+                                    var shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
+                                    if (shadow.inset) {
+                                        _this.path(borderBoxArea);
+                                        _this.ctx.clip();
+                                        _this.mask(shadowPaintingArea);
+                                    }
+                                    else {
+                                        _this.mask(borderBoxArea);
+                                        _this.ctx.clip();
+                                        _this.path(shadowPaintingArea);
+                                    }
+                                    _this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
+                                    _this.ctx.shadowOffsetY = shadow.offsetY.number;
+                                    _this.ctx.shadowColor = asString(shadow.color);
+                                    _this.ctx.shadowBlur = shadow.blur.number;
+                                    _this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
+                                    _this.ctx.fill();
+                                    _this.ctx.restore();
+                                });
                             _a.label = 2;
                         case 2:
                             side = 0;
@@ -6853,7 +6868,7 @@
     };
 
     var ForeignObjectRenderer = /** @class */ (function () {
-        function ForeignObjectRenderer(options) {
+        function ForeignObjectRenderer (options) {
             this.canvas = options.canvas ? options.canvas : document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
             this.options = options;
@@ -6905,128 +6920,130 @@
         return renderElement(element, options);
     };
     CacheStorage.setContext(window);
-    var renderElement = function (element, opts) { return __awaiter(_this, void 0, void 0, function () {
-        var ownerDocument, defaultView, instanceName, _a, width, height, left, top, defaultResourceOptions, resourceOptions, defaultOptions, options, windowBounds, documentCloner, clonedElement, container, documentBackgroundColor, bodyBackgroundColor, bgColor, defaultBackgroundColor, backgroundColor, renderOptions, canvas, renderer, root, renderer;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    ownerDocument = element.ownerDocument;
-                    if (!ownerDocument) {
-                        throw new Error("Element is not attached to a Document");
-                    }
-                    defaultView = ownerDocument.defaultView;
-                    if (!defaultView) {
-                        throw new Error("Document is not attached to a Window");
-                    }
-                    instanceName = (Math.round(Math.random() * 1000) + Date.now()).toString(16);
-                    _a = isBodyElement(element) || isHTMLElement(element) ? parseDocumentSize(ownerDocument) : parseBounds(element), width = _a.width, height = _a.height, left = _a.left, top = _a.top;
-                    defaultResourceOptions = {
-                        allowTaint: false,
-                        imageTimeout: 15000,
-                        proxy: undefined,
-                        useCORS: false
-                    };
-                    resourceOptions = __assign({}, defaultResourceOptions, opts);
-                    defaultOptions = {
-                        backgroundColor: '#ffffff',
-                        cache: opts.cache ? opts.cache : CacheStorage.create(instanceName, resourceOptions),
-                        logging: true,
-                        removeContainer: true,
-                        foreignObjectRendering: false,
-                        scale: defaultView.devicePixelRatio || 1,
-                        windowWidth: defaultView.innerWidth,
-                        windowHeight: defaultView.innerHeight,
-                        scrollX: defaultView.pageXOffset,
-                        scrollY: defaultView.pageYOffset,
-                        x: left,
-                        y: top,
-                        width: Math.ceil(width),
-                        height: Math.ceil(height),
-                        id: instanceName
-                    };
-                    options = __assign({}, defaultOptions, resourceOptions, opts);
-                    windowBounds = new Bounds(options.scrollX, options.scrollY, options.windowWidth, options.windowHeight);
-                    Logger.create({ id: instanceName, enabled: options.logging });
-                    Logger.getInstance(instanceName).debug("Starting document clone");
-                    documentCloner = new DocumentCloner(element, {
-                        id: instanceName,
-                        onclone: options.onclone,
-                        ignoreElements: options.ignoreElements,
-                        inlineImages: options.foreignObjectRendering,
-                        copyStyles: options.foreignObjectRendering
-                    });
-                    clonedElement = documentCloner.clonedReferenceElement;
-                    if (!clonedElement) {
-                        return [2 /*return*/, Promise.reject("Unable to find element in cloned iframe")];
-                    }
-                    return [4 /*yield*/, documentCloner.toIFrame(ownerDocument, windowBounds)];
-                case 1:
-                    container = _b.sent();
-                    documentBackgroundColor = ownerDocument.documentElement
-                        ? parseColor$1(getComputedStyle(ownerDocument.documentElement).backgroundColor)
-                        : COLORS.TRANSPARENT;
-                    bodyBackgroundColor = ownerDocument.body
-                        ? parseColor$1(getComputedStyle(ownerDocument.body).backgroundColor)
-                        : COLORS.TRANSPARENT;
-                    bgColor = opts.backgroundColor;
-                    defaultBackgroundColor = typeof bgColor === 'string' ? parseColor$1(bgColor) : bgColor === null ? COLORS.TRANSPARENT : 0xffffffff;
-                    backgroundColor = element === ownerDocument.documentElement
-                        ? isTransparent(documentBackgroundColor)
-                            ? isTransparent(bodyBackgroundColor)
-                                ? defaultBackgroundColor
-                                : bodyBackgroundColor
-                            : documentBackgroundColor
-                        : defaultBackgroundColor;
-                    renderOptions = {
-                        id: instanceName,
-                        cache: options.cache,
-                        canvas: options.canvas,
-                        backgroundColor: backgroundColor,
-                        scale: options.scale,
-                        x: options.x,
-                        y: options.y,
-                        scrollX: options.scrollX,
-                        scrollY: options.scrollY,
-                        width: options.width,
-                        height: options.height,
-                        windowWidth: options.windowWidth,
-                        windowHeight: options.windowHeight
-                    };
-                    if (!options.foreignObjectRendering) return [3 /*break*/, 3];
-                    Logger.getInstance(instanceName).debug("Document cloned, using foreign object rendering");
-                    renderer = new ForeignObjectRenderer(renderOptions);
-                    return [4 /*yield*/, renderer.render(clonedElement)];
-                case 2:
-                    canvas = _b.sent();
-                    return [3 /*break*/, 5];
-                case 3:
-                    Logger.getInstance(instanceName).debug("Document cloned, using computed rendering");
-                    CacheStorage.attachInstance(options.cache);
-                    Logger.getInstance(instanceName).debug("Starting DOM parsing");
-                    root = parseTree(clonedElement);
-                    CacheStorage.detachInstance();
-                    if (backgroundColor === root.styles.backgroundColor) {
-                        root.styles.backgroundColor = COLORS.TRANSPARENT;
-                    }
-                    Logger.getInstance(instanceName).debug("Starting renderer");
-                    renderer = new CanvasRenderer(renderOptions);
-                    return [4 /*yield*/, renderer.render(root)];
-                case 4:
-                    canvas = _b.sent();
-                    _b.label = 5;
-                case 5:
-                    if (options.removeContainer === true) {
-                        if (!DocumentCloner.destroy(container)) {
-                            Logger.getInstance(instanceName).error("Cannot detach cloned iframe as it is not in the DOM anymore");
+    var renderElement = function (element, opts) {
+        return __awaiter(_this, void 0, void 0, function () {
+            var ownerDocument, defaultView, instanceName, _a, width, height, left, top, defaultResourceOptions, resourceOptions, defaultOptions, options, windowBounds, documentCloner, clonedElement, container, documentBackgroundColor, bodyBackgroundColor, bgColor, defaultBackgroundColor, backgroundColor, renderOptions, canvas, renderer, root, renderer;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        ownerDocument = element.ownerDocument;
+                        if (!ownerDocument) {
+                            throw new Error("Element is not attached to a Document");
                         }
-                    }
-                    Logger.getInstance(instanceName).debug("Finished rendering");
-                    Logger.destroy(instanceName);
-                    CacheStorage.destroy(instanceName);
-                    return [2 /*return*/, canvas];
-            }
+                        defaultView = ownerDocument.defaultView;
+                        if (!defaultView) {
+                            throw new Error("Document is not attached to a Window");
+                        }
+                        instanceName = (Math.round(Math.random() * 1000) + Date.now()).toString(16);
+                        _a = isBodyElement(element) || isHTMLElement(element) ? parseDocumentSize(ownerDocument) : parseBounds(element), width = _a.width, height = _a.height, left = _a.left, top = _a.top;
+                        defaultResourceOptions = {
+                            allowTaint: false,
+                            imageTimeout: 15000,
+                            proxy: undefined,
+                            useCORS: false
+                        };
+                        resourceOptions = __assign({}, defaultResourceOptions, opts);
+                        defaultOptions = {
+                            backgroundColor: '#ffffff',
+                            cache: opts.cache ? opts.cache : CacheStorage.create(instanceName, resourceOptions),
+                            logging: true,
+                            removeContainer: true,
+                            foreignObjectRendering: false,
+                            scale: defaultView.devicePixelRatio || 1,
+                            windowWidth: defaultView.innerWidth,
+                            windowHeight: defaultView.innerHeight,
+                            scrollX: defaultView.pageXOffset,
+                            scrollY: defaultView.pageYOffset,
+                            x: left,
+                            y: top,
+                            width: Math.ceil(width),
+                            height: Math.ceil(height),
+                            id: instanceName
+                        };
+                        options = __assign({}, defaultOptions, resourceOptions, opts);
+                        windowBounds = new Bounds(options.scrollX, options.scrollY, options.windowWidth, options.windowHeight);
+                        Logger.create({ id: instanceName, enabled: options.logging });
+                        Logger.getInstance(instanceName).debug("Starting document clone");
+                        documentCloner = new DocumentCloner(element, {
+                            id: instanceName,
+                            onclone: options.onclone,
+                            ignoreElements: options.ignoreElements,
+                            inlineImages: options.foreignObjectRendering,
+                            copyStyles: options.foreignObjectRendering
+                        });
+                        clonedElement = documentCloner.clonedReferenceElement;
+                        if (!clonedElement) {
+                            return [2 /*return*/, Promise.reject("Unable to find element in cloned iframe")];
+                        }
+                        return [4 /*yield*/, documentCloner.toIFrame(ownerDocument, windowBounds)];
+                    case 1:
+                        container = _b.sent();
+                        documentBackgroundColor = ownerDocument.documentElement
+                            ? parseColor$1(getComputedStyle(ownerDocument.documentElement).backgroundColor)
+                            : COLORS.TRANSPARENT;
+                        bodyBackgroundColor = ownerDocument.body
+                            ? parseColor$1(getComputedStyle(ownerDocument.body).backgroundColor)
+                            : COLORS.TRANSPARENT;
+                        bgColor = opts.backgroundColor;
+                        defaultBackgroundColor = typeof bgColor === 'string' ? parseColor$1(bgColor) : bgColor === null ? COLORS.TRANSPARENT : 0xffffffff;
+                        backgroundColor = element === ownerDocument.documentElement
+                            ? isTransparent(documentBackgroundColor)
+                                ? isTransparent(bodyBackgroundColor)
+                                    ? defaultBackgroundColor
+                                    : bodyBackgroundColor
+                                : documentBackgroundColor
+                            : defaultBackgroundColor;
+                        renderOptions = {
+                            id: instanceName,
+                            cache: options.cache,
+                            canvas: options.canvas,
+                            backgroundColor: backgroundColor,
+                            scale: options.scale,
+                            x: options.x,
+                            y: options.y,
+                            scrollX: options.scrollX,
+                            scrollY: options.scrollY,
+                            width: options.width,
+                            height: options.height,
+                            windowWidth: options.windowWidth,
+                            windowHeight: options.windowHeight
+                        };
+                        if (!options.foreignObjectRendering) return [3 /*break*/, 3];
+                        Logger.getInstance(instanceName).debug("Document cloned, using foreign object rendering");
+                        renderer = new ForeignObjectRenderer(renderOptions);
+                        return [4 /*yield*/, renderer.render(clonedElement)];
+                    case 2:
+                        canvas = _b.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        Logger.getInstance(instanceName).debug("Document cloned, using computed rendering");
+                        CacheStorage.attachInstance(options.cache);
+                        Logger.getInstance(instanceName).debug("Starting DOM parsing");
+                        root = parseTree(clonedElement);
+                        CacheStorage.detachInstance();
+                        if (backgroundColor === root.styles.backgroundColor) {
+                            root.styles.backgroundColor = COLORS.TRANSPARENT;
+                        }
+                        Logger.getInstance(instanceName).debug("Starting renderer");
+                        renderer = new CanvasRenderer(renderOptions);
+                        return [4 /*yield*/, renderer.render(root)];
+                    case 4:
+                        canvas = _b.sent();
+                        _b.label = 5;
+                    case 5:
+                        if (options.removeContainer === true) {
+                            if (!DocumentCloner.destroy(container)) {
+                                Logger.getInstance(instanceName).error("Cannot detach cloned iframe as it is not in the DOM anymore");
+                            }
+                        }
+                        Logger.getInstance(instanceName).debug("Finished rendering");
+                        Logger.destroy(instanceName);
+                        CacheStorage.destroy(instanceName);
+                        return [2 /*return*/, canvas];
+                }
+            });
         });
-    }); };
+    };
 
     return html2canvas;
 

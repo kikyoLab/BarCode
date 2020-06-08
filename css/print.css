@@ -1,44 +1,129 @@
 @media print {
-  @page {
-    size: A4 portrait;
-    margin: 0;
-  }
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+    h1 {
+        page-break-before: always;
+    }
+    h1, h2, h3, h4, h5, h6, thead, tfoot, tr, th, td, li {
+        page-break-inside: avoid;
+    }
+    body {
+        background-color: white;
+        color: black;
+    }
+    nav, aside {
+        display: none;
+    }
+    a::after {
+        content: "(" attr(href) ")";
+    }
+    thead, tfoot {
+        display: table-row-group;
+    }
+}
 
-  h1 {
-    page-break-before: always;
-  }
+/*
+|--------------------------------------------------------------------------
+| Modules
+|--------------------------------------------------------------------------
+*/
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  thead,
-  tfoot,
-  tr,
-  th,
-  td,
-  li {
-    page-break-inside: avoid;
-  }
+/*
+|--------------------------------------------------------------------------
+| Aliases
+|--------------------------------------------------------------------------
+*/
 
-  body {
-    background-color: white;
-    color: black;
-  }
+/*
+|--------------------------------------------------------------------------
+| Partials
+|--------------------------------------------------------------------------
+*/
 
-  nav,
-  aside {
-    display: none;
-  }
+.printModal {
+    font-family: sans-serif;
+    display: flex;
+    text-align: center;
+    font-weight: 300;
+    font-size: 30px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    color: #0460B5;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.91);
+}
 
-  a::after {
-    content: "(" attr(href) ")";
-  }
+/*
+  |--------------------------------------------------------------------------
+  | Close Button
+  |--------------------------------------------------------------------------
+  */
 
-  thead,
-  tfoot {
-    display: table-row-group;
-  }
+.printClose {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.printClose:before {
+    content: "\00D7";
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 100;
+    line-height: 1px;
+    padding-top: 0.5em;
+    display: block;
+    font-size: 2em;
+    text-indent: 1px;
+    overflow: hidden;
+    height: 1.25em;
+    width: 1.25em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.printModal {
+    font-family: sans-serif;
+    display: flex;
+    text-align: center;
+    font-weight: 300;
+    font-size: 30px;
+    left: 0;
+    top: 0;
+    position: absolute;
+    color: #0460B5;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.91);
+}
+
+/*
+  |--------------------------------------------------------------------------
+  | Print Modal Close Button
+  |--------------------------------------------------------------------------
+  */
+
+.printClose {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.printClose:before {
+    content: "\00D7";
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 100;
+    line-height: 1px;
+    padding-top: 0.5em;
+    display: block;
+    font-size: 2em;
+    text-indent: 1px;
+    overflow: hidden;
+    height: 1.25em;
+    width: 1.25em;
+    text-align: center;
+    cursor: pointer;
 }

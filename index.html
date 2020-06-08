@@ -85,9 +85,9 @@
                     <div id="row" class="horizontal ruler"></div>
                     <div id="column" class="vertical ruler"></div>
                 </div>
-                <div id="printmain" style="width: 350px;height: 300px;">
-                    <div id="demo" class="target moveable"></div>
-
+                <div id="printmain" style="width: 350px;height:200px;">
+                    <div id="demo" class="target moveable">
+                    </div>
                 </div>
             </div>
         </div>
@@ -455,24 +455,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table id="table" data-search="true" data-strict-search="true" data-click-to-select="true"
-                        data-pagination="true" data-page-size="5" data-show-columns="true" data-buttons-class="primary">
+                    <table id="table" data-search="true" data-pagination="true" data-strict-search="true"
+                        data-click-to-select="true" data-page-size="5" data-show-columns="true"
+                        data-buttons-class="primary">
                         <thead>
                             <tr>
                                 <th data-field="state" data-checkbox="true"></th>
                                 <th data-field="id">id</th>
                                 <th data-field="barcode">barcode</th>
                                 <th data-field="qarcode">qarcode</th>
-                                <th data-field="resname">resname</th>
-                                <th data-field="format">format</th>
-                                <th data-field="unit">unit</th>
-                                <th data-field="rank">rank</th>
-                                <th data-field="amount">amount</th>
-                                <th data-field="vipPrice">vipPrice</th>
-                                <th data-field="retailPrice">retailPrice</th>
-                                <th data-field="specialOffer">specialOffer</th>
-                                <th data-field="origin">origin</th>
-                                <th data-field="data">data</th>
+                                <th data-field="名称">名称</th>
+                                <th data-field="重量">重量</th>
+                                <th data-field="规格">规格</th>
+                                <th data-field="质量">质量</th>
+                                <th data-field="数量">数量</th>
+                                <th data-field="会员价格">会员价格</th>
+                                <th data-field="活动价格">活动价格</th>
+                                <th data-field="促销价格">促销价格</th>
+                                <th data-field="产地">产地</th>
+                                <th data-field="日期">日期</th>
                             </tr>
                         </thead>
                     </table>
@@ -488,18 +489,20 @@
     </div>
 
 
+
+
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="umeditor/third-party/jquery.min.js"></script>
     <script src="//code.z01.com/v4/dist/js/popper.min.js"></script>
     <script src="//code.z01.com/v4/dist/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
     <script type="text/javascript" src="umeditor/umeditor.config.js"></script>
     <script type="text/javascript" src="umeditor/umeditor.js"></script>
     <script type="text/javascript" src="umeditor/lang/zh-cn/zh-cn.js"></script>
     <script src="js/JsBarcode.all.min.js"></script>
     <script src="js/qrcode.min.js"></script>
     <script src="js/html2canvas.js"></script>
-    <script src="//printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="js/print.js"></script>
     <script src="js/demo.js"></script>
     <script src="js/index2.js"></script>
 </body>

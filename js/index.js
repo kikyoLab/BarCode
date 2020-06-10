@@ -337,9 +337,14 @@ const allData = (function () {
     return result;
 })();
 
+$('#tableview').on('shown.bs.modal', function () {
+    $table.bootstrapTable('resetView')
+})
+
+$table.bootstrapTable({ data: allData.data });
+
 /* pull btn */
 pullData.onclick = function () {
-    $table.bootstrapTable({ data: allData.data });
     $("#tableview").modal({
         backdrop: 'static'
     });
@@ -395,8 +400,18 @@ $(function () {
                 /* barcode setting */
                 if (name == 'barcode') {
                     if (newBarCode.length > 0) {
+
+                        console.log(`第0个一维码:${chooseData[0][name]}`)
+                        JsBarcode("#Bar" + pageBarCode[0].id, chooseData[0][name], {
+                            format: $("#EditBarCodeFormat").val() || 'CODE128',
+                            height: $("#EditBarCodeHeight").val() || 30,
+                            width: $("#EditBarCodeWidth").val() || 2,
+                            font: 'Sans-serif',
+                        });
+
                         console.log(`第${i}个一维码:${chooseData[i][name]}`)
-                        newBarCode[0].id = newBarCode[0].id.slice(0, newBarCode[0].id.length - 1) + nums
+                        newBarCode[0].id = newBarCode[0].id.slice(0, newBarCode[0].id.length - 1) +
+                            nums
 
                         newBarCode[0].style.top =
                             Number(newBarCode[0].style.top.slice(0, newBarCode[0].style.top.length - 2)) +
@@ -407,9 +422,11 @@ $(function () {
 
                         $("#printmain").append(newBarCode[0]);
                         $("#printmain").css({ "height": `${newBarCode[0].style.top}` })
-                        console.log($("#EditBarCodeWidth").val(), $("#EditBarCodeHeight").val())
+
+                        console.log($("#EditBarCodeType").val(), $("#BarCodeType").val())
+                        console.log($("#EditBarCodeHeight").val(), $("#BarCodeHeight").val())
                         JsBarcode("#BarCode" + nums, chooseData[i][name], {
-                            format: $("#EditBarCodeType").val() || $("#BarCodeType").val() || 'CODE128',
+                            format: 'CODE128',
                             height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
                             width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
                             font: 'Sans-serif',
@@ -420,6 +437,13 @@ $(function () {
                 /* qarcode setting */
                 if (name == 'qarcode') {
                     if (newQarCode.length > 0) {
+                        console.log(`第0个二维码:${chooseData[0][name]}`)
+                        let num = pageBarCode[0].id.slice(pageBarCode[0].id.length - 1, pageBarCode[0].id.length)
+                        QRCode.toCanvas(document.getElementById("QarCode" + num), chooseData[0][name], {
+                            margin: 1,
+                            width: $("#EditQarCodeWidth").val() || 64,
+                        });
+
                         console.log(`第${i}个二维码:${chooseData[i][name]}`)
                         newQarCode[0].id = newQarCode[0].id.slice(0, newQarCode[0].id.length - 1) + nums
 

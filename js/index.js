@@ -808,6 +808,9 @@ Print.onclick = function () {
         scanStyles: false
     });
 
+    $("#printmain").children().css('position', 'fixed')
+
+
     /*     iframe print
         function doPrint3 () {
             //判断iframe是否存在，不存在则创建iframe

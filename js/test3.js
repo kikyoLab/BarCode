@@ -1,21 +1,4 @@
 "use strict";
-/* let aaa = 100
-test1(aaa)
-
-function test1 (aaa) {
-    for (var i = 0; i < 10; i++) {
-        console.log('i:' + i)
-        for (var j = 0; j < 10; j++) {
-            console.log('j:' + j)
-            for (var k = 0; k < 10; k++) {
-                console.log('k:' + k)
-                console.log(aaa)
-                aaa--
-            }
-        }
-    }
-} */
-
 const $table = $("#table");
 const $button = $("#button");
 const $multPrint = $("#multPrint")
@@ -97,7 +80,7 @@ function drag (ele, config = {}) {
                 backdrop: 'static'
             })
 
-            // 获取x y 坐标值
+            // 获取 x y 坐标值
             let left = $("#" + eleId).css('left').slice(0, $("#" + eleId).css('left').length - 2)
             let top = $("#" + eleId).css('top').slice(0, $("#" + eleId).css('top').length - 2)
             $("#textXvalue").val(left)
@@ -138,7 +121,7 @@ function drag (ele, config = {}) {
                     width: $("#EditBarCodeWidth").val(),
                     font: 'Sans-serif',
                 });
-                // 更新值 
+                // 更新值
                 const editcodeval = {
                     id: ele.id,
                     data: $("#EditBarCodeID").val(),
@@ -406,14 +389,16 @@ $(function () {
         let width = firstBox.style.width
         let boxheight = height.slice(0, height.length - 2);
         let boxwidth = width.slice(0, width.length - 2)
-        let nums = 200
 
-        creatTmplBarCode(cValue, chooseData, boxheight, boxwidth, nums)
-
-        // 一维码批量生成函数
-        function creatTmplBarCode (columnVal, data, boxheight, boxwidth, nums) {
+        creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
+        creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
+        creatTmplText(cValue, chooseData, boxheight, boxwidth, textData, textDataVal)
+        // 一维码批量生成
+        function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
+            console.log('一维码打印✈')
             // 计时器
             console.time('creat-barcode🛴')
+            let nums = 200
             let spacing = 0
             let status = 1
             let cv = columnVal
@@ -437,14 +422,14 @@ $(function () {
             // 第一层循环 => 处理所选数据数量
             for (var i = 0; i < data.length; i++) {
                 console.log(`处理第${i + 1}条数据中~`)
-                // 浅拷贝模板元素 如果不存在 返回
+                // 拷贝模板元素 如果不存在 返回
                 let newBarCode = pageBarCode.clone()
                 if (newBarCode.length <= 0) return (console.log(`Error:处理失败 未设置模板`))
                 // 第二层循环 => 找到每条数据中的条码值
                 for (var name in data[i]) {
                     if (name == 'barcode') {
                         console.log(`第${i + 1}个一维码: ${data[i][name]}`)
-                        // 第三层循环 => 找到每条数据中的 count值 批量复制
+                        // 第三层循环 => 检测每条数据中的 count值并批量复制
                         for (var j = 0; j < data[i].count; j++) {
                             // 列数判断
                             if (status >= cv) {
@@ -487,6 +472,97 @@ $(function () {
             }
             console.timeEnd('creat-barcode🛴')
         }
+
+        // 二维码批量生成
+        function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
+            console.log('二维码打印🛬')
+            // 计时器
+            console.time('creat-qarcode🛴')
+            let nums = 200
+            let spacing = 0
+            let status = 1
+            let cv = columnVal
+            console.log(`选择了${data.length}条数据`)
+            for (var i = 0; i < 1; i++) {
+                console.log(`处理模板数据`)
+                let newQarCode = pageQarCode.clone()
+                if (newQarCode.length <= 0) return (console.log(`Error:处理失败 未设置模板`))
+                for (var name in data[0]) {
+                    if (name == 'qarcode') {
+                        let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
+                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].qarcode, {
+                            margin: 1,
+                            width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
+                        })
+                    }
+                }
+            }
+            // 第一层循环 => 处理所选数据数量
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据中~`)
+                // 拷贝模板元素 如果不存在 返回
+                let newQarCode = pageQarCode.clone()
+                if (newQarCode.length <= 0) return (console.log(`Error:处理失败 未设置模板`))
+                // 第二层循环 => 找到每条数据中的条码值
+                for (var name in data[i]) {
+                    if (name == 'barcode') {
+                        console.log(`第${i + 1}个二维码: ${data[i][name]}`)
+                        // 第三层循环 => 检测每条数据中的 count值并批量复制
+                        for (var j = 0; j < data[i].count; j++) {
+                            // 列数判断
+                            if (status >= cv) {
+                                status = 0
+                                spacing++
+                            }
+                            console.log(`该标签count为${data[i].count},正在循环生成第${j + 1}个`)
+                            // 以模板元素各属性为基础进行复制
+                            let QarCode = newQarCode.clone()
+                            // Code
+                            QarCode[0].id = QarCode[0].id.slice(0, QarCode[0].id.length - 1) + nums
+                            // top
+                            QarCode[0].style.top =
+                                Number(QarCode[0].style.top.slice(0, QarCode[0].style.top.length - 2)) +
+                                Number(boxheight * spacing) + 'px'
+                            // left
+                            QarCode[0].style.left =
+                                Number(QarCode[0].style.left.slice(0, QarCode[0].style.left.length - 2)) +
+                                Number(boxwidth * status) + 'px'
+                            // BarCode
+                            QarCode[0].firstElementChild.id =
+                                QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
+
+
+                            $("#printmain").append(QarCode[0])
+                            QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].qarcode, {
+                                margin: 1,
+                                width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
+                            })
+                            console.log(`条码ID:${QarCode[0].id} 条码高度:${QarCode[0].style.top}`)
+                            console.log(`间距倍数:${spacing}`)
+                            console.log(`ID数值:${nums}`)
+                            console.log(`列数：${status}`)
+                            nums--
+                            status++
+                        }
+                    }
+                }
+            }
+            console.timeEnd('creat-qarcode🛴')
+        }
+
+        // 文本批量生成
+        function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
+            console.log('文本打印🛩')
+            // 计时器
+            console.time('creat-text🛴')
+            console.log(textData)
+            console.log(textDataVal)
+            console.timeEnd('creat-text🛴')
+        }
+
+        // 线条批量生成
+
+        // 边框批量生成
         $("#tableview").modal('hide')
     })
 
@@ -1182,12 +1258,34 @@ pageSet.onclick = function () {
  * @param {number} h StorageData => boxDiv.length
  */
 
+
 let a
 const templateBtn = document.getElementById("template");
-for (let i = 0; i < localStorage.length; i++) {
-    a = JSON.parse(localStorage.getItem(localStorage.key(i)));
-    $(".modalrow")
-        .append(`<div class="col-md-4">
+const allTmpl = (function () {
+    let result;
+    $.ajax({
+        type: 'POST',
+        url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ "vtype": "showtemplates" }),
+        async: false,
+        success: function (data) {
+            if (data[0].result == 'success') {
+                result = data
+            }
+        }
+    })
+    return result;
+})();
+
+// 模板模态框
+templateBtn.onclick = function () {
+    console.log(allTmpl)
+    for (let i = 0; i < localStorage.length; i++) {
+        a = JSON.parse(localStorage.getItem(localStorage.key(i)));
+        $(".modalrow")
+            .append(`<div class="col-md-4">
         <div class="card mb-4 box-shadow">
             <img id=${'img' + i}
             class="card-img-top"
@@ -1205,68 +1303,64 @@ for (let i = 0; i < localStorage.length; i++) {
         </div>
     </div>`);
 
+        let j = i;
+        let b = a;
+        // 删除模板
+        $("#del" + j).click(function () {
 
+        })
 
-    let j = i;
-    let b = a;
-    // 删除模板
-    $("#del" + j).click(function () {
-
-    })
-
-    // 将模板代码写入页面
-    $("#" + j).click(function () {
-        let x = $("#printmain").children()
-        for (var i = 0; i < x.length; i++) {
-            if (x[i].id !== 'demo') [
-                x[i].remove()
-            ]
-        }
-
-        let c = b.code.split('</div>')
-        let d = c.slice(0, c.length - 1).join('</div>')
-        $("#printmain").append(d);
-        // 将拖拽事件赋给所有模板元素
-        for (let l = 0; l < b.allNum; l++) {
-            if (document.getElementById("text" + l)) {
-                console.log('text++')
-                drag(document.getElementById("text" + l), { minSize: 30 });
+        // 将模板代码写入页面
+        $("#" + j).click(function () {
+            let x = $("#printmain").children()
+            for (var i = 0; i < x.length; i++) {
+                if (x[i].id !== 'demo') [
+                    x[i].remove()
+                ]
             }
 
-            if (document.getElementById("BarCode" + l)) {
-                console.log('barcode++')
-                JsBarcode("#BarCode" + l, "default", {
-                    width: 1,
-                    height: 10,
-                    font: 'Sans-serif',
-                });
-                drag(document.getElementById("Code" + l), { minSize: 30 });
-            }
+            let c = b.code.split('</div>')
+            let d = c.slice(0, c.length - 1).join('</div>')
+            $("#printmain").append(d);
+            // 将拖拽事件赋给所有模板元素
+            for (let l = 0; l < b.allNum; l++) {
+                if (document.getElementById("text" + l)) {
+                    console.log('text++')
+                    drag(document.getElementById("text" + l), { minSize: 30 });
+                }
 
-            if (document.getElementById("QrCode" + l)) {
-                console.log('qarcode++')
-                QRCode.toCanvas(document.getElementById("QarCode" + l), "default", {
-                    margin: 1,
-                });
-                drag(document.getElementById("QrCode" + l), { minSize: 30 });
-            }
+                if (document.getElementById("BarCode" + l)) {
+                    console.log('barcode++')
+                    JsBarcode("#BarCode" + l, "default", {
+                        width: 1,
+                        height: 10,
+                        font: 'Sans-serif',
+                    });
+                    drag(document.getElementById("Code" + l), { minSize: 30 });
+                }
 
-            if (document.getElementById("lineDiv" + l)) {
-                console.log('line++')
-                drag(document.getElementById("lineDiv" + l), { minSize: 2 });
-            }
+                if (document.getElementById("QrCode" + l)) {
+                    console.log('qarcode++')
+                    QRCode.toCanvas(document.getElementById("QarCode" + l), "default", {
+                        margin: 1,
+                    });
+                    drag(document.getElementById("QrCode" + l), { minSize: 30 });
+                }
 
-            if (document.getElementById("boxDiv" + l)) {
-                console.log('box++')
-                drag(document.getElementById("boxDiv" + l), { minSize: 30 });
-            }
-        }
-        $("#templatemodel").modal("hide");
-    });
-}
+                if (document.getElementById("lineDiv" + l)) {
+                    console.log('line++')
+                    drag(document.getElementById("lineDiv" + l), { minSize: 2 });
+                }
 
-// 模板模态框
-templateBtn.onclick = function () {
+                if (document.getElementById("boxDiv" + l)) {
+                    console.log('box++')
+                    drag(document.getElementById("boxDiv" + l), { minSize: 30 });
+                }
+            }
+            $("#templatemodel").modal("hide");
+        });
+    }
+
     $("#templatemodel").modal({
         backdrop: 'static'
     });
@@ -1286,7 +1380,7 @@ saveTemplate.onclick = function () {
     $("#createFileModal").modal("show");
 
     createFile.onclick = function () {
-        var data = $("#fileName").val();
+        var names = $("#fileName").val();
         // 将当前模板框内元素html保存，并生成预览图
         let width = $("#demo").width()
         let height = $("#demo").height()
@@ -1295,8 +1389,8 @@ saveTemplate.onclick = function () {
         html2canvas(document.getElementById("printmain")).then(function (canvas) {
             var imgUrl = canvas.toDataURL("image/png");
             var value = {
-                code: $("#printmain").html(),
-                img: imgUrl,
+                code: htmlEncode($("#printmain").html()),
+                img: htmlEncode(imgUrl),
                 allNum: allNum,
                 textlength: n,
                 barcode: j,
@@ -1305,34 +1399,25 @@ saveTemplate.onclick = function () {
                 boxDiv: h,
             };
 
-            // 存入 localStorage
-            localStorage.setItem(data, JSON.stringify(value));
-            console.log('load ➡ over')
-            location.reload();
+            $.ajax({
+                type: 'POST',
+                url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({
+                    "vtype": "addtemplate", "item1": "eSPricLabel", "item2": names,
+                    "item3": value, "item4": "标价签测试模板"
+                }),
+                async: false,
+                success: function (data) {
+                    if (data[0].result == 'success') {
+                        location.reload();
+                    } else {
+                        console.log(data[0].result)
+                    }
+                }
+            })
         })
-
         $("#createFileModal").modal("hide");
     };
 };
-
-function creatTmpl (columnVal, data, dataList, dataValList, height, idNum, barcode, qarcode, text, line, box) {
-    function creatText () {
-
-    }
-
-    function creatBarCode () {
-
-    }
-
-    function creatQarCode () {
-
-    }
-
-    function creatLine () {
-
-    }
-
-    function creatBox () {
-
-    }
-}

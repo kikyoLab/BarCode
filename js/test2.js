@@ -1312,7 +1312,7 @@ for (let i = 0; i < localStorage.length; i++) {
     let b = a;
     // 删除模板
     $("#del" + j).click(function () {
-
+        console.log(`${localStorage.key(i)}`)
     })
 
     // 将模板代码写入页面
@@ -1408,8 +1408,6 @@ saveTemplate.onclick = function () {
 
             // 存入 localStorage
             localStorage.setItem(data, JSON.stringify(value));
-            console.log('load ➡ over')
-            location.reload();
         })
 
         $("#createFileModal").modal("hide");

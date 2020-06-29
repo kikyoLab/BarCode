@@ -3353,8 +3353,6 @@
         S.set("transform", "translateY", a[1] + "px");
         setTimeout(function () {
             var a = Q.getRect();
-            xc.value = "" + Math.round(10 * a.left) / 10;
-            yc.value = "" + Math.round(10 * a.top) / 10
         })
     }
     function Eb () {
@@ -8215,11 +8213,8 @@
         , Xe = document.querySelector(".rulers")
         , zg = Xe.querySelector(".ruler.horizontal")
         , Ag = Xe.querySelector(".ruler.vertical")
-        , xc = document.querySelector('.control input[name="x"]')
-        , yc = document.querySelector('.control input[name="y"]')
         , Ye = document.querySelector('.control input[name="w"]')
         , Ze = document.querySelector('.control input[name="h"]')
-        , Bg = document.querySelector('.control input[name="r"]')
         , Xa = document.querySelector(".moveable.target")
         , S = new pg({
             left: "0px",
@@ -8234,18 +8229,6 @@
                 scaleY: 1
             }
         });
-    Qa(xc, function (a) {
-        Q.request("draggable", {
-            x: parseFloat(a),
-            isInstant: !0
-        })
-    });
-    Qa(yc, function (a) {
-        Q.request("draggable", {
-            y: parseFloat(a),
-            isInstant: !0
-        })
-    });
     Qa(Ye, function (a) {
         Q.request("resizable", {
             offsetWidth: parseFloat(a),
@@ -8258,14 +8241,7 @@
             isInstant: !0
         })
     });
-    Qa(Bg, function (a) {
-        Q.request("rotatable", {
-            deltaRotate: parseFloat(a) - parseFloat(S.get("transform", "rotate")),
-            isInstant: !0
-        })
-    });
-    xc.value = "" + parseFloat(S.get("transform", "translateX"));
-    yc.value = "" + parseFloat(S.get("transform", "translateY"));
+
     Xa.style.cssText += S.toCSS();
     var Fc = !1
         , Q = (new fa(yg, {

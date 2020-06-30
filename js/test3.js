@@ -589,18 +589,6 @@ BarCodeFormModel.onclick = function () {
         height: parseInt($("#BarCodeHeight").val()),
         width: $("#BarCodeWidth").val(),
     });
-
-    /*     // 使用商品ID获取条码值
-        const testbtn = document.getElementById("loadBarCodeID");
-        testbtn.onclick = function () {
-            var resid = $("#BarCodeProductID").val();
-            for (var i = 0; i < allData.data.length; i++) {
-                if (allData.data[i].id == resid) {
-                    $("#BarCodeID").val(allData.data[i].barcode);
-                    console.log('BarCode is pulling:' + allData.data[i].barcode)
-                }
-            }
-        } */
 };
 
 // 确定生成
@@ -653,17 +641,6 @@ $("#BarCodeForm").change(function () {
     });
 });
 
-/* // 一维码修改事件 使用ID获取条码值
-$("#EditloadBarCodeID").click(function () {
-    var resid = $("#EditBarCodeProductID").val();
-    for (var i = 0; i < allData.data.length; i++) {
-        if (allData.data[i].id == resid) {
-            $("#EditBarCodeID").val(allData.data[i].barcode);
-            console.log('EditBarCode is pulling:' + allData.data[i].barcode)
-        }
-    }
-}); */
-
 // 动态监听一维码修改表单变动并更新一维码预览图像
 $("#EditBarCodeForm").change(function () {
     JsBarcode("#EditBarCodeView", $("#EditBarCodeID").val(), {
@@ -699,28 +676,6 @@ QarCodeFormModel.onclick = function () {
         errorCorrectionLevel: "H",
     });
 };
-
-/* // 原始表单使用商品ID获取条码值
-$("#loadQarCodeID").click(function () {
-    let resid = $("#QarCodeProductID").val();
-    for (let i = 0; i < allData.data.length; i++) {
-        if (allData.data[i].id == resid) {
-            $("#QarCodeID").val(allData.data[i].qarcode);
-            console.log('QarCodeId pulling:' + allData.data[i].qarcode)
-        }
-    }
-});
-
-// 修改表单使用商品ID获取条码值
-$("#EditloadQarCodeID").click(function () {
-    let resid = $("#EditQarCodeProductID").val();
-    for (let i = 0; i < allData.data.length; i++) {
-        if (allData.data[i].id == resid) {
-            $("#EditQarCodeID").val(allData.data[i].qarcode);
-            console.log('EditQarCodeId pulling:' + allData.data[i].qarcode)
-        }
-    }
-}); */
 
 // 二维码生成
 QarCodeFormok.onclick = function () {
@@ -854,34 +809,6 @@ Print.onclick = function () {
 
     // 改回原值避免打印元素整体错位
     $("#printmain").children().css('position', 'fixed')
-
-    /*     iframe 打印
-        function doPrint3 () {
-            //判断iframe是否存在，不存在则创建iframe
-            var iframe = document.getElementById("print-iframe");
-            if (!iframe) {
-                var el = document.getElementById("printmain");
-                iframe = document.createElement('IFRAME');
-                var doc = null;
-                iframe.setAttribute("id", "print-iframe");
-                iframe.setAttribute('style', 'position:absolute;width:0px;height:0px;left:-500px;top:-500px;');
-                document.body.appendChild(iframe);
-                doc = iframe.contentWindow.document;
-                //这里可以自定义样式
-                //doc.write("<LINK rel="stylesheet" type="text/css" href="css/print.css">");
-                doc.write('<div>' + el.innerHTML + '</div>');
-                doc.close();
-                iframe.contentWindow.focus();
-            }
-            iframe.contentWindow.print();
-            if (navigator.userAgent.indexOf("MSIE") > 0) {
-                document.body.removeChild(iframe);
-            }
-        }
-    
-        doPrint3()
-        let iframe = document.getElementById('testww')
-        console.log(iframe.contentWindow === window.frames[0]) */
 };
 
 
@@ -1258,8 +1185,6 @@ pageSet.onclick = function () {
  * @param {number} h StorageData => boxDiv.length
  */
 
-
-let a
 const templateBtn = document.getElementById("template");
 const allTmpl = (function () {
     let result;
@@ -1281,9 +1206,10 @@ const allTmpl = (function () {
 
 // 模板模态框
 templateBtn.onclick = function () {
-    console.log(allTmpl)
-    for (let i = 0; i < localStorage.length; i++) {
-        a = JSON.parse(localStorage.getItem(localStorage.key(i)));
+    // 初始化
+    $(".modalrow").html('')
+    // 生成模板预览
+    for (let i = 0; i < allTmpl.length; i++) {
         $(".modalrow")
             .append(`<div class="col-md-4">
         <div class="card mb-4 box-shadow">
@@ -1291,12 +1217,12 @@ templateBtn.onclick = function () {
             class="card-img-top"
                 data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
                 alt="Thumbnail [100%x225]" style="height: 180px; width: 100%; display: block;"
-                src=${a.img}
+                src=''
                 data-holder-rendered=" true">
             <div class="card-body" style="border-top: 1px solid #6c757d;">
-                <span>${localStorage.key(i)}</span>
+                <span style="text-align:left;">${allTmpl[i].templatename}</span>
                 <div class="buttonGroup" style="text-align: right;margin-top: -25px;">
-                    <button type="button" class="btn btn-sm btn-primary" id="${i}">选择模板</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="${i}">选择</button>
                     <button type="button" class="btn btn-sm btn-danger" id="del${i}">删除</button>
                 </div>
             </div>
@@ -1304,13 +1230,27 @@ templateBtn.onclick = function () {
     </div>`);
 
         let j = i;
-        let b = a;
+        let delId = allTmpl[i].templateid
         // 删除模板
         $("#del" + j).click(function () {
-
+            $.ajax({
+                type: 'POST',
+                url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
+                async: false,
+                success: function (data) {
+                    if (data[0].result == 'success') {
+                        location.reload();
+                    } else {
+                        console.log(data[0].result)
+                    }
+                }
+            })
         })
 
-        // 将模板代码写入页面
+        // 加载模板
         $("#" + j).click(function () {
             let x = $("#printmain").children()
             for (var i = 0; i < x.length; i++) {
@@ -1319,44 +1259,6 @@ templateBtn.onclick = function () {
                 ]
             }
 
-            let c = b.code.split('</div>')
-            let d = c.slice(0, c.length - 1).join('</div>')
-            $("#printmain").append(d);
-            // 将拖拽事件赋给所有模板元素
-            for (let l = 0; l < b.allNum; l++) {
-                if (document.getElementById("text" + l)) {
-                    console.log('text++')
-                    drag(document.getElementById("text" + l), { minSize: 30 });
-                }
-
-                if (document.getElementById("BarCode" + l)) {
-                    console.log('barcode++')
-                    JsBarcode("#BarCode" + l, "default", {
-                        width: 1,
-                        height: 10,
-                        font: 'Sans-serif',
-                    });
-                    drag(document.getElementById("Code" + l), { minSize: 30 });
-                }
-
-                if (document.getElementById("QrCode" + l)) {
-                    console.log('qarcode++')
-                    QRCode.toCanvas(document.getElementById("QarCode" + l), "default", {
-                        margin: 1,
-                    });
-                    drag(document.getElementById("QrCode" + l), { minSize: 30 });
-                }
-
-                if (document.getElementById("lineDiv" + l)) {
-                    console.log('line++')
-                    drag(document.getElementById("lineDiv" + l), { minSize: 2 });
-                }
-
-                if (document.getElementById("boxDiv" + l)) {
-                    console.log('box++')
-                    drag(document.getElementById("boxDiv" + l), { minSize: 30 });
-                }
-            }
             $("#templatemodel").modal("hide");
         });
     }
@@ -1364,13 +1266,6 @@ templateBtn.onclick = function () {
     $("#templatemodel").modal({
         backdrop: 'static'
     });
-
-    // 使用模板后更新常量值避免与新增元素ID冲突
-    n = a.textlength;
-    j = a.barcode;
-    k = a.qarcode;
-    d = a.lineDiv;
-    h = a.boxDiv;
 };
 
 // 模板保存
@@ -1381,6 +1276,7 @@ saveTemplate.onclick = function () {
 
     createFile.onclick = function () {
         var names = $("#fileName").val();
+        var id = $("#fileId").val()
         // 将当前模板框内元素html保存，并生成预览图
         let width = $("#demo").width()
         let height = $("#demo").height()
@@ -1405,7 +1301,7 @@ saveTemplate.onclick = function () {
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
-                    "vtype": "addtemplate", "item1": "eSPricLabel", "item2": names,
+                    "vtype": "addtemplate", "item1": id, "item2": names,
                     "item3": value, "item4": "标价签测试模板"
                 }),
                 async: false,

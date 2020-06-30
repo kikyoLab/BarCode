@@ -1,7 +1,10 @@
 "use strict";
+
 const $table = $("#table");
 const $button = $("#button");
 const $multPrint = $("#multPrint")
+
+// 标签数据
 const allData = (function () {
     let result;
     $.ajax({
@@ -17,13 +20,35 @@ const allData = (function () {
     return result;
 })();
 
+// 标签绑定字段数据
+const dataFiled = (function () {
+    let result;
+    $.ajax({
+        type: 'POST',
+        url: "http://test.ecsun.cn:99/mzato/main/labels/set",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ "vtype": "getdatafield" }),
+        async: false,
+        success: function (data) {
+            if (data[0].result == 'success') {
+                result = data
+            } else {
+                console.log(data[0].result)
+            }
+        }
+    })
+    return result
+})();
+
 // bootstrap-table设置
 (function () {
-    for (var name in allData.data[0]) {
-        if (name !== 'id' && name !== 'barcode' && name !== 'qarcode' && name !== 'count') {
-            $("#databind").append(`<option>${name}</option>`)
-        }
+    // 富文本数据绑定下拉栏
+    for (var i = 0; i < dataFiled.length; i++) {
+        $("#databind").append(`<option>${dataFiled[i].datafieldname}</option>`)
     }
+
+    $('#databind').editableSelect({ filter: false });
 
     $('#tableview').on('shown.bs.modal', function () {
         $table.bootstrapTable('resetView')
@@ -38,7 +63,6 @@ const allData = (function () {
         });
     };
 })()
-
 
 /**
  * 拖拽事件
@@ -80,6 +104,13 @@ function drag (ele, config = {}) {
                 backdrop: 'static'
             })
 
+            // 获取该元素自定义属性
+            let target = document.getElementById('' + eleId)
+            console.log(target.dataset.text)
+            if (target.dataset.text) {
+                let targets = dataFiled.filter((x) => x.datafieldid == target.dataset.text)[0].datafieldname
+                $("#databind").val(targets)
+            }
             // 获取 x y 坐标值
             let left = $("#" + eleId).css('left').slice(0, $("#" + eleId).css('left').length - 2)
             let top = $("#" + eleId).css('top').slice(0, $("#" + eleId).css('top').length - 2)
@@ -767,11 +798,15 @@ $("#update").click(function () {
     let Yvalue = $("#textYvalue").val() + 'px'
     $("#" + eleId).css('left', Xvalue)
     $("#" + eleId).css('top', Yvalue)
-
     $("#" + eleId).html(um.getContent());
 
-    /* 赋值数据 */
-    $("#" + eleId).attr('data-text', $("#databind").val())
+    /* 新增属性-绑定数据 ID */
+    if ($("#databind").val()) {
+        let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
+        $("#" + eleId).attr('data-text', val)
+    }
+
+    $("#databind").val('')
     $("#exampleModalCenter").modal("hide");
 });
 
@@ -1283,10 +1318,10 @@ saveTemplate.onclick = function () {
         $("#printmain").width(width)
         $("#printmain").height(height)
         html2canvas(document.getElementById("printmain")).then(function (canvas) {
-            var imgUrl = canvas.toDataURL("image/png");
-            var value = {
-                code: htmlEncode($("#printmain").html()),
-                img: htmlEncode(imgUrl),
+            let imgUrl = canvas.toDataURL("image/png");
+            let value = {
+                code: $("#printmain").html(),
+                img: imgUrl,
                 allNum: allNum,
                 textlength: n,
                 barcode: j,
@@ -1295,24 +1330,27 @@ saveTemplate.onclick = function () {
                 boxDiv: h,
             };
 
-            $.ajax({
-                type: 'POST',
-                url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify({
-                    "vtype": "addtemplate", "item1": id, "item2": names,
-                    "item3": value, "item4": "标价签测试模板"
-                }),
-                async: false,
-                success: function (data) {
-                    if (data[0].result == 'success') {
-                        location.reload();
-                    } else {
-                        console.log(data[0].result)
-                    }
-                }
-            })
+            let sVal = htmlEncode(JSON.stringify(value))
+            console.log(sVal)
+            console.log(typeof sVal)
+            /*             $.ajax({
+                            type: 'POST',
+                            url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                            contentType: 'application/json',
+                            dataType: 'json',
+                            data: JSON.stringify({
+                                "vtype": "addtemplate", "item1": id, "item2": names,
+                                "item3": sVal, "item4": "测试模板"
+                            }),
+                            async: false,
+                            success: function (data) {
+                                if (data[0].result == 'success') {
+                                    location.reload();
+                                } else {
+                                    console.log(data[0].result)
+                                }
+                            }
+                        }) */
         })
         $("#createFileModal").modal("hide");
     };

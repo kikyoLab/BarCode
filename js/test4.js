@@ -20,13 +20,35 @@ const allData = (function () {
     return result;
 })();
 
+// 标签绑定字段数据
+const dataFiled = (function () {
+    let result;
+    $.ajax({
+        type: 'POST',
+        url: "http://test.ecsun.cn:99/mzato/main/labels/set",
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ "vtype": "getdatafield" }),
+        async: false,
+        success: function (data) {
+            if (data.Table[0].result == 'success') {
+                result = data.Table
+            } else {
+                console.log(`文本绑定数据出错:${data.Table[0].result}`)
+            }
+        }
+    })
+    return result
+})();
+
 // bootstrap-table设置
 (function () {
-    for (var name in allData.data[0]) {
-        if (name !== 'id' && name !== 'barcode' && name !== 'qarcode' && name !== 'count') {
-            $("#databind").append(`<option>${name}</option>`)
-        }
+    // 富文本数据绑定下拉栏
+    for (var i = 0; i < dataFiled.length; i++) {
+        $("#databind").append(`<option>${dataFiled[i].datafieldname}</option>`)
     }
+
+    $('#databind').editableSelect({ filter: false });
 
     $('#tableview').on('shown.bs.modal', function () {
         $table.bootstrapTable('resetView')
@@ -82,7 +104,14 @@ function drag (ele, config = {}) {
                 backdrop: 'static'
             })
 
-            // 获取x y 坐标值
+            // 获取该元素自定义属性
+            let target = document.getElementById('' + eleId)
+            console.log(target.dataset.text)
+            if (target.dataset.text) {
+                let targets = dataFiled.filter((x) => x.datafieldid == target.dataset.text)[0].datafieldname
+                $("#databind").val(targets)
+            }
+            // 获取 x y 坐标值
             let left = $("#" + eleId).css('left').slice(0, $("#" + eleId).css('left').length - 2)
             let top = $("#" + eleId).css('top').slice(0, $("#" + eleId).css('top').length - 2)
             $("#textXvalue").val(left)
@@ -368,7 +397,6 @@ let chooseBdata
 let chooseQdata
 $(function () {
     $multPrint.click(function () {
-
         // 获取列值
         const cValue = $("#dataColumn").val()
 
@@ -376,6 +404,8 @@ $(function () {
         const chooseData = $table.bootstrapTable("getSelections")
 
         const pageText = $("#printmain").children("div .editable");
+        const pageBarCode = $("#printmain").children("div .BarCodedbclick");
+        const pageQarCode = $("#printmain").children("div .QarCodedbclick");
         const pageLine = $("#printmain").children("div .Line");
         const pageBox = $("#printmain").children("div .Box");
 
@@ -391,46 +421,181 @@ $(function () {
         let boxheight = height.slice(0, height.length - 2);
         let boxwidth = width.slice(0, width.length - 2)
 
-
+        creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
+        creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
         creatTmplText(cValue, chooseData, boxheight, boxwidth, textData, textDataVal)
-        // 文本批量生成
-        function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
-            console.log('文本打印🛸')
+        // 一维码批量生成
+        function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
+            console.log('一维码打印✈')
             // 计时器
-            console.time('creat-text🛴')
+            console.time('creat-barcode🛴')
+            let nums = 200
+            let spacing = 0
+            let status = 1
+            let cv = columnVal
             console.log(`选择了${data.length}条数据`)
-            // 处理模板数据
-            for (let i = 0; i < pageText.length; i++) {
-                console.log(`处理模板数据中~`)
-                pageText[i].firstChild.innerHTML = `${textDataVal[0][pageText[i].dataset.text]}`
-            }
-
-            // 第一层循环 => 处理所选数据
-            for (var j = 0; j < data.length; j++) {
-                console.log(`处理第${j + 1}条数据`)
-                let newText = pageText.clone()
-
-                // 第二层循环 => 根据模板文本框数量批量生成
-                for (var k = 0; k < newText.length; k++) {
-                    let spaceing = 1
-                    console.log(`第${k + 1}个文本:${textDataVal[j][newText[k].dataset.text]}`)
-                    // 第三层循环 => 根据文本框 count 值进行复制
-                    for (var c = 0; c < data[j].count; c++) {
-                        console.log(`该文本count为${data[j].count},正在生成第${c + 1}个`)
-                        newText[k].style.top =
-                            Number(newText[k].style.top.slice(0, newText[k].style.top.length - 2)) +
-                            Number(boxheight * spaceing) + 'px'
-
-                        let text = newText.clone()
-                        console.log(text[k].style.top)
-                        $("#printmain").append(text[k])
+            for (var i = 0; i < 1; i++) {
+                console.log(`处理模板数据`)
+                let newBarCode = pageBarCode.clone()
+                if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
+                for (var name in data[0]) {
+                    if (name == 'barcode') {
+                        let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
+                        JsBarcode("#BarCode" + n, data[0].barcode, {
+                            format: 'CODE128',
+                            height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
+                            width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
+                            font: 'Sans-serif'
+                        })
                     }
                 }
             }
-            console.timeEnd('creat-text🛴')
-            $("#tableview").modal('hide')
+            // 第一层循环 => 处理所选数据数量
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据中~`)
+                // 拷贝模板元素 如果不存在 返回
+                let newBarCode = pageBarCode.clone()
+                if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
+                // 第二层循环 => 找到每条数据中的条码值
+                for (var name in data[i]) {
+                    if (name == 'barcode') {
+                        console.log(`第${i + 1}个一维码: ${data[i][name]}`)
+                        // 第三层循环 => 检测每条数据中的 count值并批量复制
+                        for (var j = 0; j < data[i].count; j++) {
+                            // 列数判断
+                            if (status >= cv) {
+                                status = 0
+                                spacing++
+                            }
+                            console.log(`该标签count为${data[i].count},正在循环生成第${j + 1}个`)
+                            // 以模板元素各属性为基础进行复制
+                            let BarCode = newBarCode.clone()
+                            // Code
+                            BarCode[0].id = BarCode[0].id.slice(0, BarCode[0].id.length - 1) + nums
+                            // top
+                            BarCode[0].style.top =
+                                Number(BarCode[0].style.top.slice(0, BarCode[0].style.top.length - 2)) +
+                                Number(boxheight * spacing) + 'px'
+                            // left
+                            BarCode[0].style.left =
+                                Number(BarCode[0].style.left.slice(0, BarCode[0].style.left.length - 2)) +
+                                Number(boxwidth * status) + 'px'
+                            // BarCode
+                            BarCode[0].firstElementChild.id =
+                                BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
+
+                            $("#printmain").append(BarCode[0])
+                            JsBarcode("#BarCode" + nums, data[i].barcode, {
+                                format: 'CODE128',
+                                height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
+                                width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
+                                font: 'Sans-serif'
+                            })
+                            console.log(`条码ID:${BarCode[0].id} 条码高度:${BarCode[0].style.top}`)
+                            console.log(`间距倍数:${spacing}`)
+                            console.log(`ID数值:${nums}`)
+                            console.log(`列数：${status}`)
+                            nums--
+                            status++
+                        }
+                    }
+                }
+            }
+            console.timeEnd('creat-barcode🛴')
         }
+
+        // 二维码批量生成
+        function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
+            console.log('二维码打印🛬')
+            // 计时器
+            console.time('creat-qarcode🛴')
+            let nums = 200
+            let spacing = 0
+            let status = 1
+            let cv = columnVal
+            console.log(`选择了${data.length}条数据`)
+            for (var i = 0; i < 1; i++) {
+                console.log(`处理模板数据`)
+                let newQarCode = pageQarCode.clone()
+                if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
+                for (var name in data[0]) {
+                    if (name == 'qarcode') {
+                        let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
+                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].qarcode, {
+                            margin: 1,
+                            width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
+                        })
+                    }
+                }
+            }
+            // 第一层循环 => 处理所选数据数量
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据中~`)
+                // 拷贝模板元素 如果不存在 返回
+                let newQarCode = pageQarCode.clone()
+                if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
+                // 第二层循环 => 找到每条数据中的条码值
+                for (var name in data[i]) {
+                    if (name == 'barcode') {
+                        console.log(`第${i + 1}个二维码: ${data[i][name]}`)
+                        // 第三层循环 => 检测每条数据中的 count值并批量复制
+                        for (var j = 0; j < data[i].count; j++) {
+                            // 列数判断
+                            if (status >= cv) {
+                                status = 0
+                                spacing++
+                            }
+                            console.log(`该标签count为${data[i].count},正在循环生成第${j + 1}个`)
+                            // 以模板元素各属性为基础进行复制
+                            let QarCode = newQarCode.clone()
+                            // Code
+                            QarCode[0].id = QarCode[0].id.slice(0, QarCode[0].id.length - 1) + nums
+                            // top
+                            QarCode[0].style.top =
+                                Number(QarCode[0].style.top.slice(0, QarCode[0].style.top.length - 2)) +
+                                Number(boxheight * spacing) + 'px'
+                            // left
+                            QarCode[0].style.left =
+                                Number(QarCode[0].style.left.slice(0, QarCode[0].style.left.length - 2)) +
+                                Number(boxwidth * status) + 'px'
+                            // BarCode
+                            QarCode[0].firstElementChild.id =
+                                QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
+
+
+                            $("#printmain").append(QarCode[0])
+                            QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].qarcode, {
+                                margin: 1,
+                                width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
+                            })
+                            console.log(`条码ID:${QarCode[0].id} 条码高度:${QarCode[0].style.top}`)
+                            console.log(`间距倍数:${spacing}`)
+                            console.log(`ID数值:${nums}`)
+                            console.log(`列数：${status}`)
+                            nums--
+                            status++
+                        }
+                    }
+                }
+            }
+            console.timeEnd('creat-qarcode🛴')
+        }
+
+        // 文本批量生成
+        function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
+            console.log('文本打印🛩')
+            // 计时器
+            console.time('creat-text🛴')
+
+            console.timeEnd('creat-text🛴')
+        }
+
+        // 线条批量生成
+
+        // 边框批量生成
+        $("#tableview").modal('hide')
     })
+
 })
 
 /**
@@ -632,11 +797,15 @@ $("#update").click(function () {
     let Yvalue = $("#textYvalue").val() + 'px'
     $("#" + eleId).css('left', Xvalue)
     $("#" + eleId).css('top', Yvalue)
-
     $("#" + eleId).html(um.getContent());
 
-    /* 赋值数据 */
-    $("#" + eleId).attr('data-text', $("#databind").val())
+    /* 新增属性-绑定数据 ID */
+    if ($("#databind").val()) {
+        let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
+        $("#" + eleId).attr('data-text', val)
+    }
+
+    $("#databind").val('')
     $("#exampleModalCenter").modal("hide");
 });
 

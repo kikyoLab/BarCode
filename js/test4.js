@@ -20,6 +20,8 @@ const allData = (function () {
     return result;
 })();
 
+if (!allData) return (console.error('数据接口故障,请联系管理人员'))
+
 // 标签绑定字段数据
 const dataFiled = (function () {
     let result;
@@ -34,7 +36,7 @@ const dataFiled = (function () {
             if (data.Table[0].result == 'success') {
                 result = data.Table
             } else {
-                console.log(`文本绑定数据出错:${data.Table[0].result}`)
+                console.error(`绑定数据接口故障:${data.Table[0].result}`)
             }
         }
     })
@@ -426,7 +428,7 @@ $(function () {
         creatTmplText(cValue, chooseData, boxheight, boxwidth, textData, textDataVal)
         // 一维码批量生成
         function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
-            console.log('一维码打印✈')
+            console.info('一维码打印✈')
             // 计时器
             console.time('creat-barcode🛴')
             let nums = 200
@@ -506,7 +508,7 @@ $(function () {
 
         // 二维码批量生成
         function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
-            console.log('二维码打印🛬')
+            console.info('二维码打印🛬')
             // 计时器
             console.time('creat-qarcode🛴')
             let nums = 200
@@ -542,6 +544,7 @@ $(function () {
                         for (var j = 0; j < data[i].count; j++) {
                             // 列数判断
                             if (status >= cv) {
+                                console.log('重置')
                                 status = 0
                                 spacing++
                             }
@@ -568,10 +571,10 @@ $(function () {
                                 margin: 1,
                                 width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
                             })
-                            console.log(`条码ID:${QarCode[0].id} 条码高度:${QarCode[0].style.top}`)
-                            console.log(`间距倍数:${spacing}`)
+                            console.log(`条码ID:${QarCode[0].id}`)
+                            console.log(`间距倍数:${spacing} 条码高度:${QarCode[0].style.top}`)
+                            console.log(`列数：${status} 条码宽度:${QarCode[0].style.left}`)
                             console.log(`ID数值:${nums}`)
-                            console.log(`列数：${status}`)
                             nums--
                             status++
                         }
@@ -583,11 +586,54 @@ $(function () {
 
         // 文本批量生成
         function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
-            console.log('文本打印🛩')
+            console.log('文本打印🛸')
             // 计时器
             console.time('creat-text🛴')
 
+            // 处理模板数据
+            let newText = pageText.clone()
+            let spaceing = 0
+            let status = 1
+            let cv = columnVal
+            console.log(`选择了${data.length}条数据`)
+            for (let i = 0; i < pageText.length; i++) {
+                console.log(`处理模板数据中~`)
+                pageText[i].firstChild.innerHTML = `${textDataVal[0][pageText[i].dataset.text]}`
+            }
+            // 第一层循环 => 处理所选数据
+            for (var j = 0; j < data.length; j++) {
+                console.log(`处理第${j + 1}条数据`)
+                // 第二层循环 => 根据文本框 count 值进行复制
+                for (var k = 0; k < data[j].count; k++) {
+                    let num = j
+                    console.log(`该数据count为${data[j].count},正在处理第${k + 1}条`)
+                    // 第三层循环 => 根据模板文本框数量批量生成
+                    for (var c = 0; c < newText.length; c++) {
+                        let text = newText.clone()
+                        if (status >= cv) {
+                            status = 0
+                            spaceing++
+                        }
+                        // top
+                        text[c].style.top =
+                            Number(text[c].style.top.slice(0, text[c].style.top.length - 2)) +
+                            Number(boxheight * spaceing) + 'px'
+                        // left
+                        text[c].style.left =
+                            Number(text[c].style.left.slice(0, text[c].style.left.length - 2)) +
+                            Number(boxwidth * status) + 'px'
+                        // text
+                        text[c].firstChild.innerHTML = `${textDataVal[j][text[c].dataset.text]}`;
+                        $("#printmain").append(text[c])
+                        console.log(`正在处理第${c}个文本,${textDataVal[num][newText[c].dataset.text]}`)
+                        console.log(`间距倍数:${spaceing} 文本框高度:${text[c].style.top}`)
+                        console.log(`列数：${status} 文本框宽度:${text[c].style.left}`)
+                    }
+                    status++
+                }
+            }
             console.timeEnd('creat-text🛴')
+            $("#tableview").modal('hide')
         }
 
         // 线条批量生成
@@ -1233,7 +1279,7 @@ const allTmpl = (function () {
             if (data.Table[0].result == 'success') {
                 result = data.Table
             } else {
-                console.log(`模板接口错误:${data.Table[0].result}`)
+                console.error(`模板接口故障:${data.Table[0].result}`)
             }
         }
     })
@@ -1242,7 +1288,7 @@ const allTmpl = (function () {
 
 // 模板模态框
 templateBtn.onclick = function () {
-    if (!allTmpl) return (console.log('Error: 接口故障,请联系管理人员'))
+    if (!allTmpl) return (console.error('Error: 接口故障,请联系管理人员'))
     // 初始化
     $(".modalrow").html('')
     // 生成模板预览
@@ -1282,7 +1328,7 @@ templateBtn.onclick = function () {
                     if (data.Table[0].result == 'success') {
                         location.reload();
                     } else {
-                        console.log(`模板删除错误:${data.Table[0].result}`)
+                        console.log(`模板删除接口故障:${data.Table[0].result}`)
                     }
                 }
             })
@@ -1393,7 +1439,7 @@ saveTemplate.onclick = function () {
                     if (data.Table[0].result == 'success') {
                         location.reload();
                     } else {
-                        console.log(`模板保存错误:${data.Table[0].result}`)
+                        console.log(`模板保存接口故障:${data.Table[0].result}`)
                     }
                 }
             })

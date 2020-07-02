@@ -401,21 +401,19 @@ $(function () {
     $multPrint.click(function () {
         // 获取列值
         const cValue = $("#dataColumn").val()
-
         // 获取已选项
         const chooseData = $table.bootstrapTable("getSelections")
-
+        // 获取模板
         const pageText = $("#printmain").children("div .editable");
         const pageBarCode = $("#printmain").children("div .BarCodedbclick");
         const pageQarCode = $("#printmain").children("div .QarCodedbclick");
         const pageLine = $("#printmain").children("div .Line");
         const pageBox = $("#printmain").children("div .Box");
-
+        // 数据
         const textData = chooseData.map(x => Object.keys(x)
             .filter(y => y !== 'id' && y !== 'barcode' && y !== 'qarcode' && y !== 'state' && y !== 'count'))
 
         const textDataVal = Object.values(chooseData)
-
         // 获取模板框及宽度
         const firstBox = document.getElementById("demo");
         let height = firstBox.style.height;
@@ -423,9 +421,13 @@ $(function () {
         let boxheight = height.slice(0, height.length - 2);
         let boxwidth = width.slice(0, width.length - 2)
 
+        // 组件生成
         creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
         creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
         creatTmplText(cValue, chooseData, boxheight, boxwidth, textData, textDataVal)
+        creatTmplLine(cValue, chooseData, boxheight, boxwidth)
+        creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth)
+
         // 一维码批量生成
         function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
             console.info('一维码打印✈')
@@ -505,7 +507,6 @@ $(function () {
             }
             console.timeEnd('creat-barcode🛴')
         }
-
         // 二维码批量生成
         function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
             console.info('二维码打印🛬')
@@ -583,7 +584,6 @@ $(function () {
             }
             console.timeEnd('creat-qarcode🛴')
         }
-
         // 文本批量生成
         function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
             console.log('文本打印🛸')
@@ -635,13 +635,87 @@ $(function () {
             console.timeEnd('creat-text🛴')
             $("#tableview").modal('hide')
         }
-
         // 线条批量生成
-
+        function creatTmplLine (columnVal, data, boxheight, boxwidth) {
+            console.log('线条批量生成🧭')
+            // 计时器
+            console.time('creat-line🛴')
+            let newLine = pageLine.clone()
+            let spaceing = 0
+            let status = 1
+            let cv = columnVal
+            if (newLine.length <= 0) return (console.warn('线条模板不存在'))
+            console.log(`选择了${data.length}条数据`)
+            // 第一层循环 => 处理所选数据
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据`)
+                // 第二层循环 => 根据数据 count值进行复制
+                for (var j = 0; j < data[i].count; j++) {
+                    console.log(`该数据count为${data[i].count},正在生成第${j}个`)
+                    // 第三层 => 根据模板数据进行生成
+                    for (var c = 0; c < newLine.length; c++) {
+                        let line = newLine.clone()
+                        if (status >= cv) {
+                            status = 0
+                            spaceing++
+                        }
+                        // top
+                        line[c].style.top =
+                            Number(line[c].style.top.slice(0, line[c].style.top.length - 2)) +
+                            Number(boxheight * spaceing) + 'px'
+                        // left
+                        line[c].style.left =
+                            Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
+                            Number(boxwidth * status) + 'px'
+                        $("#printmain").append(line[c])
+                    }
+                    status++
+                }
+            }
+            console.timeEnd('creat-line🛴')
+        }
         // 边框批量生成
+        function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth) {
+            console.log('边框批量生成🧭')
+            // 计时器
+            console.time('creat-box🛴')
+            let newBox = pageBox.clone()
+            let spaceing = 0
+            let status = 1
+            let cv = columnVal
+            if (newBox.length <= 0) return (console.warn('边框模板不存在'))
+            console.log(`选择了${data.length}条数据`)
+            // 第一层循环 => 处理所选数据
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据`)
+                // 第二层循环 => 根据数据 count值进行复制
+                for (var j = 0; j < data[i].count; j++) {
+                    console.log(`该数据count为${data[i].count},正在生成第${j}个`)
+                    // 第三层 => 根据模板数据进行生成
+                    for (var c = 0; c < newBox.length; c++) {
+                        let line = newBox.clone()
+                        if (status >= cv) {
+                            status = 0
+                            spaceing++
+                        }
+                        // top
+                        line[0].style.top =
+                            Number(line[0].style.top.slice(0, line[0].style.top.length - 2)) +
+                            Number(boxheight * spaceing) + 'px'
+                        // left
+                        line[0].style.left =
+                            Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
+                            Number(boxwidth * status) + 'px'
+
+                        $("#printmain").append(line[0])
+                    }
+                    status++
+                }
+            }
+            console.timeEnd('creat-box🛴')
+        }
         $("#tableview").modal('hide')
     })
-
 })
 
 /**
@@ -920,338 +994,6 @@ addBox.onclick = function () {
 
     h++;
     allNum++;
-};
-
-/**
- * setting设置事件
- * @param {number}
- */
-
-const pageSet = document.getElementById("setting");
-const updateSet = document.getElementById("settingok");
-const labelRow = document.getElementById("labelRow");
-const labelColumn = document.getElementById("labelColumn");
-const firstBox = document.getElementById("demo");
-const childs = document.getElementById("printmain").children;
-const Row = $("#row").find("canvas")[0];
-const Column = $("#column").find("canvas")[0];
-pageSet.onclick = function () {
-    $("#codeSetting").modal({
-        backdrop: 'static'
-    });
-    let width = firstBox.style.width;
-    let height = firstBox.style.height;
-    let boxwidth = width.slice(0, width.length - 2);
-    let boxheight = height.slice(0, height.length - 2);
-
-    updateSet.onclick = function () {
-        // 行列设置
-        let labelrow = labelRow.value;
-        let labelcolumn = labelColumn.value;
-        let rowok = boxwidth * labelrow > Number(Row.width / 2) - 20 ? true : false;
-        let columnok =
-            boxheight * labelcolumn > Number(Column.height / 2) - 20 ? true : false;
-
-        if (!rowok && !columnok) {
-            // 获取模板框内各项元素
-            const prototypeBox = $("#printmain").children("div .Box");
-            const prototypeText = $("#printmain").children("div .editable");
-            const prototypeBarCode = $("#printmain").children("div .BarCodedbclick");
-            const prototypeQarCode = $("#printmain").children("div .QarCodedbclick");
-            const prototypeLine = $("#printmain").children("div .Line");
-            let randomNum = 100;
-            let columnRandomNum = 50;
-            let columnRun = true;
-
-            // 开始行 计数 行结束后触发列
-            for (var addnum = 1; addnum < labelRow.value; addnum++) {
-                addRow();
-                randomNum--;
-                if (addnum == labelRow.value - 1) {
-                    columnRun = true;
-                }
-            }
-
-            // 开始列
-            if (columnRun) {
-                for (var columnaddnum = 1; columnaddnum < labelColumn.value; columnaddnum++) {
-                    for (var columnnum = 0; columnnum < labelRow.value; columnnum++) {
-                        addColumn();
-                        columnRandomNum--;
-                    }
-                }
-            }
-
-            // 新增行
-            function addRow () {
-                // box框
-                let newBox = prototypeBox.clone();
-                for (var i = 0; i < newBox.length; i++) {
-                    newBox[i].id = newBox[i].id + randomNum
-                    newBox[i].style.left =
-                        Number(newBox[i].style.left.slice(0, newBox[i].style.left.length - 2)) + Number(boxwidth * addnum) + "px"
-
-                    $("#printmain").append(newBox[i])
-                    randomNum--
-                }
-
-                // 文本框
-                let newText = prototypeText.clone();
-                if (prototypeText.length !== 0) {
-                    for (var i = 0; i < newText.length; i++) {
-                        newText[i].id = newText[i].id.slice(0, newText[i].id.length - 1) + randomNum
-                        newText[i].style.left =
-                            Number(newText[i].style.left.slice(0, newText[i].style.left.length - 2)) +
-                            Number(boxwidth * addnum) + "px"
-
-                        $("#printmain").append(newText[i])
-                        drag(document.getElementById("text" + randomNum), { minSize: 35 });
-                        randomNum--
-                    }
-                }
-
-                // 线条
-                let newLine = prototypeLine.clone();
-                if (prototypeLine.length !== 0) {
-                    for (var i = 0; i < newLine.length; i++) {
-                        newLine[i].id = newLine[i].id.slice(0, newLine[i].id.length - 1) + randomNum
-                        newLine[i].style.left =
-                            Number(newLine[i].style.left.slice(0, newLine[i].style.left.length - 2)) +
-                            Number(boxwidth * addnum) + "px"
-
-                        $("#printmain").append(newLine[i])
-                        drag(document.getElementById("lineDiv" + randomNum), { minSize: 3 });
-                        randomNum--
-                    }
-                }
-
-                // 一维码
-                let newBarCode = prototypeBarCode.clone();
-                if (prototypeBarCode.length !== 0) {
-                    for (var i = 0; i < newBarCode.length; i++) {
-                        newBarCode[i].id = newBarCode[i].id.slice(0, newBarCode[i].id.length - 1) + randomNum
-
-                        newBarCode[i].style.left =
-                            Number(newBarCode[i].style.left.slice(0, newBarCode[i].style.left.length - 2)) +
-                            Number(boxwidth * addnum) + "px"
-
-                        newBarCode[i].firstElementChild.id =
-                            newBarCode[i].firstElementChild.id.slice(0, newBarCode[i].firstElementChild.id.length - 1) + randomNum
-
-                        $("#printmain").append(newBarCode[i]);
-                        // 优先级 修改值 > 原始值 > 默认值
-                        let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
-                        if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'dafult';
-                            barcodeformat = $("#BarCodeType").val();
-                            barcodeheight = $("#BarCodeHeight").val();
-                            barcodewidth = $("#BarCodeWidth").val();
-                        } else {
-                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'dafult';
-                            barcodeformat = $("#EditBarCodeType").val();
-                            barcodeheight = $("#EditBarCodeHeight").val();
-                            barcodewidth = $("#EditBarCodeWidth").val();
-                        }
-                        JsBarcode("#BarCode" + randomNum, barcodevalue, {
-                            format: barcodeformat,
-                            height: 25 || barcodeheight,
-                            width: 2 || barcodewidth,
-                            font: 'Sans-serif',
-                        });
-                        drag(document.getElementById("Code" + randomNum), { minSize: 52 });
-                        randomNum--
-                    }
-                }
-
-                // 二维码
-                let newQarCode = prototypeQarCode.clone();
-                if (prototypeQarCode.length !== 0) {
-                    for (let i = 0; i < newQarCode.length; i++) {
-                        newQarCode[i].id = newQarCode[i].id.slice(0, newQarCode[i].id.length - 1) + randomNum
-
-                        newQarCode[i].style.left =
-                            Number(newQarCode[i].style.left.slice(0, newQarCode[i].style.left.length - 2)) +
-                            Number(boxwidth * addnum) + "px"
-
-                        newQarCode[i].firstElementChild.id =
-                            newQarCode[i].firstElementChild.id.slice(0, newQarCode[i].firstElementChild.id.length - 1) + randomNum
-
-                        $("#printmain").append(newQarCode[i]);
-                        // 优先级 修改值 > 原始值 > 默认值
-                        let qarcodevalue, qarcodewidth;
-                        if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'dafult';
-                            qarcodewidth = $("#QarCodeWidth").val();
-                        } else {
-                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'dafult';
-                            qarcodewidth = $("#EditQarCodeWidth").val();
-                        }
-                        QRCode.toCanvas(document.getElementById("QarCode" + randomNum), qarcodevalue, {
-                            margin: 1,
-                            width: 64 || qarcodewidth
-                        });
-
-                        drag(document.getElementById("QrCode" + randomNum), { minSize: 30 });
-                        randomNum--
-                    }
-                }
-            }
-
-            // 新增列
-            function addColumn () {
-                // box框
-                let newcolumnBox = prototypeBox.clone();
-                for (var i = 0; i < newcolumnBox.length; i++) {
-                    newcolumnBox[i].id = newcolumnBox[i].id.slice(0, newcolumnBox[i].id.length - 1) + columnRandomNum
-
-                    newcolumnBox[i].style.left =
-                        Number(newcolumnBox[i].style.left.slice(0, newcolumnBox[i].style.left.length - 2)) +
-                        Number(boxwidth * columnnum) + "px"
-
-                    newcolumnBox[i].style.top =
-                        Number(newcolumnBox[i].style.top.slice(0, newcolumnBox[i].style.top.length - 2)) +
-                        Number(boxheight * columnaddnum) + "px"
-
-                    $("#printmain").append(newcolumnBox[i]);
-                    columnRandomNum--
-                }
-
-                // 文本框
-                let newcolumnText = prototypeText.clone();
-                if (prototypeText.length !== 0) {
-                    for (var i = 0; i < newcolumnText.length; i++) {
-                        newcolumnText[i].id = newcolumnText[i].id.slice(0, newcolumnText[i].id.length - 1) + columnRandomNum
-
-                        newcolumnText[i].style.left =
-                            Number(newcolumnText[i].style.left.slice(0, newcolumnText[i].style.left.length - 2)) +
-                            Number(boxwidth * columnnum) + "px"
-
-                        newcolumnText[i].style.top =
-                            Number(newcolumnText[i].style.top.slice(0, newcolumnText[i].style.top.length - 2)) +
-                            Number(boxheight * columnaddnum) + "px"
-
-                        $("#printmain").append(newcolumnText[i]);
-                        drag(document.getElementById("text" + columnRandomNum), { minSize: 35 });
-                        columnRandomNum--
-                    }
-                }
-
-                // 线条
-                let newcolumnLine = prototypeLine.clone();
-                if (prototypeLine.length !== 0) {
-                    for (var i = 0; i < newcolumnLine.length; i++) {
-                        newcolumnLine[i].id = newcolumnLine[i].id.slice(0, newcolumnLine[i].id.length - 1) + columnRandomNum
-
-                        newcolumnLine[i].style.left =
-                            Number(newcolumnLine[i].style.left.slice(0, newcolumnLine[i].style.left.length - 2)) +
-                            Number(boxwidth * columnnum) + "px"
-
-                        newcolumnLine[i].style.top =
-                            Number(newcolumnLine[i].style.top.slice(0, newcolumnLine[i].style.top.length - 2)) +
-                            Number(boxheight * columnaddnum) + "px"
-
-                        $("#printmain").append(newcolumnLine[i]);
-                        drag(document.getElementById("lineDiv" + columnRandomNum), { minSize: 3 });
-                        columnRandomNum--
-                    }
-                }
-
-                // 一维码
-                let newcolumnBarCode = prototypeBarCode.clone();
-                if (prototypeBarCode.length !== 0) {
-                    for (var i = 0; i < newcolumnBarCode.length; i++) {
-                        newcolumnBarCode[i].id =
-                            newcolumnBarCode[i].id.slice(0, newcolumnBarCode[i].id.length - 1) + columnRandomNum
-
-                        newcolumnBarCode[i].style.left =
-                            Number(newcolumnBarCode[i].style.left.slice(0, newcolumnBarCode[i].style.left.length - 2)) +
-                            Number(boxwidth * columnnum) + "px"
-
-                        newcolumnBarCode[i].style.top =
-                            Number(newcolumnBarCode[i].style.top.slice(0, newcolumnBarCode[i].style.top.length - 2)) +
-                            Number(boxheight * columnaddnum) + "px"
-
-                        newcolumnBarCode[i].firstElementChild.id =
-                            newcolumnBarCode[i].firstElementChild.id.slice(0, newcolumnBarCode[i].firstElementChild.id.length - 1) + columnRandomNum
-
-                        $("#printmain").append(newcolumnBarCode[i]);
-                        let barcodevalue, barcodeformat, barcodeheight, barcodewidth;
-                        // 优先级 修改值 > 原始值 > 默认值
-                        if ($("#EditBarCodeID").val() == "") {
-                            barcodevalue = chooseBdata || $("#BarCodeID").val() || 'dafult';
-                            barcodeformat = $("#BarCodeType").val();
-                            barcodeheight = $("#BarCodeHeight").val();
-                            barcodewidth = $("#BarCodeWidth").val();
-                        } else {
-                            barcodevalue = chooseBdata || $("#EditBarCodeID").val() || 'dafult';
-                            barcodeformat = $("#EditBarCodeType").val();
-                            barcodeheight = $("#EditBarCodeHeight").val();
-                            barcodewidth = $("#EditBarCodeWidth").val();
-                        }
-                        JsBarcode("#BarCode" + columnRandomNum, barcodevalue, {
-                            format: barcodeformat,
-                            height: 25 || barcodeheight,
-                            width: 2 || barcodewidth,
-                            font: 'Sans-serif',
-                        });
-
-                        drag(document.getElementById("Code" + columnRandomNum), { minSize: 52 });
-                        columnRandomNum--
-                    }
-                }
-
-                // 二维码
-                let newcolumnQarCode = prototypeQarCode.clone();
-                if (prototypeQarCode.length !== 0) {
-                    for (var i = 0; i < newcolumnQarCode.length; i++) {
-                        newcolumnQarCode[i].id =
-                            newcolumnQarCode[i].id.slice(0, newcolumnQarCode[i].id.length - 1) + columnRandomNum
-
-                        newcolumnQarCode[i].style.left =
-                            Number(newcolumnQarCode[i].style.left.slice(0, newcolumnQarCode[i].style.left.length - 2)) +
-                            Number(boxwidth * columnnum) + "px"
-
-                        newcolumnQarCode[i].style.top =
-                            Number(newcolumnQarCode[i].style.top.slice(0, newcolumnQarCode[i].style.top.length - 2)) +
-                            Number(boxheight * columnaddnum) + "px"
-
-                        newcolumnQarCode[i].firstElementChild.id =
-                            newcolumnQarCode[i].firstElementChild.id.slice(0, newcolumnQarCode[i].firstElementChild.id.length - 1) + columnRandomNum
-
-                        $("#printmain").append(newcolumnQarCode[i]);
-                        // 优先级 修改值 > 原始值 > 默认值
-                        let qarcodevalue, qarcodewidth;
-                        if ($("#EditQarCodeID").val() == "") {
-                            qarcodevalue = chooseQdata || $("#QarCodeID").val() || 'dafult';
-                            qarcodewidth = $("#QarCodeWidth").val();
-                        } else {
-                            qarcodevalue = chooseQdata || $("#EditQarCodeID").val() || 'dafult';
-                            qarcodewidth = $("#EditQarCodeWidth").val();
-                        }
-                        QRCode.toCanvas(
-                            document.getElementById("QarCode" + columnRandomNum), qarcodevalue, {
-                            margin: 1,
-                            width: 64 || qarcodewidth
-                        });
-
-                        drag(document.getElementById("QrCode" + columnRandomNum), { minSize: 30 });
-                        columnRandomNum--
-                    }
-                }
-            }
-            $("#codeSetting").modal("hide");
-        } else if (rowok) {
-            $("#labelRowError").html("标签宽度超出，请调整");
-            setTimeout(function () {
-                $("#labelRowError").html("");
-            }, 1500);
-        } else {
-            $("#labelColumnError").html("标签高度超出，请调整");
-            setTimeout(function () {
-                $("#labelColumnError").html("");
-            }, 1500);
-        }
-    };
 };
 
 /**

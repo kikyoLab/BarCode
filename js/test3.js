@@ -368,7 +368,6 @@ let chooseBdata
 let chooseQdata
 $(function () {
     $multPrint.click(function () {
-
         // 获取列值
         const cValue = $("#dataColumn").val()
 
@@ -396,10 +395,12 @@ $(function () {
         creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
         creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
         creatTmplText(cValue, chooseData, boxheight, boxwidth, textData, textDataVal)
+        creatTmplLine(cValue, chooseData, boxheight, boxwidth)
+        creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth)
 
         // 一维码批量生成
         function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
-            console.info('一维码打印✈')
+            console.info('一维码批量生成🧭')
             // 计时器
             console.time('creat-barcode🛴')
             let nums = 200
@@ -410,7 +411,7 @@ $(function () {
             for (var i = 0; i < 1; i++) {
                 console.log(`处理模板数据`)
                 let newBarCode = pageBarCode.clone()
-                if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
+                if (newBarCode.length <= 0) return (console.warn(`Error: 一维码模板不存在`))
                 for (var name in data[0]) {
                     if (name == 'barcode') {
                         let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
@@ -428,7 +429,7 @@ $(function () {
                 console.log(`处理第${i + 1}条数据中~`)
                 // 拷贝模板元素 如果不存在 返回
                 let newBarCode = pageBarCode.clone()
-                if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
+                if (newBarCode.length <= 0) return (console.warn(`Error: 一维码模板不存在`))
                 // 第二层循环 => 找到每条数据中的条码值
                 for (var name in data[i]) {
                     if (name == 'barcode') {
@@ -478,7 +479,7 @@ $(function () {
         }
         // 二维码批量生成
         function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
-            console.info('二维码打印🛬')
+            console.info('二维码批量生成🧭')
             // 计时器
             console.time('creat-qarcode🛴')
             let nums = 200
@@ -489,7 +490,7 @@ $(function () {
             for (var i = 0; i < 1; i++) {
                 console.log(`处理模板数据`)
                 let newQarCode = pageQarCode.clone()
-                if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
+                if (newQarCode.length <= 0) return (console.warn(`Error: 二维码模板不存在`))
                 for (var name in data[0]) {
                     if (name == 'qarcode') {
                         let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
@@ -505,7 +506,7 @@ $(function () {
                 console.log(`处理第${i + 1}条数据中~`)
                 // 拷贝模板元素 如果不存在 返回
                 let newQarCode = pageQarCode.clone()
-                if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
+                if (newQarCode.length <= 0) return (console.warn(`Error: 二维码模板不存在`))
                 // 第二层循环 => 找到每条数据中的条码值
                 for (var name in data[i]) {
                     if (name == 'barcode') {
@@ -555,18 +556,19 @@ $(function () {
         }
         // 文本批量生成
         function creatTmplText (columnVal, data, boxheight, boxwidth, textData, textDataVal) {
-            console.log('文本打印🛸')
+            console.log('文本批量生成🧭')
             // 计时器
             console.time('creat-text🛴')
-
             // 处理模板数据
             let newText = pageText.clone()
             let spaceing = 0
             let status = 1
             let cv = columnVal
+
+            if (newText.length <= 0) return (console.warn('文本模板不存在'))
             console.log(`选择了${data.length}条数据`)
             for (let i = 0; i < pageText.length; i++) {
-                console.log(`处理模板数据中~`)
+                console.log(`处理模板数据`)
                 pageText[i].firstChild.innerHTML = `${textDataVal[0][pageText[i].dataset.text]}`
             }
             // 第一层循环 => 处理所选数据
@@ -604,10 +606,86 @@ $(function () {
             console.timeEnd('creat-text🛴')
             $("#tableview").modal('hide')
         }
-
         // 线条批量生成
-
+        function creatTmplLine (columnVal, data, boxheight, boxwidth) {
+            console.log('线条批量生成🧭')
+            // 计时器
+            console.time('creat-line🛴')
+            let newLine = pageLine.clone()
+            let spaceing = 0
+            let status = 1
+            let cv = columnVal
+            if (newLine.length <= 0) return (console.warn('线条模板不存在'))
+            console.log(`选择了${data.length}条数据`)
+            // 第一层循环 => 处理所选数据
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据`)
+                // 第二层循环 => 根据数据 count值进行复制
+                for (var j = 0; j < data[i].count; j++) {
+                    console.log(`该数据count为${data[i].count},正在生成第${j}个`)
+                    // 第三层 => 根据模板数据进行生成
+                    for (var c = 0; c < newLine.length; c++) {
+                        let line = newLine.clone()
+                        if (status >= cv) {
+                            status = 0
+                            spaceing++
+                        }
+                        // top
+                        line[c].style.top =
+                            Number(line[c].style.top.slice(0, line[c].style.top.length - 2)) +
+                            Number(boxheight * spaceing) + 'px'
+                        // left
+                        line[c].style.left =
+                            Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
+                            Number(boxwidth * status) + 'px'
+                        $("#printmain").append(line[c])
+                    }
+                    status++
+                }
+            }
+            console.timeEnd('creat-line🛴')
+        }
         // 边框批量生成
+        function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth) {
+            console.log('边框批量生成🧭')
+            // 计时器
+            console.time('creat-box🛴')
+            let newBox = pageBox.clone()
+            let spaceing = 0
+            let status = 1
+            let cv = columnVal
+            if (newBox.length <= 0) return (console.warn('边框模板不存在'))
+            console.log(`选择了${data.length}条数据`)
+            // 第一层循环 => 处理所选数据
+            for (var i = 0; i < data.length; i++) {
+                console.log(`处理第${i + 1}条数据`)
+                // 第二层循环 => 根据数据 count值进行复制
+                for (var j = 0; j < data[i].count; j++) {
+                    console.log(`该数据count为${data[i].count},正在生成第${j}个`)
+                    // 第三层 => 根据模板数据进行生成
+                    for (var c = 0; c < newBox.length; c++) {
+                        let line = newBox.clone()
+                        if (status >= cv) {
+                            status = 0
+                            spaceing++
+                        }
+                        // top
+                        line[0].style.top =
+                            Number(line[0].style.top.slice(0, line[0].style.top.length - 2)) +
+                            Number(boxheight * spaceing) + 'px'
+                        // left
+                        line[0].style.left =
+                            Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
+                            Number(boxwidth * status) + 'px'
+
+                        $("#printmain").append(line[0])
+                    }
+                    status++
+                }
+            }
+            console.timeEnd('creat-box🛴')
+        }
+        $("#tableview").modal('hide')
     })
 })
 

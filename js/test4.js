@@ -20,7 +20,6 @@ const allData = (function () {
     return result;
 })();
 
-if (!allData) return (console.error('数据接口故障,请联系管理人员'))
 
 // 标签绑定字段数据
 const dataFiled = (function () {
@@ -36,7 +35,7 @@ const dataFiled = (function () {
             if (data.Table[0].result == 'success') {
                 result = data.Table
             } else {
-                console.error(`绑定数据接口故障:${data.Table[0].result}`)
+                return (console.error(`绑定数据接口故障:${data.Table[0].result}`))
             }
         }
     })
@@ -45,6 +44,7 @@ const dataFiled = (function () {
 
 // bootstrap-table设置
 (function () {
+    if (!dataFiled) return (console.error(`绑定数据接口故障,请联系管理人员`))
     // 富文本数据绑定下拉栏
     for (var i = 0; i < dataFiled.length; i++) {
         $("#databind").append(`<option>${dataFiled[i].datafieldname}</option>`)
@@ -991,7 +991,6 @@ addBox.onclick = function () {
     $("#printmain").append(`<div id="${
         "boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
     drag(document.getElementById("boxDiv" + h), { minSize: 30 });
-
     h++;
     allNum++;
 };
@@ -1018,11 +1017,7 @@ const allTmpl = (function () {
         data: JSON.stringify({ "vtype": "showtemplates" }),
         async: false,
         success: function (data) {
-            if (data.Table[0].result == 'success') {
-                result = data.Table
-            } else {
-                console.error(`模板接口故障:${data.Table[0].result}`)
-            }
+            if (data.Table[0].result == 'success') result = data.Table
         }
     })
     return result;
@@ -1046,6 +1041,7 @@ templateBtn.onclick = function () {
                 src=${data.img}
                 data-holder-rendered=" true">
             <div class="card-body" style="border-top: 1px solid #6c757d;">
+            <div style="margin-left: -10px;;font-size:14px;">模板ID:${allTmpl[i].labelid}</div>
                 <span style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templatename}</span>
                 <div class="buttonGroup" style="text-align: right;margin-top: -25px;">
                     <button type="button" class="btn btn-sm btn-primary" id="${i}">选择</button>
@@ -1070,7 +1066,7 @@ templateBtn.onclick = function () {
                     if (data.Table[0].result == 'success') {
                         location.reload();
                     } else {
-                        console.log(`模板删除接口故障:${data.Table[0].result}`)
+                        return (console.error(`模板删除接口故障:${data.Table[0].result}`))
                     }
                 }
             })
@@ -1181,7 +1177,7 @@ saveTemplate.onclick = function () {
                     if (data.Table[0].result == 'success') {
                         location.reload();
                     } else {
-                        console.log(`模板保存接口故障:${data.Table[0].result}`)
+                        return (console.error(`模板保存接口故障:${data.Table[0].result}`))
                     }
                 }
             })

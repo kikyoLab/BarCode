@@ -76,11 +76,6 @@
                 </a>
             </div>
             <div class="control">
-                <a class="nav-link" href="#" id="pull"><img src="icon/pull3.png" width="30" title="数据拉取" />
-                    <li>数据</li>
-                </a>
-            </div>
-            <div class="control">
                 <a class="nav-link" href="#" id="remove"><img src="icon/remove.png" width="30" title="删除" />
                     <li>删除</li>
                 </a>
@@ -471,47 +466,38 @@
         </div>
     </div>
 
-    <!-- 表格模态框 -->
-    <div class="modal fade bd-example-modal-xl" id="tableview" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
+    <!-- 打印模态框 -->
+    <div class="modal" tabindex="-1" role="dialog" id="printmodal">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tableviewTitle">商品数据</h5>
+                    <h5 class="modal-title">print</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table id="table" data-search="true" data-toggle="table" data-height="460" data-pagination="true"
-                        data-page-list="[10, 25, 50, 100, 200,500,1000]" data-strict-search="true"
-                        data-click-to-select="true" data-show-columns="true" data-buttons-class="primary">
-                        <thead>
-                            <tr>
-                                <th data-field="state" data-checkbox="true"></th>
-                                <th data-field="id">id</th>
-                                <th data-field="barcode">barcode</th>
-                                <th data-field="qarcode">qarcode</th>
-                                <th data-field="名称">名称</th>
-                                <th data-field="重量">重量</th>
-                                <th data-field="规格">规格</th>
-                                <th data-field="质量">质量</th>
-                                <th data-field="数量">数量</th>
-                                <th data-field="会员价格">会员价格</th>
-                                <th data-field="活动价格">活动价格</th>
-                                <th data-field="促销价格">促销价格</th>
-                                <th data-field="产地">产地</th>
-                                <th data-field="日期">日期</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <button id="multPrint" class="btn btn-primary" style="margin: 20px; float: right;">
-                        数据生成
-                    </button>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="chooseFileId">模板ID</label>
+                                <input type="text" class="form-control" id="tmplId">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="roomName">门店编号</label>
+                                <input type="text" class="form-control" id="Name">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="printOk">确定</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="printNo">取消</button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="umeditor/third-party/jquery.min.js"></script>
@@ -528,7 +514,7 @@
     <script src="js/moveable.js"></script>
     <script src="js/htmlencode.js"></script>
     <script src="js/select.js"></script>
-    <script src="js/test4.js"></script>
+    <script src="js/test5.js"></script>
 </body>
 
 </html>

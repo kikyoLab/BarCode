@@ -8219,8 +8219,8 @@
         , S = new pg({
             left: "0px",
             top: "0px",
-            width: "250px",
-            height: "200px",
+            width: "280px",
+            height: "250px",
             transform: {
                 translateX: "0px",
                 translateY: "0px",

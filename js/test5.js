@@ -584,13 +584,42 @@ addText.onclick = function () {
     allNum++;
 };
 
-// 打印
+/**
+ * line线条事件
+ * @param {number} d 线条ID
+ */
+const addLine = document.getElementById("line");
+let d = 0;
+addLine.onclick = function () {
+    $("#printmain").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;
+	width:200px;height:3px;max-height:4px;min-height:3px;background-color:black;z-index:2"></div>`);
+
+    drag(document.getElementById("lineDiv" + d), { minSize: 3 });
+    d++;
+    allNum++;
+};
+
+/**
+ * box方框事件
+ * @param {number} h boxID
+ */
+const addBox = document.getElementById("box");
+let h = 0;
+addBox.onclick = function () {
+    $("#printmain").append(`<div id="${
+        "boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
+    drag(document.getElementById("boxDiv" + h), { minSize: 30 });
+    h++;
+    allNum++;
+};
+
+// 模板打印
 Print.onclick = function () {
     $("#printmodal").modal()
     printOk.onclick = function () {
+        console.time('print🚑')
         const tmplId = $("#tmplId").val()
         const roomName = $("#Name").val()
-        console.log(tmplId, roomName)
         let result
         $.ajax({
             type: 'POST',
@@ -612,6 +641,8 @@ Print.onclick = function () {
             const chooseData = result.Table
             const tmpl = result.Table1
             const textDataVal = Object.values(chooseData)
+            // 创建模板数据
+            creatTmpl(tmpl)
             // 获取列值
             const cValue = $("#dataColumn").val()
             // 获取模板
@@ -632,6 +663,55 @@ Print.onclick = function () {
             creatTmplText(cValue, chooseData, boxheight, boxwidth, textDataVal)
             creatTmplLine(cValue, chooseData, boxheight, boxwidth)
             creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth)
+            Print()
+            // 模板内容生成
+            function creatTmpl (tmpl) {
+                let data = JSON.parse(htmlDecode(tmpl[0].templatecontent))
+                let a = data.code.split('</div>')
+                let b = a.slice(0, a.length - 1).join('</div>')
+                $("#printmain").append(b)
+                for (let l = 0; l < data.allNum; l++) {
+                    if (document.getElementById('text' + l)) {
+                        console.log('text++')
+                        drag(document.getElementById('text' + l), { minSize: 30 })
+                    }
+
+                    if (document.getElementById('BarCode' + l)) {
+                        console.log('barcode++')
+                        JsBarcode("#BarCode" + l, 'default', {
+                            width: 1,
+                            height: 10,
+                            font: 'Sans-serif'
+                        })
+                        drag(document.getElementById('Code' + l), { minSize: 30 })
+                    }
+
+                    if (document.getElementById('QrCode' + l)) {
+                        console.log('qarcode++')
+                        QRCode.toCanvas(document.getElementById('QarCode' + l), 'default', {
+                            margin: 1,
+                            width: 64
+                        })
+                        drag(document.getElementById('QrCode' + l), { minSize: 30 })
+                    }
+
+                    if (document.getElementById('lineDiv' + l)) {
+                        console.log('line++')
+                        drag(document.getElementById('lineDiv' + l), { minSize: 30 })
+                    }
+
+                    if (document.getElementById('boxDiv' + l)) {
+                        console.log('box++')
+                        drag(document.getElementById('boxDiv' + l), { minSize: 30 })
+                    }
+                }
+                // 初始化 ID 避免重复
+                n = data.textlength
+                j = data.barcode
+                k = data.qarcode
+                d = data.lineDiv
+                h = data.boxDiv
+            }
             // 一维码批量生成
             function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
                 console.info('一维码打印✈')
@@ -666,12 +746,13 @@ Print.onclick = function () {
                     if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
                     // 第二层循环 => 找到每条数据中的条码值
                     for (var name in data[i]) {
-                        if (name == 'barcode') {
+                        if (name == 'smm') {
                             console.log(`第${i + 1}个一维码: ${data[i][name]}`)
                             // 第三层循环 => 检测每条数据中的 count值并批量复制
                             for (var j = 0; j < data[i].count; j++) {
                                 // 列数判断
                                 if (status >= cv) {
+                                    console.log('换行')
                                     status = 0
                                     spacing++
                                 }
@@ -693,11 +774,12 @@ Print.onclick = function () {
                                     BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
 
                                 $("#printmain").append(BarCode[0])
-                                JsBarcode("#BarCode" + nums, data[i].barcode, {
+                                JsBarcode("#BarCode" + nums, data[i].smm, {
                                     format: 'CODE128',
-                                    height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
-                                    width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
-                                    font: 'Sans-serif'
+                                    height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 30,
+                                    width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
+                                    font: 'Sans-serif',
+                                    fontSize: 14
                                 })
                                 console.log(`条码ID:${BarCode[0].id} 条码高度:${BarCode[0].style.top}`)
                                 console.log(`间距倍数:${spacing}`)
@@ -743,13 +825,13 @@ Print.onclick = function () {
                     if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
                     // 第二层循环 => 找到每条数据中的条码值
                     for (var name in data[i]) {
-                        if (name == 'barcode') {
+                        if (name == 'smm') {
                             console.log(`第${i + 1}个二维码: ${data[i][name]}`)
                             // 第三层循环 => 检测每条数据中的 count值并批量复制
                             for (var j = 0; j < data[i].count; j++) {
                                 // 列数判断
                                 if (status >= cv) {
-                                    console.log('重置')
+                                    console.log('换行')
                                     status = 0
                                     spacing++
                                 }
@@ -772,7 +854,7 @@ Print.onclick = function () {
 
 
                                 $("#printmain").append(QarCode[0])
-                                QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].qarcode, {
+                                QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].smm, {
                                     margin: 1,
                                     width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
                                 })
@@ -815,6 +897,7 @@ Print.onclick = function () {
                         for (var c = 0; c < newText.length; c++) {
                             let text = newText.clone()
                             if (status >= cv) {
+                                console.log('换行')
                                 status = 0
                                 spaceing++
                             }
@@ -860,6 +943,7 @@ Print.onclick = function () {
                         for (var c = 0; c < newLine.length; c++) {
                             let line = newLine.clone()
                             if (status >= cv) {
+                                console.log('换行')
                                 status = 0
                                 spaceing++
                             }
@@ -899,6 +983,7 @@ Print.onclick = function () {
                         for (var c = 0; c < newBox.length; c++) {
                             let line = newBox.clone()
                             if (status >= cv) {
+                                console.log('换行')
                                 status = 0
                                 spaceing++
                             }
@@ -918,40 +1003,28 @@ Print.onclick = function () {
                 }
                 console.timeEnd('creat-box🛴')
             }
+            // 打印
+            function Print () {
+                // 修改 pisition值避免出现打印内容重复
+                $("#printmain").children().css('position', 'absolute')
+
+                // printJs 插件打印
+                printJS({
+                    printable: "printmain",
+                    type: "html",
+                    css: '/css/print.css',
+                    scanStyles: false
+                });
+
+                // 改回原值避免打印元素整体错位
+                $("#printmain").children().css('position', 'fixed')
+            }
         }
         $("#printmodal").modal('hide')
+        console.timeEnd('print🚑')
     }
 };
 
-
-/**
- * line线条事件
- * @param {number} d 线条ID
- */
-const addLine = document.getElementById("line");
-let d = 0;
-addLine.onclick = function () {
-    $("#printmain").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;
-	width:200px;height:3px;max-height:4px;min-height:3px;background-color:black;z-index:2"></div>`);
-
-    drag(document.getElementById("lineDiv" + d), { minSize: 3 });
-    d++;
-    allNum++;
-};
-
-/**
- * box方框事件
- * @param {number} h boxID
- */
-const addBox = document.getElementById("box");
-let h = 0;
-addBox.onclick = function () {
-    $("#printmain").append(`<div id="${
-        "boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
-    drag(document.getElementById("boxDiv" + h), { minSize: 30 });
-    h++;
-    allNum++;
-};
 
 /**
  * 模板加载
@@ -999,6 +1072,7 @@ templateBtn.onclick = function () {
                 src=${data.img}
                 data-holder-rendered=" true">
             <div class="card-body" style="border-top: 1px solid #6c757d;">
+            <div style="margin-left: -10px;;font-size:14px;">模板ID:${allTmpl[i].templateid}</div>
                 <span style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templatename}</span>
                 <div class="buttonGroup" style="text-align: right;margin-top: -25px;">
                     <button type="button" class="btn btn-sm btn-primary" id="${i}">选择</button>

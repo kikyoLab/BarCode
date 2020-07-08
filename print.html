@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="theme-color" content="#f5f5f5" />
+    <title>BarCode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css" />
+    <link rel="stylesheet" href="./umeditor/themes/default/css/umeditor.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="//printjs-4de6.kxcdn.com/print.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/demo.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <link href="css/select.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="label"></div>
+    <div class="page main">
+        <div class="controls">
+            <div class="control">
+                <a class="nav-link" href="#" id="design"><img src="icon/design.png" width="30" title="设计" />
+                    <li>设计</li>
+                </a>
+            </div>
+            <div class="control">
+                <a class="nav-link" href="#" id="print"><img src="icon/print2.png" width="30" title="打印" />
+                    <li>打印</li>
+                </a>
+            </div>
+            <div class="control">
+                <a class="nav-link" href="#" id="template"><img src="icon/model2.png" width="30" title="模板" />
+                    <li>模板</li>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-10">
+                <div class="editor">
+                    <div class="view" id="canvasprint">
+                        <div class="rulers">
+                            <div id="row" class="horizontal ruler"></div>
+                            <div id="column" class="vertical ruler"></div>
+                        </div>
+                        <div id="demo" class="target moveable">
+                        </div>
+                        <div id="printmain" style="width: 400px;height:400px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="setBox" class="col-2">
+                <div class="control">
+                    <span>模板框宽度</span><input id="dataW" type="text" value="280" name="w" />
+                </div>
+                <div class="control">
+                    <span>模板框长度</span><input id="dataH" type="text" value="250" name="h" />
+                </div>
+                <div class="control">
+                    <span>标签列数</span><input id="dataColumn" type="text" value="1" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板选择模态框 -->
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true" id="templatemodel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createFileTitle">模板</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="modelDiv">
+                    <div class="row modalrow">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="back">
+                        取消
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="umeditor/third-party/jquery.min.js"></script>
+    <script src="//code.z01.com/v4/dist/js/popper.min.js"></script>
+    <script src="//code.z01.com/v4/dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+    <script src="js/JsBarcode.all.min.js"></script>
+    <script src="js/qrcode.min.js"></script>
+    <script src="js/moveable.js"></script>
+    <script src="js/html2canvas.js"></script>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="js/htmlencode.js"></script>
+    <script src="js/print.js"></script>
+</body>
+
+</html>

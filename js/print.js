@@ -42,7 +42,7 @@ window.onload = function () {
     // 打印模板预览随行列数的改动而变化
     const cVal = document.getElementById('dataColumn')
 
-    cVal.onchange = function () {
+    cVal.oninput = function () {
         modalChange()
     }
 

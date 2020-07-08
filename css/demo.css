@@ -290,7 +290,7 @@ code.hljs {
     padding-left: 35px;
     box-sizing: border-box;
     border-bottom: 1px solid #333;
-    text-align: center
+    text-align: left
 }
 
 .control {
@@ -501,4 +501,14 @@ code.hljs {
     z-index: 1;
     /* left: calc(50% - 125px);
     top: calc(50% - 250px); */
+}
+
+.tmplStyle {
+    display: inline-block;
+    height: 55px;
+    line-height: 35px;
+    margin-right: 5px;
+    margin-top: 0;
+    margin-left: 0;
+    color: white;
 }

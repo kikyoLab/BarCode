@@ -24,7 +24,12 @@ const dataFiled = (function () {
 (function () {
     if (!dataFiled) return (console.error(`绑定数据接口故障,请联系管理人员`))
     // 富文本数据绑定下拉栏
-    let data = dataFiled.filter(x => x.datafieldid !== 'dysl' && x.datafieldid !== 'recordid')
+    let data = dataFiled.filter(x =>
+        x.datafieldid !== 'dysl' &&
+        x.datafieldid !== 'recordid' &&
+        x.datafieldid !== 'smm'
+    )
+
     for (var i = 0; i < data.length; i++) {
         $("#databind").append(`<option>${data[i].datafieldname}</option>`)
     }
@@ -653,6 +658,7 @@ const allTmpl = (function () {
 })();
 
 // 模板模态框
+let tmplIdName, tmplName;
 templateBtn.onclick = function () {
     if (!allTmpl) return (console.error('Error: 接口故障,请联系管理人员'))
     // 初始化
@@ -670,7 +676,6 @@ templateBtn.onclick = function () {
                 src=${data.img}
                 data-holder-rendered=" true">
             <div class="card-body" style="border-top: 1px solid #6c757d;">
-            <div style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templateid}</div>
                 <span style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templatename}</span>
                 <div class="buttonGroup" style="text-align: right;margin-top: -25px;">
                     <button type="button" class="btn btn-sm btn-primary" id="${i}">选择</button>
@@ -679,6 +684,10 @@ templateBtn.onclick = function () {
             </div>
         </div>
     </div>`);
+
+        if (allTmpl[i].defaultzt == 'T') {
+            $("#del" + i).attr("style", "display:none;");
+        }
 
         let num = i;
         let delId = allTmpl[i].templateid
@@ -709,6 +718,10 @@ templateBtn.onclick = function () {
                     x[i].remove()
                 ]
             }
+
+            tmplIdName = allTmpl[num].templateid
+            tmplName = allTmpl[num].templatename
+            $("#tmplIdName").text(`正在操作ID为${allTmpl[num].templateid}的模板`)
 
             let a = data.code.split('</div>')
             let b = a.slice(0, a.length - 1).join('</div>')
@@ -766,14 +779,57 @@ templateBtn.onclick = function () {
 };
 
 // 模板保存
-const saveTemplate = document.getElementById("save");
-const createFile = document.getElementById("createFileSureBut")
-saveTemplate.onclick = function () {
-    $("#createFileModal").modal("show");
+const saveTmpl = document.getElementById('save')
+saveTmpl.onclick = function () {
+    let width = $("#demo").width()
+    let height = $("#demo").height()
+    $("#printmain").width(width)
+    $("#printmain").height(height)
+    html2canvas(document.getElementById("printmain")).then(function (canvas) {
+        let imgUrl = canvas.toDataURL("image/png");
+        let value = {
+            code: $("#printmain").html(),
+            img: imgUrl,
+            allNum: allNum,
+            textlength: n,
+            barcode: j,
+            qarcode: k,
+            lineDiv: d,
+            boxDiv: h,
+        };
 
+        let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
+        $.ajax({
+            type: 'POST',
+            url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+                "vtype": "addtemplate", "item1": tmplIdName, "item2": tmplName,
+                "item3": sVal, "item4": "测试模板"
+            }),
+            async: false,
+            success: function (data) {
+                if (data.Table[0].result == 'success') {
+                    location.reload();
+                } else {
+                    return (console.error(`模板保存接口故障:${data.Table[0].result}`))
+                }
+            }
+        })
+    })
+}
+
+
+// 另存为新模板
+const saveAsTemplate = document.getElementById("saveAs");
+const createFile = document.getElementById("createFileSureBut")
+saveAsTemplate.onclick = function () {
+    $("#createFileModal").modal("show");
+    $("#fileId").val(tmplIdName || Math.random().toString(36).substr(2, 9))
     createFile.onclick = function () {
-        var names = $("#fileName").val();
-        var id = $("#fileId").val()
+        let names = $("#fileName").val();
+        let id = $("#fileId").val()
         // 将当前模板框内元素html保存，并生成预览图
         let width = $("#demo").width()
         let height = $("#demo").height()

@@ -1,1 +1,1 @@
-# BarCode Design and Pring
+# BarCode Design and Print

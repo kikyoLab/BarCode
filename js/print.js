@@ -36,23 +36,45 @@ window.onload = function () {
     // 如果没找到 返回
     if (result.Table[0].result == 'warning') return alert('未找到对应的模板和门店编号')
 
-    // 初始化打印数据预览模板
-    modalContent()
+    // 打印格式
+    let printformat = JSON.parse(htmlDecode(result.Table1[0].printformat))
 
     // 打印模板预览随行列数的改动而变化
     const cVal = document.getElementById('dataColumn')
+    const lrVal = document.getElementById('dataLR')
+    const tbVal = document.getElementById('dataTB')
+    $("#dataLR").val(printformat.boxLR)
+    $("#dataTB").val(printformat.boxTB)
+    $("#dataColumn").val(printformat.column)
+    $("#dataW").val(printformat.boxWidth)
+    $("#dataH").val(printformat.boxHeight)
+    $("#demo").width(printformat.boxWidth)
+    $("#demo").height(printformat.boxHeight)
+    // 初始化打印数据预览模板
+    modalContent(printformat.column, printformat.boxLR, printformat.boxTB)
 
+    let cValue, lrValue, tbValue
     cVal.oninput = function () {
         modalChange()
     }
 
+    lrVal.oninput = function () {
+        modalChange()
+    }
+
+    tbVal.oninput = function () {
+        modalChange()
+    }
+
     function modalChange () {
-        let cValue = $("#dataColumn").val()
-        modalContent(cValue)
+        cValue = $("#dataColumn").val()
+        lrValue = $("#dataLR").val()
+        tbValue = $("#dataTB").val()
+        modalContent(cValue, lrValue, tbValue)
     }
 
     // 初始化预览
-    function modalContent (cValue) {
+    function modalContent (cValue, lrValue, tbValue) {
         const firstBox = document.getElementById('demo')
         let chooseData = result.Table
         let tmpl = result.Table1
@@ -111,13 +133,13 @@ window.onload = function () {
             const pageQarCode = $("#printmain").children("div .QarCodedbclick");
             const pageLine = $("#printmain").children("div .Line");
             const pageBox = $("#printmain").children("div .Box");
-            creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
-            creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
-            creatTmplText(cValue, chooseData, boxheight, boxwidth, dataVal)
-            creatTmplLine(cValue, chooseData, boxheight, boxwidth)
-            creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth)
+            creatTmplBarCode(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue)
+            creatTmplQarCode(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue)
+            creatTmplText(cValue, chooseData, boxheight, boxwidth, dataVal, lrValue, tbValue)
+            creatTmplLine(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue)
+            creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue)
             // 一维码批量生成
-            function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
+            function creatTmplBarCode (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
                 console.info('一维码打印✈')
                 // 计时器
                 console.time('creat-barcode🛴')
@@ -168,11 +190,11 @@ window.onload = function () {
                                 // top
                                 BarCode[0].style.top =
                                     Number(BarCode[0].style.top.slice(0, BarCode[0].style.top.length - 2)) +
-                                    Number(boxheight * spacing) + 'px'
+                                    Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                                 // left
                                 BarCode[0].style.left =
                                     Number(BarCode[0].style.left.slice(0, BarCode[0].style.left.length - 2)) +
-                                    Number(boxwidth * status) + 'px'
+                                    Number(boxwidth * status) + Number(lrValue * status) + 'px'
                                 // BarCode
                                 BarCode[0].firstElementChild.id =
                                     BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
@@ -198,7 +220,7 @@ window.onload = function () {
                 console.timeEnd('creat-barcode🛴')
             }
             // 二维码批量生成
-            function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
+            function creatTmplQarCode (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
                 console.info('二维码打印🛬')
                 // 计时器
                 console.time('creat-qarcode🛴')
@@ -247,11 +269,11 @@ window.onload = function () {
                                 // top
                                 QarCode[0].style.top =
                                     Number(QarCode[0].style.top.slice(0, QarCode[0].style.top.length - 2)) +
-                                    Number(boxheight * spacing) + 'px'
+                                    Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                                 // left
                                 QarCode[0].style.left =
                                     Number(QarCode[0].style.left.slice(0, QarCode[0].style.left.length - 2)) +
-                                    Number(boxwidth * status) + 'px'
+                                    Number(boxwidth * status) + Number(lrValue * status) + 'px'
                                 // BarCode
                                 QarCode[0].firstElementChild.id =
                                     QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
@@ -274,14 +296,14 @@ window.onload = function () {
                 console.timeEnd('creat-qarcode🛴')
             }
             // 文本批量生成
-            function creatTmplText (columnVal, data, boxheight, boxwidth, textDataVal) {
+            function creatTmplText (columnVal, data, boxheight, boxwidth, textDataVal, lrValue, tbValue) {
                 console.log('文本打印🛸')
                 // 计时器
                 console.time('creat-text🛴')
                 // 处理模板数据
                 let newText = pageText.clone()
                 let nums = 1000
-                let spaceing = 0
+                let spacing = 0
                 let status = 1
                 let cv = columnVal
                 console.log(`生成10条预览标签`)
@@ -302,16 +324,16 @@ window.onload = function () {
                             if (status >= cv) {
                                 console.log('换行')
                                 status = 0
-                                spaceing++
+                                spacing++
                             }
                             // top
                             text[c].style.top =
                                 Number(text[c].style.top.slice(0, text[c].style.top.length - 2)) +
-                                Number(boxheight * spaceing) + 'px'
+                                Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                             // left
                             text[c].style.left =
                                 Number(text[c].style.left.slice(0, text[c].style.left.length - 2)) +
-                                Number(boxwidth * status) + 'px'
+                                Number(boxwidth * status) + Number(lrValue * status) + 'px'
                             // text
                             text[c].firstChild.innerHTML = `${textDataVal[j][text[c].dataset.text]}`;
 
@@ -320,7 +342,7 @@ window.onload = function () {
 
                             $("#printmain").append(text[c])
                             console.log(`正在处理第${c}个文本,${textDataVal[num][newText[c].dataset.text]}`)
-                            console.log(`间距倍数:${spaceing} 文本框高度:${text[c].style.top}`)
+                            console.log(`间距倍数:${spacing} 文本框高度:${text[c].style.top}`)
                             console.log(`列数：${status} 文本框宽度:${text[c].style.left}`)
                             nums--
                         }
@@ -331,12 +353,12 @@ window.onload = function () {
                 $("#tableview").modal('hide')
             }
             // 线条批量生成
-            function creatTmplLine (columnVal, data, boxheight, boxwidth) {
+            function creatTmplLine (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
                 console.log('线条批量生成🧭')
                 // 计时器
                 console.time('creat-line🛴')
                 let newLine = pageLine.clone()
-                let spaceing = 0
+                let spacing = 0
                 let status = 1
                 let cv = columnVal
                 if (newLine.length <= 0) return (console.warn('线条模板不存在'))
@@ -353,16 +375,16 @@ window.onload = function () {
                             if (status >= cv) {
                                 console.log('换行')
                                 status = 0
-                                spaceing++
+                                spacing++
                             }
                             // top
                             line[c].style.top =
                                 Number(line[c].style.top.slice(0, line[c].style.top.length - 2)) +
-                                Number(boxheight * spaceing) + 'px'
+                                Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                             // left
                             line[c].style.left =
                                 Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
-                                Number(boxwidth * status) + 'px'
+                                Number(boxwidth * status) + Number(lrValue * status) + 'px'
                             $("#printmain").append(line[c])
                         }
                         status++
@@ -371,12 +393,12 @@ window.onload = function () {
                 console.timeEnd('creat-line🛴')
             }
             // 边框批量生成
-            function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth) {
+            function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
                 console.log('边框批量生成🧭')
                 // 计时器
                 console.time('creat-box🛴')
                 let newBox = pageBox.clone()
-                let spaceing = 0
+                let spacing = 0
                 let status = 1
                 let cv = columnVal
                 if (newBox.length <= 0) return (console.warn('边框模板不存在'))
@@ -393,16 +415,16 @@ window.onload = function () {
                             if (status >= cv) {
                                 console.log('换行')
                                 status = 0
-                                spaceing++
+                                spacing++
                             }
                             // top
                             line[0].style.top =
                                 Number(line[0].style.top.slice(0, line[0].style.top.length - 2)) +
-                                Number(boxheight * spaceing) + 'px'
+                                Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                             // left
                             line[0].style.left =
                                 Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
-                                Number(boxwidth * status) + 'px'
+                                Number(boxwidth * status) + Number(lrValue * status) + 'px'
 
                             $("#printmain").append(line[0])
                         }
@@ -437,12 +459,15 @@ window.onload = function () {
         let width = firstBox.style.width
         let boxheight = height.slice(0, height.length - 2);
         let boxwidth = width.slice(0, width.length - 2)
+        let c = $("#dataColumn").val()
+        let lr = $("#dataLR").val()
+        let tb = $("#dataTB").val()
         // 组件生成
-        creatTmplBarCode(cValue, chooseData, boxheight, boxwidth)
-        creatTmplQarCode(cValue, chooseData, boxheight, boxwidth)
-        creatTmplText(cValue, chooseData, boxheight, boxwidth, textDataVal)
-        creatTmplLine(cValue, chooseData, boxheight, boxwidth)
-        creatTmplBoxDiv(cValue, chooseData, boxheight, boxwidth)
+        creatTmplBarCode(c, chooseData, boxheight, boxwidth, lr, tb)
+        creatTmplQarCode(c, chooseData, boxheight, boxwidth, lr, tb)
+        creatTmplText(c, chooseData, boxheight, boxwidth, textDataVal, lr, tb)
+        creatTmplLine(c, chooseData, boxheight, boxwidth, lr, tb)
+        creatTmplBoxDiv(c, chooseData, boxheight, boxwidth, lr, tb)
         Print()
         // 模板内容生成
         function creatTmpl (tmpl) {
@@ -489,7 +514,7 @@ window.onload = function () {
             }
         }
         // 一维码批量生成
-        function creatTmplBarCode (columnVal, data, boxheight, boxwidth) {
+        function creatTmplBarCode (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
             console.info('一维码打印✈')
             // 计时器
             console.time('creat-barcode🛴')
@@ -540,11 +565,11 @@ window.onload = function () {
                             // top
                             BarCode[0].style.top =
                                 Number(BarCode[0].style.top.slice(0, BarCode[0].style.top.length - 2)) +
-                                Number(boxheight * spacing) + 'px'
+                                Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                             // left
                             BarCode[0].style.left =
                                 Number(BarCode[0].style.left.slice(0, BarCode[0].style.left.length - 2)) +
-                                Number(boxwidth * status) + 'px'
+                                Number(boxwidth * status) + Number(lrValue * status) + 'px'
                             // BarCode
                             BarCode[0].firstElementChild.id =
                                 BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
@@ -570,7 +595,7 @@ window.onload = function () {
             console.timeEnd('creat-barcode🛴')
         }
         // 二维码批量生成
-        function creatTmplQarCode (columnVal, data, boxheight, boxwidth) {
+        function creatTmplQarCode (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
             console.info('二维码打印🛬')
             // 计时器
             console.time('creat-qarcode🛴')
@@ -619,11 +644,11 @@ window.onload = function () {
                             // top
                             QarCode[0].style.top =
                                 Number(QarCode[0].style.top.slice(0, QarCode[0].style.top.length - 2)) +
-                                Number(boxheight * spacing) + 'px'
+                                Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                             // left
                             QarCode[0].style.left =
                                 Number(QarCode[0].style.left.slice(0, QarCode[0].style.left.length - 2)) +
-                                Number(boxwidth * status) + 'px'
+                                Number(boxwidth * status) + Number(lrValue * status) + 'px'
                             // BarCode
                             QarCode[0].firstElementChild.id =
                                 QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
@@ -646,14 +671,14 @@ window.onload = function () {
             console.timeEnd('creat-qarcode🛴')
         }
         // 文本批量生成
-        function creatTmplText (columnVal, data, boxheight, boxwidth, textDataVal) {
+        function creatTmplText (columnVal, data, boxheight, boxwidth, textDataVal, lrValue, tbValue) {
             console.log('文本打印🛸')
             // 计时器
             console.time('creat-text🛴')
             // 处理模板数据
             let newText = pageText.clone()
             let nums = 1000
-            let spaceing = 0
+            let spacing = 0
             let status = 1
             let cv = columnVal
             console.log(`选择了${data.length}条数据`)
@@ -674,16 +699,16 @@ window.onload = function () {
                         if (status >= cv) {
                             console.log('换行')
                             status = 0
-                            spaceing++
+                            spacing++
                         }
                         // top
                         text[c].style.top =
                             Number(text[c].style.top.slice(0, text[c].style.top.length - 2)) +
-                            Number(boxheight * spaceing) + 'px'
+                            Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                         // left
                         text[c].style.left =
                             Number(text[c].style.left.slice(0, text[c].style.left.length - 2)) +
-                            Number(boxwidth * status) + 'px'
+                            Number(boxwidth * status) + Number(lrValue * status) + 'px'
                         // text
                         text[c].firstChild.innerHTML = `${textDataVal[j][text[c].dataset.text]}`;
 
@@ -692,7 +717,7 @@ window.onload = function () {
 
                         $("#printmain").append(text[c])
                         console.log(`正在处理第${c}个文本,${textDataVal[num][newText[c].dataset.text]}`)
-                        console.log(`间距倍数:${spaceing} 文本框高度:${text[c].style.top}`)
+                        console.log(`间距倍数:${spacing} 文本框高度:${text[c].style.top}`)
                         console.log(`列数：${status} 文本框宽度:${text[c].style.left}`)
                         nums--
                     }
@@ -703,12 +728,12 @@ window.onload = function () {
             $("#tableview").modal('hide')
         }
         // 线条批量生成
-        function creatTmplLine (columnVal, data, boxheight, boxwidth) {
+        function creatTmplLine (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
             console.log('线条批量生成🧭')
             // 计时器
             console.time('creat-line🛴')
             let newLine = pageLine.clone()
-            let spaceing = 0
+            let spacing = 0
             let status = 1
             let cv = columnVal
             if (newLine.length <= 0) return (console.warn('线条模板不存在'))
@@ -725,16 +750,16 @@ window.onload = function () {
                         if (status >= cv) {
                             console.log('换行')
                             status = 0
-                            spaceing++
+                            spacing++
                         }
                         // top
                         line[c].style.top =
                             Number(line[c].style.top.slice(0, line[c].style.top.length - 2)) +
-                            Number(boxheight * spaceing) + 'px'
+                            Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                         // left
                         line[c].style.left =
                             Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
-                            Number(boxwidth * status) + 'px'
+                            Number(boxwidth * status) + Number(lrValue * status) + 'px'
                         $("#printmain").append(line[c])
                     }
                     status++
@@ -743,12 +768,12 @@ window.onload = function () {
             console.timeEnd('creat-line🛴')
         }
         // 边框批量生成
-        function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth) {
+        function creatTmplBoxDiv (columnVal, data, boxheight, boxwidth, lrValue, tbValue) {
             console.log('边框批量生成🧭')
             // 计时器
             console.time('creat-box🛴')
             let newBox = pageBox.clone()
-            let spaceing = 0
+            let spacing = 0
             let status = 1
             let cv = columnVal
             if (newBox.length <= 0) return (console.warn('边框模板不存在'))
@@ -765,16 +790,16 @@ window.onload = function () {
                         if (status >= cv) {
                             console.log('换行')
                             status = 0
-                            spaceing++
+                            spacing++
                         }
                         // top
                         line[0].style.top =
                             Number(line[0].style.top.slice(0, line[0].style.top.length - 2)) +
-                            Number(boxheight * spaceing) + 'px'
+                            Number(boxheight * spacing) + Number(tbValue * spacing) + 'px'
                         // left
                         line[0].style.left =
                             Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
-                            Number(boxwidth * status) + 'px'
+                            Number(boxwidth * status) + Number(lrValue * status) + 'px'
 
                         $("#printmain").append(line[0])
                     }
@@ -848,7 +873,6 @@ window.onload = function () {
                     src=${data.img}
                     data-holder-rendered=" true">
                 <div class="card-body" style="border-top: 1px solid #6c757d;">
-                <div style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templateid}</div>
                     <span style="margin-left: -10px;;font-size:14px;">${allTmpl[i].templatename}</span>
                     <div class="buttonGroup" style="text-align: right;margin-top: -25px;">
                         <button type="button" class="btn btn-sm btn-primary" id="${i}">选择</button>
@@ -857,6 +881,10 @@ window.onload = function () {
                 </div>
             </div>
         </div>`);
+
+            if (allTmpl[i].defaultzt == 'T') {
+                $("#del" + i).attr("style", "display:none;");
+            }
 
             let num = i;
             let delId = allTmpl[i].templateid

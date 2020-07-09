@@ -7,18 +7,18 @@
         content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <meta name="theme-color" content="#f5f5f5" />
     <title>BarCode</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css" />
+    <link rel="stylesheet" href="css/default.min.css" />
     <link rel="stylesheet" href="./umeditor/themes/default/css/umeditor.css" />
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css">
-    <link rel="stylesheet" href="//printjs-4de6.kxcdn.com/print.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/demo.css" />
+    <link rel="stylesheet" href="css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/print.min.css" />
+    <link rel="stylesheet" href="css/demo.css" />
     <link rel="stylesheet" href="css/index.css" />
-    <link href="css/select.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/select.css">
 </head>
 
 <body>
@@ -59,14 +59,36 @@
             </div>
 
             <div id="setBox" class="col-2">
+                <div class="printformatset">模板打印格式参数设置</div>
                 <div class="control">
-                    <span>模板框宽度</span><input id="dataW" type="text" value="280" name="w" />
+                    <span>模板框宽度
+                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签的宽度" />
+                    </span>
+                    <input id="dataW" type="text" value="280" name="w" />
                 </div>
                 <div class="control">
-                    <span>模板框长度</span><input id="dataH" type="text" value="250" name="h" />
+                    <span>模板框长度
+                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签的长度" />
+                    </span>
+                    <input id="dataH" type="text" value="250" name="h" />
                 </div>
                 <div class="control">
-                    <span>标签列数</span><input id="dataColumn" type="text" value="1" />
+                    <span>标签列数
+                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签打印的列数" />
+                    </span>
+                    <input id="dataColumn" type="text" value="1" />
+                </div>
+                <div class="control">
+                    <span>标签间距
+                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签与标签间的左右间隔" />
+                    </span>
+                    <input id="dataLR" type="text" value="0" />
+                </div>
+                <div class="control">
+                    <span>标签边距
+                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签与标签间的上下间隔" />
+                    </span>
+                    <input id="dataTB" type="text" value="0" />
                 </div>
             </div>
         </div>
@@ -100,16 +122,16 @@
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="umeditor/third-party/jquery.min.js"></script>
-    <script src="//code.z01.com/v4/dist/js/popper.min.js"></script>
-    <script src="//code.z01.com/v4/dist/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.min.js"></script>
     <script src="js/JsBarcode.all.min.js"></script>
     <script src="js/qrcode.min.js"></script>
-    <script src="js/moveable.js"></script>
     <script src="js/html2canvas.js"></script>
-    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="js/print.min.js"></script>
     <script src="js/htmlencode.js"></script>
     <script src="js/print.js"></script>
+    <script src="js/moveable.js"></script>
 </body>
 
 </html>

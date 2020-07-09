@@ -42,7 +42,7 @@ const dataFiled = (function () {
  * @param {object} ele - 拖拽对象
  * @param {object} config - 设置拖拽框大小，比如 { minSize: 30 }
  */
-
+$(".textDataBind").attr('style', 'display:none')
 function drag (ele, config = {}) {
     const eleRemove = document.getElementById("remove")
     let removeDragger;
@@ -76,7 +76,16 @@ function drag (ele, config = {}) {
             $("#exampleModalCenter").modal({
                 backdrop: 'static'
             })
-
+            const textType = document.getElementById('textType')
+            textType.onchange = function () {
+                let val = $("#textType").val()
+                if (val == '数据库数据') {
+                    $(".textDataBind").attr('style', 'display:block')
+                    $(".textDataBind").attr('style', 'margin-left: 20px;')
+                } else {
+                    $(".textDataBind").attr('style', 'display:none')
+                }
+            }
             // 获取该元素自定义属性
             let target = document.getElementById('' + eleId)
             console.log(target.dataset.text)
@@ -562,7 +571,9 @@ $("#update").click(function () {
     /* 新增属性-绑定数据 ID */
     if ($("#databind").val()) {
         let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
+        let valName = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldname
         $("#" + eleId).attr('data-text', val)
+        $("#" + eleId).html(valName)
     }
 
     $("#databind").val('')
@@ -658,7 +669,7 @@ const allTmpl = (function () {
 })();
 
 // 模板模态框
-let tmplIdName, tmplName;
+let tmplIdName, tmplName, tmplPrintFormat
 templateBtn.onclick = function () {
     if (!allTmpl) return (console.error('Error: 接口故障,请联系管理人员'))
     // 初始化
@@ -721,7 +732,11 @@ templateBtn.onclick = function () {
 
             tmplIdName = allTmpl[num].templateid
             tmplName = allTmpl[num].templatename
-            $("#tmplIdName").text(`正在操作ID为${allTmpl[num].templateid}的模板`)
+            tmplPrintFormat = allTmpl[num].printformat
+            if (tmplPrintFormat) {
+                $("#printText").attr('style', 'display:block')
+            }
+            $("#tmplIdName").text(`正在编辑ID为${allTmpl[num].templateid}的模板`)
 
             let a = data.code.split('</div>')
             let b = a.slice(0, a.length - 1).join('</div>')
@@ -871,3 +886,32 @@ saveAsTemplate.onclick = function () {
         $("#createFileModal").modal("hide");
     };
 };
+
+// 模板打印格式保存
+const printFormatSave = document.getElementById('printformatSave')
+printFormatSave.onclick = function () {
+    let value = {
+        boxWidth: $("#dataW").val(),
+        boxHeight: $("#dataH").val(),
+        column: $("#dataColumn").val(),
+        boxLR: $("#dataLR").val(),
+        boxTB: $("#dataTB").val()
+    }
+
+    let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
+    $.ajax({
+        type: 'POST',
+        url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
+        async: false,
+        success: function (data) {
+            if (data.Table[0].result == 'success') {
+                location.reload();
+            } else {
+                return (console.error(`打印格式接口故障:${data.Table[0].result}`))
+            }
+        }
+    })
+}

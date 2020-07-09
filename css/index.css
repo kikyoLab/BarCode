@@ -110,6 +110,30 @@
     background-color: #444;
 }
 
-#setBox span {
-    font-size: 12.5px;
+#setBox .printformatset {
+    font-size: 16px;
+    color: white;
+    text-align: left;
+    margin: 10px 0 10px 0;
+}
+
+#setBox .control span {
+    font-size: 13px;
+}
+
+.xyInput {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: .3rem;
+    border-bottom-left-radius: .3rem
+}
+
+#printformatSave {
+    margin-top: 20px
+}
+
+#printText {
+    color: white;
+    display: none;
 }

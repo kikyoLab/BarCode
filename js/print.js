@@ -3,19 +3,6 @@ window.onload = function () {
     const Print = document.getElementById('print')
     const design = document.getElementById('design')
 
-    let url = location.search;
-    let theRequest = new Object();
-    if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        var strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
-        }
-    }
-
-    let labId = theRequest.id
-    let roomName = theRequest.roomName
-
     design.onclick = function () {
         window.location.href = 'design.html'
     }
@@ -23,10 +10,14 @@ window.onload = function () {
     let result
     $.ajax({
         type: 'POST',
-        url: 'http://test.ecsun.cn:99/mzato/main/labels/print',
+        url: localStorage.getItem("erp_serverurl"),
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({ "vtype": "labelprint", "item1": labId, "item2": roomName }),
+        data: JSON.stringify({
+            "vtype": "labelprint",
+            "item1": localStorage.getItem("erp_labelid"),
+            "item2": localStorage.getItem("erp_fdbh")
+        }),
         async: false,
         success: function (data) {
             result = data
@@ -34,7 +25,20 @@ window.onload = function () {
     })
 
     // 如果没找到 返回
+    console.log(result)
     if (result.Table[0].result == 'warning') return alert('未找到对应的模板和门店编号')
+    // ES6 Object.values兼容
+    if (!Object.values) Object.values = function (obj) {
+        if (obj !== Object(obj))
+            throw new TypeError('Object.values called on a non-object');
+        var val = [], key;
+        for (key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                val.push(obj[key]);
+            }
+        }
+        return val;
+    }
 
     // 打印格式
     let printformat
@@ -173,7 +177,7 @@ window.onload = function () {
                     for (var name in data[0]) {
                         if (name == 'barcode') {
                             let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
-                            JsBarcode("#BarCode" + n, data[0].barcode, {
+                            JsBarcode("#BarCode" + n, data[0].smm, {
                                 format: 'CODE128',
                                 height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
                                 width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
@@ -254,7 +258,7 @@ window.onload = function () {
                     for (var name in data[0]) {
                         if (name == 'qarcode') {
                             let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
-                            QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].qarcode, {
+                            QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].smm, {
                                 margin: 1,
                                 width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
                             })
@@ -863,7 +867,7 @@ window.onload = function () {
         let result;
         $.ajax({
             type: 'POST',
-            url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+            url: localStorage.getItem("erp_serverurl"),
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({ "vtype": "showtemplates" }),
@@ -912,7 +916,7 @@ window.onload = function () {
             $("#del" + num).click(function () {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                    url: localStorage.getItem("erp_serverurl"),
                     contentType: 'application/json',
                     dataType: 'json',
                     data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),

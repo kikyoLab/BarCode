@@ -4,7 +4,7 @@ const dataFiled = (function () {
     let result;
     $.ajax({
         type: 'POST',
-        url: "http://test.ecsun.cn:99/mzato/main/labels/set",
+        url: localStorage.getItem("erp_serverurl"),
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "getdatafield" }),
@@ -587,8 +587,6 @@ $("#update").click(function () {
  */
 const addText = document.getElementById("textBtn");
 const Print = document.getElementById("print");
-const printOk = document.getElementById('printOk')
-const printNo = document.getElementById('printNo')
 let n = 0;
 addText.onclick = function () {
     $("#printmain")
@@ -632,12 +630,7 @@ addBox.onclick = function () {
 
 // 模板打印
 Print.onclick = function () {
-    $("#printmodal").modal()
-    printOk.onclick = function () {
-        let labId = $("#tmplId").val()
-        let roomName = $("#Name").val()
-        location.href = "print.html?id=" + labId + '&roomName=' + roomName;
-    }
+    location.href = "print.html"
 };
 
 /**
@@ -656,7 +649,7 @@ const allTmpl = (function () {
     let result;
     $.ajax({
         type: 'POST',
-        url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+        url: localStorage.getItem("erp_serverurl"),
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "showtemplates" }),
@@ -706,7 +699,7 @@ templateBtn.onclick = function () {
         $("#del" + num).click(function () {
             $.ajax({
                 type: 'POST',
-                url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                url: localStorage.getItem("erp_serverurl"),
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
@@ -733,9 +726,7 @@ templateBtn.onclick = function () {
             tmplIdName = allTmpl[num].templateid
             tmplName = allTmpl[num].templatename
             tmplPrintFormat = allTmpl[num].printformat
-            if (tmplPrintFormat) {
-                $("#printText").attr('style', 'display:block')
-            }
+
             $("#tmplIdName").text(`正在编辑ID为${allTmpl[num].templateid}的模板`)
 
             let a = data.code.split('</div>')
@@ -816,7 +807,7 @@ saveTmpl.onclick = function () {
         let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
         $.ajax({
             type: 'POST',
-            url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+            url: localStorage.getItem("erp_serverurl"),
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({
@@ -866,7 +857,7 @@ saveAsTemplate.onclick = function () {
             let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
             $.ajax({
                 type: 'POST',
-                url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
+                url: localStorage.getItem("erp_serverurl"),
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
@@ -890,30 +881,44 @@ saveAsTemplate.onclick = function () {
 // 模板打印格式保存
 const printFormatSave = document.getElementById('printformatSave')
 printFormatSave.onclick = function () {
-    let value = {
-        boxWidth: $("#dataW").val(),
-        boxHeight: $("#dataH").val(),
-        column: $("#dataColumn").val(),
-        boxLR: $("#dataLR").val(),
-        boxTB: $("#dataTB").val(),
-        boxTP: $("#dataTP").val(),
-        boxPL: $("#dataPL").val()
+    if (tmplPrintFormat) {
+        layer.confirm('该模板已有打印格式,是否强制更新?', {
+            btn: ['确定', '取消']
+        }, function () {
+            addPrintFormat()
+        }, function () {
+            layer.close()
+        });
+    } else {
+        addPrintFormat()
     }
 
-    let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
-    $.ajax({
-        type: 'POST',
-        url: 'http://test.ecsun.cn:99/mzato/main/labels/set',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
-        async: false,
-        success: function (data) {
-            if (data.Table[0].result == 'success') {
-                location.reload();
-            } else {
-                return (console.error(`打印格式接口故障:${data.Table[0].result}`))
-            }
+    function addPrintFormat () {
+        let value = {
+            boxWidth: $("#dataW").val(),
+            boxHeight: $("#dataH").val(),
+            column: $("#dataColumn").val(),
+            boxLR: $("#dataLR").val(),
+            boxTB: $("#dataTB").val(),
+            boxTP: $("#dataTP").val(),
+            boxPL: $("#dataPL").val()
         }
-    })
+
+        let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
+        $.ajax({
+            type: 'POST',
+            url: localStorage.getItem("erp_serverurl"),
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
+            async: false,
+            success: function (data) {
+                if (data.Table[0].result == 'success') {
+                    location.reload();
+                } else {
+                    return (console.error(`打印格式接口故障:${data.Table[0].result}`))
+                }
+            }
+        })
+    }
 }

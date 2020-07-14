@@ -573,7 +573,7 @@ $("#update").click(function () {
         let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
         let valName = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldname
         $("#" + eleId).attr('data-text', val)
-        $("#" + eleId).html(valName)
+        $("#" + eleId).html(`<p>${valName}</p>`)
     }
 
     $("#databind").val('')
@@ -895,7 +895,9 @@ printFormatSave.onclick = function () {
         boxHeight: $("#dataH").val(),
         column: $("#dataColumn").val(),
         boxLR: $("#dataLR").val(),
-        boxTB: $("#dataTB").val()
+        boxTB: $("#dataTB").val(),
+        boxTP: $("#dataTP").val(),
+        boxPL: $("#dataPL").val()
     }
 
     let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))

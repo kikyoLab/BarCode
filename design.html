@@ -4,15 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
-        content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f5f5f5" />
     <title>BarCode</title>
     <link rel="stylesheet" href="css/default.min.css" />
     <link rel="stylesheet" href="./umeditor/themes/default/css/umeditor.css" />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/all.css" />
-    <link rel="stylesheet" href="css/bootstrap-table.css">
-    <link rel="stylesheet" href="css/print.min.css" />
+    <link rel="stylesheet" href="css/print.css" />
     <link rel="stylesheet" href="css/demo.css" />
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/select.css" />
@@ -27,37 +26,37 @@
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="textBtn"><img src="icon/text2.png" width="30" title="文本" />
-                    <li>文本</li>
+                    <li>增加文本</li>
                 </a>
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="BarCodeFormModel">
                     <img src="icon/barcode2.png" width="30" title="一维码表单" />
-                    <li>一维码</li>
+                    <li>增加一维码</li>
                 </a>
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="QarCodeFormModel"><img src="icon/qrcode2.png" width="30"
                         title="二维码表单" />
-                    <li>二维码</li>
+                    <li>增加二维码</li>
                 </a>
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="img">
                     <input id="img_input2" type="file" accept="image/*" />
                     <label for="img_input2" id="img_label2"><img src="icon/upload2.png" width="30" title="图片上传" />
-                        <li>图片</li>
+                        <li>图片上传</li>
                     </label>
                 </a>
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="line"><img src="icon/line2.png" width="30" title="线条" />
-                    <li>线条</li>
+                    <li>增加线条</li>
                 </a>
             </div>
             <div class="control">
                 <a class="nav-link" href="#" id="box"><img src="icon/box2.png" width="30" title="边框" />
-                    <li>边框</li>
+                    <li>增加边框</li>
                 </a>
             </div>
             <div class="control">
@@ -85,6 +84,11 @@
                     <li>删除</li>
                 </a>
             </div>
+            <div class="control">
+                <a class="nav-link" href="#" id="return"><img src="icon/return.png" width="30" title="还原" />
+                    <li>清空还原</li>
+                </a>
+            </div>
         </div>
 
         <div class="row">
@@ -95,10 +99,8 @@
                             <div id="row" class="horizontal ruler"></div>
                             <div id="column" class="vertical ruler"></div>
                         </div>
-                        <div id="demo" class="target moveable">
-                        </div>
-                        <div id="printmain" style="width: 400px;height:400px;">
-                        </div>
+                        <div id="demo" class="target moveable"></div>
+                        <div id="printmain" style="width: 400px;height:400px;"></div>
                     </div>
                 </div>
             </div>
@@ -106,45 +108,31 @@
             <div id="setBox" class="col-2">
                 <div class="printformatset">模板打印格式参数设置</div>
                 <div class="control">
-                    <span>模板框宽度
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签的宽度" />
-                    </span>
+                    <span>标签宽度</span>
                     <input id="dataW" type="text" value="280" name="w" />
                 </div>
                 <div class="control">
-                    <span>模板框长度
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签的长度" />
-                    </span>
+                    <span>标签长度</span>
                     <input id="dataH" type="text" value="250" name="h" />
                 </div>
                 <div class="control">
-                    <span>标签列数
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签打印的列数" />
-                    </span>
+                    <span>标签列数</span>
                     <input id="dataColumn" type="text" value="1" />
                 </div>
                 <div class="control">
-                    <span>标签间距
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签与标签间的左右间隔" />
-                    </span>
+                    <span>标签间距</span>
                     <input id="dataLR" type="text" value="0" />
                 </div>
                 <div class="control">
-                    <span>标签边距
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为标签与标签间的上下间隔" />
-                    </span>
+                    <span>标签边距</span>
                     <input id="dataTB" type="text" value="0" />
                 </div>
                 <div class="control">
-                    <span>页面上边距
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为所有标签与页面的上间隔" />
-                    </span>
+                    <span>页面上边距</span>
                     <input id="dataTP" type="text" value="0" />
                 </div>
                 <div class="control">
-                    <span>页面左边距
-                        <img src="icon/about.png" style="margin-top: -5px;" title="该属性为所有标签与页面的左间隔" />
-                    </span>
+                    <span>页面左边距</span>
                     <input id="dataPL" type="text" value="0" />
                 </div>
                 <button type="button" id="printformatSave" class="btn btn-secondary">保存打印格式</button>
@@ -176,15 +164,13 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <script id="container" name="content" type="text/plain">
-                Text
-              </script>
+                        <script id="container" name="content" type="text/plain">Text</script>
                     </div>
                     <div class="xyInput">
                         <div class="col-5">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend">文本框X坐标/横坐标:</span>
+                                    <span class="input-group-text" id="inputGroupPrepend">文本框横(X)坐标:</span>
                                 </div>
                                 <input type="text" class="form-control" id="textXvalue" min='30'>
                             </div>
@@ -192,7 +178,7 @@
                         <div class="col-5">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroupPrepend">文本框Y坐标/纵坐标:</span>
+                                    <span class="input-group-text" id="inputGroupPrepend">文本框纵(Y)坐标:</span>
                                 </div>
                                 <input type="text" class="form-control" id="textYvalue" min='115'>
                             </div>
@@ -228,7 +214,6 @@
                         取消
                     </button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -515,13 +500,11 @@
 
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/layer.js"></script>
-    <script src="umeditor/third-party/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="umeditor/umeditor.config.js"></script>
-    <script type="text/javascript" src="umeditor/umeditor.js"></script>
-    <script type="text/javascript" src="umeditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="umeditor/umeditor.config.js"></script>
+    <script src="umeditor/umeditor.js"></script>
+    <script src="umeditor/lang/zh-cn/zh-cn.js"></script>
     <script src="js/JsBarcode.all.min.js"></script>
     <script src="js/qrcode.min.js"></script>
     <script src="js/html2canvas.js"></script>

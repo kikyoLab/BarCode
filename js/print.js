@@ -195,19 +195,20 @@ window.onload = function () {
                         let newBarCode = pageBarCode.clone()
                         if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
                         for (var name in data[0]) {
-                            if (name == 'barcode') {
+                            if (name == 'smm') {
                                 let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
                                 JsBarcode("#BarCode" + n, data[0].smm, {
                                     format: 'CODE128',
-                                    height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
-                                    width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
-                                    font: 'Sans-serif'
+                                    height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 30,
+                                    width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
+                                    font: 'Sans-serif',
+                                    fontSize: 14
                                 })
                             }
                         }
                     }
                     // 第一层循环 => 处理所选数据数量
-                    for (var i = 0; i < lens; i++) {
+                    for (var i = 1; i < lens; i++) {
                         console.log(`处理第${i + 1}条数据中~`)
                         // 拷贝模板元素 如果不存在 返回
                         let newBarCode = pageBarCode.clone()
@@ -276,7 +277,7 @@ window.onload = function () {
                         let newQarCode = pageQarCode.clone()
                         if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
                         for (var name in data[0]) {
-                            if (name == 'qarcode') {
+                            if (name == 'smm') {
                                 let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
                                 QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].smm, {
                                     margin: 1,
@@ -286,7 +287,7 @@ window.onload = function () {
                         }
                     }
                     // 第一层循环 => 处理所选数据数量
-                    for (var i = 0; i < lens; i++) {
+                    for (var i = 1; i < lens; i++) {
                         console.log(`处理第${i + 1}条数据中~`)
                         // 拷贝模板元素 如果不存在 返回
                         let newQarCode = pageQarCode.clone()
@@ -354,7 +355,7 @@ window.onload = function () {
                         pageText[i].firstChild.innerHTML = `${textDataVal[0][pageText[i].dataset.text]}`
                     }
                     // 第一层循环 => 处理所选数据
-                    for (var j = 0; j < lens; j++) {
+                    for (var j = 1; j < lens; j++) {
                         console.log(`处理第${j + 1}条数据`)
                         // 第二层循环 => 根据文本框 dysl 值进行复制
                         for (var k = 0; k < data[j].dysl; k++) {
@@ -573,20 +574,21 @@ window.onload = function () {
                 let newBarCode = pageBarCode.clone()
                 if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
                 for (var name in data[0]) {
-                    if (name == 'barcode') {
+                    if (name == 'smm') {
                         let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
-                        JsBarcode("#BarCode" + n, data[0].barcode, {
+                        JsBarcode("#BarCode" + n, data[0].smm, {
                             format: 'CODE128',
-                            height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
-                            width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
-                            font: 'Sans-serif'
+                            height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 30,
+                            width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
+                            font: 'Sans-serif',
+                            fontSize: 14
                         })
                     }
                 }
             }
             // 第一层循环 => 处理所选数据数量
             let len = data.length
-            for (var i = 0; i < len; i++) {
+            for (var i = 1; i < len; i++) {
                 console.log(`处理第${i + 1}条数据中~`)
                 // 拷贝模板元素 如果不存在 返回
                 let newBarCode = pageBarCode.clone()
@@ -655,9 +657,9 @@ window.onload = function () {
                 let newQarCode = pageQarCode.clone()
                 if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
                 for (var name in data[0]) {
-                    if (name == 'qarcode') {
+                    if (name == 'smm') {
                         let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
-                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].qarcode, {
+                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].smm, {
                             margin: 1,
                             width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
                         })
@@ -666,7 +668,7 @@ window.onload = function () {
             }
             // 第一层循环 => 处理所选数据数量
             let len = data.length
-            for (var i = 0; i < len; i++) {
+            for (var i = 1; i < len; i++) {
                 console.log(`处理第${i + 1}条数据中~`)
                 // 拷贝模板元素 如果不存在 返回
                 let newQarCode = pageQarCode.clone()
@@ -735,7 +737,7 @@ window.onload = function () {
             }
             // 第一层循环 => 处理所选数据
             let len = data.length
-            for (var j = 0; j < len; j++) {
+            for (var j = 1; j < len; j++) {
                 console.log(`处理第${j + 1}条数据`)
                 // 第二层循环 => 根据文本框 dysl 值进行复制
                 for (var k = 0; k < data[j].dysl; k++) {

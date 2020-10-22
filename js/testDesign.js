@@ -4,7 +4,7 @@ const dataFiled = (function () {
     let result;
     $.ajax({
         type: 'POST',
-        url: localStorage.getItem("erp_serverurl") + "/labels/set",
+        url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "getdatafield" }),
@@ -107,7 +107,6 @@ function drag (ele, config = {}) {
             );
         } else if (ele.className == "BarCodedbclick refbox") {
             // 一维码事件 
-
             ele.addEventListener("dblclick", () => {
                 // 从session中获取该一维码原始值
                 let a = JSON.parse(sessionStorage.getItem(ele.id));
@@ -184,12 +183,13 @@ function drag (ele, config = {}) {
 
     function injectController (ele, config) {
         /* 获取初始位置 */
-        const { x, y, width, height } = ele.getBoundingClientRect();
+        const { left, top, width, height } = ele.getBoundingClientRect();
         const bodyMargin = getPxNumber(getComputedStyle(document.body).margin);
         /* 控件容器 */
         const controlWrapper = document.createElement("div");
         /* 设置目标元素和容器样式 */
         const _style_ = new Proxy(controlWrapper.style, {
+            // get controlWrapper's width height left top
             get (o, key) {
                 /* get controlWrapper.style.xxx的xxx样式值 */
                 let originalStyleValue = Reflect.get(o, key);
@@ -216,12 +216,13 @@ function drag (ele, config = {}) {
             position: "fixed",
             width: `${width}px`,
             height: `${height}px`,
-            top: `${y}px`,
-            left: `${x}px`,
+            top: `${top}px`,
+            left: `${left}px`,
             /* 拖拽移动 */
             cursor: "all-scroll",
             border: "1px dashed #000",
         });
+
         controlWrapper._style_ = _style_;
         const { removeControler, eles } = createControler(
             controlWrapper,
@@ -393,9 +394,9 @@ BarCodeFormModel.onclick = function () {
 
 // 确定生成
 BarCodeFormOk.onclick = function () {
-    $("#printmain").append(
+    $("#needPrint").append(
         `<div id=${"Code" + j} style="position: fixed; margin: 0;display：inline; overflow: hidden;z-index:2" class="BarCodedbclick refbox">
-		<svg id=${"BarCode" + j}></svg>
+        <svg id=${"BarCode" + j}></svg>
 		</div>`
     );
 
@@ -479,8 +480,7 @@ QarCodeFormModel.onclick = function () {
 
 // 二维码生成
 QarCodeFormok.onclick = function () {
-    $("#printmain").append(`<div id=${
-        "QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;display：inline;z-index:2" class="QarCodedbclick refbox">
+    $("#needPrint").append(`<div id=${"QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;display：inline;z-index:2" class="QarCodedbclick refbox">
 		<canvas id=${"QarCode" + k}></canvas></div>`
     );
 
@@ -543,7 +543,7 @@ $("#img_input2").on("change", function (e) {
             arg.target.result +
             '" alt="preview"/></div';
 
-        $("#printmain").append(img);
+        $("#needPrint").append(img);
         drag(document.getElementById("loadImg"), { minSize: 30 });
 
     };
@@ -574,7 +574,88 @@ $("#update").click(function () {
         let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
         let valName = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldname
         $("#" + eleId).attr('data-text', val)
-        $("#" + eleId).html(`<p>${valName}</p>`)
+        switch (valName) {
+            case '商品编码':
+                $("#" + eleId).html(`<p>${valName}:001</p>`)
+                break;
+            case '商品名称':
+                $("#" + eleId).html(`<p>${valName}:洁柔湿巾纸</p>`)
+                break;
+            case '单位':
+                $("#" + eleId).html(`<p>${valName}:盒</p>`)
+                break;
+            case '规格':
+                $("#" + eleId).html(`<p>${valName}:100*200</p>`)
+                break;
+            case '商品条码':
+                $("#" + eleId).html(`<p>${valName}:11236547845</p>`)
+                break;
+            case '销项税率':
+                $("#" + eleId).html(`<p>${valName}:2%</p>`)
+                break;
+            case '制作数量':
+                $("#" + eleId).html(`<p>${valName}:100000</p>`)
+                break;
+            case '规格单位':
+                $("#" + eleId).html(`<p>${valName}:/mm</p>`)
+                break;
+            case '会员价格':
+                $("#" + eleId).html(`<p>${valName}:7$</p>`)
+                break;
+            case '零售价格':
+                $("#" + eleId).html(`<p>${valName}:10$</p>`)
+                break;
+            case '促销价格':
+                $("#" + eleId).html(`<p>${valName}:8$</p>`)
+                break;
+            case '促销开始日':
+                $("#" + eleId).html(`<p>${valName}:2020.6.1</p>`)
+                break;
+            case '促销结束日':
+                $("#" + eleId).html(`<p>${valName}:2020.9.1</p>`)
+                break;
+            case '促销数量':
+                $("#" + eleId).html(`<p>${valName}:1000</p>`)
+                break;
+            case '商品等级':
+                $("#" + eleId).html(`<p>${valName}:合格</p>`)
+                break;
+            case '产地':
+                $("#" + eleId).html(`<p>${valName}:成都</p>`)
+                break;
+            case '商品编号':
+                $("#" + eleId).html(`<p>${valName}:001</p>`)
+                break;
+            case '商品颜色':
+                $("#" + eleId).html(`<p>${valName}:粉色</p>`)
+                break;
+            case '生成日期':
+                $("#" + eleId).html(`<p>${valName}:2020.7.1</p>`)
+                break;
+            case '分店编号':
+                $("#" + eleId).html(`<p>${valName}:0086</p>`)
+                break;
+            case '备注信息':
+                $("#" + eleId).html(`<p>${valName}:xxxx</p>`)
+                break
+            case '散货PLU码':
+                $("#" + eleId).html(`<p>${valName}:115631</p>`)
+                break
+            case '主供商家号':
+                $("#" + eleId).html(`<p>${valName}:123456</p>`)
+                break
+            case '自定义属性':
+                $("#" + eleId).html(`<p>${valName}:xxxx</p>`)
+                break
+            case '会员价Str':
+                $("#" + eleId).html(`<p>${valName}:7$</p>`)
+                break
+            case '零售价Str':
+                $("#" + eleId).html(`<p>${valName}:8$</p>`)
+                break
+            case '促销价Str':
+                $("#" + eleId).html(`<p>${valName}:10$</p>`)
+        }
     }
 
     $("#databind").val('')
@@ -590,7 +671,7 @@ const addText = document.getElementById("textBtn");
 const Print = document.getElementById("print");
 let n = 0;
 addText.onclick = function () {
-    $("#printmain")
+    $("#needPrint")
         .append(`<div style="position: fixed; margin: 0;overflow: hidden;display：inline;z-index:2" class='editable refbox'
              id=${"text" + n}><p contenteditable="true">Text</p></div>`);
 
@@ -607,7 +688,7 @@ addText.onclick = function () {
 const addLine = document.getElementById("line");
 let d = 0;
 addLine.onclick = function () {
-    $("#printmain").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;
+    $("#needPrint").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;
 	width:200px;height:3px;max-height:4px;min-height:3px;background-color:black;z-index:2"></div>`);
 
     drag(document.getElementById("lineDiv" + d), { minSize: 3 });
@@ -622,8 +703,7 @@ addLine.onclick = function () {
 const addBox = document.getElementById("box");
 let h = 0;
 addBox.onclick = function () {
-    $("#printmain").append(`<div id="${
-        "boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
+    $("#needPrint").append(`<div id="${"boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
     drag(document.getElementById("boxDiv" + h), { minSize: 30 });
     h++;
     allNum++;
@@ -631,7 +711,7 @@ addBox.onclick = function () {
 
 // 模板打印
 Print.onclick = function () {
-    location.href = "print.html"
+    location.href = "testPrint.html"
 };
 
 /**
@@ -645,12 +725,12 @@ Print.onclick = function () {
  * @param {number} h StorageData => boxDiv.length
  */
 
-const templateBtn = document.getElementById("template");
-const allTmpl = (function () {
+let allTmpl
+function tmpl () {
     let result;
     $.ajax({
         type: 'POST',
-        url: localStorage.getItem("erp_serverurl") + "/labels/set",
+        url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "showtemplates" }),
@@ -659,8 +739,10 @@ const allTmpl = (function () {
             if (data.Table[0].result == 'success') result = data.Table
         }
     })
-    return result;
-})();
+    allTmpl = result
+}
+tmpl()
+const templateBtn = document.getElementById("template");
 
 // 模板模态框
 let tmplIdName, tmplName, tmplPrintFormat
@@ -700,14 +782,18 @@ templateBtn.onclick = function () {
         $("#del" + num).click(function () {
             $.ajax({
                 type: 'POST',
-                url: localStorage.getItem("erp_serverurl") + "/labels/set",
+                url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
                 async: false,
                 success: function (data) {
                     if (data.Table[0].result == 'success') {
-                        location.reload();
+                        layer.confirm('模板删除成功', setTimeout(() => {
+                            layer.close()
+                            $("#templatemodel").modal("hide")
+                            tmpl()
+                        }, 300))
                     } else {
                         return (console.error(`模板删除接口故障:${data.Table[0].result}`))
                     }
@@ -717,7 +803,7 @@ templateBtn.onclick = function () {
 
         // 加载模板
         $("#" + num).click(function () {
-            let x = $("#printmain").children()
+            let x = $("#needPrint").children()
             for (var i = 0; i < x.length; i++) {
                 if (x[i].id !== 'demo') [
                     x[i].remove()
@@ -732,7 +818,7 @@ templateBtn.onclick = function () {
 
             let a = data.code.split('</div>')
             let b = a.slice(0, a.length - 1).join('</div>')
-            $("#printmain").append(b)
+            $("#needPrint").append(b)
             data.allNum = data.textlength + data.barcode + data.qarcode
             for (let l = 0; l < data.allNum; l++) {
                 if (document.getElementById('text' + l)) {
@@ -790,12 +876,12 @@ const saveTmpl = document.getElementById('save')
 saveTmpl.onclick = function () {
     let width = $("#demo").width()
     let height = $("#demo").height()
-    $("#printmain").width(width)
-    $("#printmain").height(height)
-    html2canvas(document.getElementById("printmain")).then(function (canvas) {
+    $("#needPrint").width(width)
+    $("#needPrint").height(height)
+    html2canvas(document.getElementById("needPrint")).then(function (canvas) {
         let imgUrl = canvas.toDataURL("image/png");
         let value = {
-            code: $("#printmain").html(),
+            code: $("#needPrint").html(),
             img: imgUrl,
             allNum: allNum,
             textlength: n,
@@ -808,7 +894,7 @@ saveTmpl.onclick = function () {
         let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/set",
+            url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({
@@ -818,7 +904,10 @@ saveTmpl.onclick = function () {
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') {
-                    location.reload();
+                    layer.confirm('模板保存成功', setTimeout(() => {
+                        layer.close()
+                        tmpl()
+                    }, 300))
                 } else {
                     return (console.error(`模板保存接口故障:${data.Table[0].result}`))
                 }
@@ -840,12 +929,12 @@ saveAsTemplate.onclick = function () {
         // 将当前模板框内元素html保存，并生成预览图
         let width = $("#demo").width()
         let height = $("#demo").height()
-        $("#printmain").width(width)
-        $("#printmain").height(height)
-        html2canvas(document.getElementById("printmain")).then(function (canvas) {
+        $("#needPrint").width(width)
+        $("#needPrint").height(height)
+        html2canvas(document.getElementById("needPrint")).then(function (canvas) {
             let imgUrl = canvas.toDataURL("image/png");
             let value = {
-                code: $("#printmain").html(),
+                code: $("#needPrint").html(),
                 img: imgUrl,
                 allNum: allNum,
                 textlength: n,
@@ -858,7 +947,7 @@ saveAsTemplate.onclick = function () {
             let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
             $.ajax({
                 type: 'POST',
-                url: localStorage.getItem("erp_serverurl") + "/labels/set",
+                url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
@@ -868,7 +957,10 @@ saveAsTemplate.onclick = function () {
                 async: false,
                 success: function (data) {
                     if (data.Table[0].result == 'success') {
-                        location.reload();
+                        layer.confirm('成功另存为新模板', setTimeout(() => {
+                            layer.close()
+                            tmpl()
+                        }, 300))
                     } else {
                         return (console.error(`模板保存接口故障:${data.Table[0].result}`))
                     }
@@ -908,14 +1000,16 @@ printFormatSave.onclick = function () {
         let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/set",
+            url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') {
-                    location.reload();
+                    layer.confirm('打印格式保存成功', setTimeout(() => {
+                        layer.close()
+                    }, 300))
                 } else {
                     return (console.error(`打印格式接口故障:${data.Table[0].result}`))
                 }
@@ -927,7 +1021,7 @@ printFormatSave.onclick = function () {
 // 清空还原
 const returnBtn = document.getElementById('return')
 returnBtn.onclick = function () {
-    let x = $("#printmain").children()
+    let x = $("#needPrint").children()
     for (var i = 0; i < x.length; i++) {
         if (x[i].id !== 'demo') [
             x[i].remove()

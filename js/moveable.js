@@ -4127,79 +4127,79 @@
             this.startDistance = 0;
             this.customDist = [0, 0];
             this.targets = [];
-            this.onDragStart = function (a) {
-                if (b.flag || !1 !== a.cancelable) {
-                    var c = b.options
-                        , d = c.container
-                        , e = c.pinchOutside
-                        , f = c.dragstart;
-                    c = c.preventRightClick;
-                    var g = b.isTouch;
-                    !b.flag && g && e && setTimeout(function () {
-                        d.addEventListener("touchstart", b.onDragStart, void 0)
-                    });
-                    b.flag && g && e && d.removeEventListener("touchstart", b.onDragStart);
-                    if (a.touches && 2 <= a.touches.length) {
-                        if (!b.flag && a.touches.length !== a.changedTouches.length)
-                            return;
-                        b.pinchFlag || b.onPinchStart(a)
-                    }
-                    b.flag || (e = b.startClients[0] ? b.startClients : ld(a),
-                        b.customDist = [0, 0],
-                        b.flag = !0,
-                        b.isDrag = !1,
-                        b.startClients = e,
-                        b.prevClients = e,
-                        b.datas = {},
-                        e = ka(e[b.movement = 0], b.prevClients[0], b.startClients[0]),
-                        (c && 3 === a.which || !1 === (f && f(ea({
-                            type: "dragstart",
-                            datas: b.datas,
-                            inputEvent: a
-                        }, e)))) && (b.startClients = [],
-                            b.prevClients = [],
-                            b.flag = !1),
-                        b.flag && a.preventDefault())
-                }
-            }
-                ;
-            this.onDrag = function (a, c) {
-                if (b.flag) {
-                    var d = ld(a);
-                    b.pinchFlag && b.onPinch(a, d);
-                    if ((d = b.move([0, 0], a, d)) && (d.deltaX || d.deltaY)) {
-                        var e = b.options.drag;
-                        e && e(ea({}, d, {
-                            isScroll: !!c,
-                            inputEvent: a
-                        }))
-                    }
-                }
-            }
-                ;
-            this.onDragEnd = function (a) {
-                if (b.flag) {
-                    var c = b.options
-                        , d = c.dragend
-                        , e = c.pinchOutside;
-                    c = c.container;
-                    b.isTouch && e && c.removeEventListener("touchstart", b.onDragStart);
-                    b.pinchFlag && b.onPinchEnd(a);
-                    b.flag = !1;
-                    e = b.prevClients;
-                    c = b.startClients;
-                    e = b.pinchFlag ? jd(e, e, c, b.startPinchClients) : ka(e[0], e[0], c[0]);
-                    b.startClients = [];
-                    b.prevClients = [];
-                    d && d(ea({
-                        type: "dragend",
-                        datas: b.datas,
-                        isDrag: b.isDrag,
-                        inputEvent: a
-                    }, e))
-                }
-            }
-                ;
+            /*             this.onDragStart = function (a) {
+                            if (b.flag || !1 !== a.cancelable) {
+                                var c = b.options
+                                    , d = c.container
+                                    , e = c.pinchOutside
+                                    , f = c.dragstart;
+                                c = c.preventRightClick;
+                                var g = b.isTouch;
+                                !b.flag && g && e && setTimeout(function () {
+                                    d.addEventListener("touchstart", b.onDragStart, void 0)
+                                });
+                                b.flag && g && e && d.removeEventListener("touchstart", b.onDragStart);
+                                if (a.touches && 2 <= a.touches.length) {
+                                    if (!b.flag && a.touches.length !== a.changedTouches.length)
+                                        return;
+                                    b.pinchFlag || b.onPinchStart(a)
+                                }
+                                b.flag || (e = b.startClients[0] ? b.startClients : ld(a),
+                                    b.customDist = [0, 0],
+                                    b.flag = !0,
+                                    b.isDrag = !1,
+                                    b.startClients = e,
+                                    b.prevClients = e,
+                                    b.datas = {},
+                                    e = ka(e[b.movement = 0], b.prevClients[0], b.startClients[0]),
+                                    (c && 3 === a.which || !1 === (f && f(ea({
+                                        type: "dragstart",
+                                        datas: b.datas,
+                                        inputEvent: a
+                                    }, e)))) && (b.startClients = [],
+                                        b.prevClients = [],
+                                        b.flag = !1),
+                                    b.flag && a.preventDefault())
+                            }
+                        }
+                            ;
+                        this.onDrag = function (a, c) {
+                            if (b.flag) {
+                                var d = ld(a);
+                                b.pinchFlag && b.onPinch(a, d);
+                                if ((d = b.move([0, 0], a, d)) && (d.deltaX || d.deltaY)) {
+                                    var e = b.options.drag;
+                                    e && e(ea({}, d, {
+                                        isScroll: !!c,
+                                        inputEvent: a
+                                    }))
+                                }
+                            }
+                        }
+                            ;
+                        this.onDragEnd = function (a) {
+                            if (b.flag) {
+                                var c = b.options
+                                    , d = c.dragend
+                                    , e = c.pinchOutside;
+                                c = c.container;
+                                b.isTouch && e && c.removeEventListener("touchstart", b.onDragStart);
+                                b.pinchFlag && b.onPinchEnd(a);
+                                b.flag = !1;
+                                e = b.prevClients;
+                                c = b.startClients;
+                                e = b.pinchFlag ? jd(e, e, c, b.startPinchClients) : ka(e[0], e[0], c[0]);
+                                b.startClients = [];
+                                b.prevClients = [];
+                                d && d(ea({
+                                    type: "dragend",
+                                    datas: b.datas,
+                                    isDrag: b.isDrag,
+                                    inputEvent: a
+                                }, e))
+                            }
+                        } */
+            ;
             a = [].concat(a);
             var d = this.options = ea({
                 container: 1 < a.length ? window : a[0],
@@ -8219,7 +8219,7 @@
         , S = new pg({
             left: "0px",
             top: "0px",
-            width: "280px",
+            width: "300px",
             height: "250px",
             transform: {
                 translateX: "0px",

@@ -4,20 +4,20 @@ window.onload = function () {
     const design = document.getElementById('design')
 
     design.onclick = function () {
-        window.location.href = 'design.html'
+        window.location.href = 'testDesign.html'
     }
 
     let result
     setTimeout(() => {
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/print",
+            url: "http://webapibeta.mzsale.com/mzato/main/labels/print",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({
                 "vtype": "labelprint",
-                "item1": /* '4' */  localStorage.getItem("erp_labelid"),
-                "item2": /* '0099' */  localStorage.getItem("erp_fdbh")
+                "item1": '4',
+                "item2": '0086'
             }),
             async: false,
             success: function (data) {
@@ -27,6 +27,7 @@ window.onload = function () {
 
         // 如果没找到 返回
         if (result.Table[0].result == 'warning') return alert('未找到对应的模板和门店编号')
+        result.Table[0].dysl -= 1
         // ES6 Object.values兼容
         if (!Object.values) Object.values = function (obj) {
             if (obj !== Object(obj))
@@ -52,6 +53,8 @@ window.onload = function () {
         const tbVal = document.getElementById('dataTB')
         const tpVal = document.getElementById('dataTP')
         const plVal = document.getElementById('dataPL')
+        const hVal = document.getElementById('dataH')
+        const wVal = document.getElementById('dataW')
 
         $("#dataLR").val(printformat.boxLR)
         $("#dataTB").val(printformat.boxTB)
@@ -86,6 +89,14 @@ window.onload = function () {
             modalChange()
         }
 
+        hVal.onchange = function () {
+            modalChange()
+        }
+
+        wVal.onchange = function () {
+            modalChange()
+        }
+
         function modalChange () {
             cValue = $("#dataColumn").val()
             lrValue = $("#dataLR").val()
@@ -114,7 +125,7 @@ window.onload = function () {
 
             // 模板内容生成
             function creatTmpl (tmpl, lens) {
-                let x = $("#printmain").children()
+                let x = $("#needPrint").children()
                 for (var i = 0; i < x.length; i++) {
                     if (x[i].id !== 'demo') [
                         x[i].remove()
@@ -124,14 +135,12 @@ window.onload = function () {
                 let data = JSON.parse(htmlDecode(tmpl[0].templatecontent))
                 let a = data.code.split('</div>')
                 let b = a.slice(0, a.length - 1).join('</div>')
-                $("#printmain").append(b)
+                $("#needPrint").append(b)
                 for (let l = 0; l < data.allNum; l++) {
                     if (document.getElementById('text' + l)) {
-                        console.log('text++')
                     }
 
                     if (document.getElementById('BarCode' + l)) {
-                        console.log('barcode++')
                         JsBarcode("#BarCode" + l, 'default', {
                             width: 1,
                             height: 10,
@@ -140,7 +149,6 @@ window.onload = function () {
                     }
 
                     if (document.getElementById('QrCode' + l)) {
-                        console.log('qarcode++')
                         QRCode.toCanvas(document.getElementById('QarCode' + l), 'default', {
                             margin: 1,
                             width: 64
@@ -148,19 +156,17 @@ window.onload = function () {
                     }
 
                     if (document.getElementById('lineDiv' + l)) {
-                        console.log('line++')
                     }
 
                     if (document.getElementById('boxDiv' + l)) {
-                        console.log('box++')
                     }
                 }
 
-                const pageText = $("#printmain").children("div .editable");
-                const pageBarCode = $("#printmain").children("div .BarCodedbclick");
-                const pageQarCode = $("#printmain").children("div .QarCodedbclick");
-                const pageLine = $("#printmain").children("div .Line");
-                const pageBox = $("#printmain").children("div .Box");
+                const pageText = $("#needPrint").children("div .editable");
+                const pageBarCode = $("#needPrint").children("div .BarCodedbclick");
+                const pageQarCode = $("#needPrint").children("div .QarCodedbclick");
+                const pageLine = $("#needPrint").children("div .Line");
+                const pageBox = $("#needPrint").children("div .Box");
                 creatTmplBarCode(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue, tpValue, plValue, lens)
                 creatTmplQarCode(cValue, chooseData, boxheight, boxwidth, lrValue, tbValue, tpValue, plValue, lens)
                 creatTmplText(cValue, chooseData, boxheight, boxwidth, dataVal, lrValue, tbValue, tpValue, plValue, lens)
@@ -175,22 +181,26 @@ window.onload = function () {
                     let spacing = 0
                     let status = 1
                     let cv = columnVal
+                    console.log(data[0].dysl)
                     console.log(`生成10条预览标签`)
                     for (var i = 0; i < 1; i++) {
                         console.log(`处理模板数据`)
                         let newBarCode = pageBarCode.clone()
                         if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
                         for (var name in data[0]) {
-                            if (name == 'barcode') {
+                            if (name == 'smm') {
                                 let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
-                                JsBarcode("#BarCode" + n, data[0].smm, {
-                                    format: 'CODE128',
-                                    height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
-                                    width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
-                                    font: 'Sans-serif'
+                                JsBarcode("#BarCode" + n, '1234567890128', {
+                                    format: 'EAN13',
+                                    height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 40,
+                                    width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
+                                    font: 'Sans-serif',
+                                    fontOption: 'bold',
+                                    fontSize: 14
                                 })
                             }
                         }
+
                     }
                     // 第一层循环 => 处理所选数据数量
                     for (var i = 0; i < lens; i++) {
@@ -227,12 +237,14 @@ window.onload = function () {
                                     BarCode[0].firstElementChild.id =
                                         BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
 
-                                    $("#printmain").append(BarCode[0])
-                                    JsBarcode("#BarCode" + nums, data[i].smm, {
-                                        format: 'CODE128',
-                                        height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 30,
+                                    $("#needPrint").append(BarCode[0])
+                                    document.getElementById('needPrint').style.height = BarCode[0].style.top
+                                    JsBarcode("#BarCode" + nums, '1234567890128', {
+                                        format: 'EAN13',
+                                        height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 40,
                                         width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
                                         font: 'Sans-serif',
+                                        fontOption: 'bold',
                                         fontSize: 14
                                     })
                                     console.log(`条码ID:${BarCode[0].id} 条码高度:${BarCode[0].style.top}`)
@@ -262,7 +274,7 @@ window.onload = function () {
                         let newQarCode = pageQarCode.clone()
                         if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
                         for (var name in data[0]) {
-                            if (name == 'qarcode') {
+                            if (name == 'smm') {
                                 let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
                                 QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].smm, {
                                     margin: 1,
@@ -306,7 +318,7 @@ window.onload = function () {
                                     QarCode[0].firstElementChild.id =
                                         QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
 
-                                    $("#printmain").append(QarCode[0])
+                                    $("#needPrint").append(QarCode[0])
                                     QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].smm, {
                                         margin: 1,
                                         width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
@@ -362,13 +374,17 @@ window.onload = function () {
                                 text[c].style.left =
                                     Number(text[c].style.left.slice(0, text[c].style.left.length - 2)) +
                                     Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
+
+                                text[c].style.fontWight = 'bold'
+                                text[c].style.fontSize = '16px'
                                 // text
                                 text[c].firstChild.innerHTML = `${textDataVal[j][text[c].dataset.text]}`;
 
                                 text[c].firstChild.setAttribute('style', 'word-wrap:break-word;')
                                 text[c].firstChild.setAttribute('style', `width:${boxwidth}px`)
 
-                                $("#printmain").append(text[c])
+                                $("#needPrint").append(text[c])
+                                document.getElementById('needPrint').style.width = text[c].style.left
                                 console.log(`正在处理第${c}个文本,${textDataVal[num][newText[c].dataset.text]}`)
                                 console.log(`间距倍数:${spacing} 文本框高度:${text[c].style.top}`)
                                 console.log(`列数：${status} 文本框宽度:${text[c].style.left}`)
@@ -413,7 +429,7 @@ window.onload = function () {
                                 line[c].style.left =
                                     Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
                                     Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
-                                $("#printmain").append(line[c])
+                                $("#needPrint").append(line[c])
                             }
                             status++
                         }
@@ -454,7 +470,7 @@ window.onload = function () {
                                     Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
                                     Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
 
-                                $("#printmain").append(line[0])
+                                $("#needPrint").append(line[0])
                             }
                             status++
                         }
@@ -477,11 +493,11 @@ window.onload = function () {
         // 获取列值
         const cValue = $("#dataColumn").val()
         // 获取模板
-        const pageText = $("#printmain").children("div .editable");
-        const pageBarCode = $("#printmain").children("div .BarCodedbclick");
-        const pageQarCode = $("#printmain").children("div .QarCodedbclick");
-        const pageLine = $("#printmain").children("div .Line");
-        const pageBox = $("#printmain").children("div .Box");
+        const pageText = $("#needPrint").children("div .editable");
+        const pageBarCode = $("#needPrint").children("div .BarCodedbclick");
+        const pageQarCode = $("#needPrint").children("div .QarCodedbclick");
+        const pageLine = $("#needPrint").children("div .Line");
+        const pageBox = $("#needPrint").children("div .Box");
         // 获取模板框及宽度
         const firstBox = document.getElementById("demo");
         let height = firstBox.style.height;
@@ -502,7 +518,7 @@ window.onload = function () {
         Print()
         // 模板内容生成
         function creatTmpl (tmpl) {
-            let x = $("#printmain").children()
+            let x = $("#needPrint").children()
             for (var i = 0; i < x.length; i++) {
                 if (x[i].id !== 'demo') [
                     x[i].remove()
@@ -512,7 +528,7 @@ window.onload = function () {
             let data = JSON.parse(htmlDecode(tmpl[0].templatecontent))
             let a = data.code.split('</div>')
             let b = a.slice(0, a.length - 1).join('</div>')
-            $("#printmain").append(b)
+            $("#needPrint").append(b)
             for (let l = 0; l < data.allNum; l++) {
                 if (document.getElementById('text' + l)) {
                     console.log('text++')
@@ -559,13 +575,15 @@ window.onload = function () {
                 let newBarCode = pageBarCode.clone()
                 if (newBarCode.length <= 0) return (console.log(`Error: 一维码模板不存在`))
                 for (var name in data[0]) {
-                    if (name == 'barcode') {
+                    if (name == 'smm') {
                         let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
-                        JsBarcode("#BarCode" + n, data[0].barcode, {
-                            format: 'CODE128',
-                            height: $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || 30,
-                            width: $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || 2,
-                            font: 'Sans-serif'
+                        JsBarcode("#BarCode" + n, '1234567890128', {
+                            format: 'EAN13',
+                            height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 40,
+                            width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
+                            font: 'Sans-serif',
+                            fontOption: 'bold',
+                            fontSize: 14
                         })
                     }
                 }
@@ -606,12 +624,15 @@ window.onload = function () {
                             BarCode[0].firstElementChild.id =
                                 BarCode[0].firstElementChild.id.slice(0, BarCode[0].firstElementChild.id.length - 1) + nums
 
-                            $("#printmain").append(BarCode[0])
-                            JsBarcode("#BarCode" + nums, data[i].smm, {
-                                format: 'CODE128',
-                                height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 30,
+                            $("#needPrint").append(BarCode[0])
+                            document.getElementById('needPrint').style.height = BarCode[0].style.top
+                            document.getElementById('needPrint').style.width = BarCode[0].style.left
+                            JsBarcode("#BarCode" + nums, '1234567890128', {
+                                format: 'EAN13',
+                                height: /* $("#EditBarCodeHeight").val() || $("#BarCodeHeight").val() || */ 40,
                                 width: /* $("#EditBarCodeWidth").val() || $("#BarCodeWidth").val() || */ 1,
                                 font: 'Sans-serif',
+                                fontOption: 'bold',
                                 fontSize: 14
                             })
                             console.log(`条码ID:${BarCode[0].id} 条码高度:${BarCode[0].style.top}`)
@@ -641,9 +662,9 @@ window.onload = function () {
                 let newQarCode = pageQarCode.clone()
                 if (newQarCode.length <= 0) return (console.log(`Error: 二维码模板不存在`))
                 for (var name in data[0]) {
-                    if (name == 'qarcode') {
+                    if (name == 'smm') {
                         let n = newQarCode[0].id.slice(newQarCode[0].id.length - 1, newQarCode[0].id.length)
-                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].qarcode, {
+                        QRCode.toCanvas(document.getElementById("QarCode" + n), data[0].smm, {
                             margin: 1,
                             width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
                         })
@@ -686,7 +707,7 @@ window.onload = function () {
                             QarCode[0].firstElementChild.id =
                                 QarCode[0].firstElementChild.id.slice(0, QarCode[0].firstElementChild.id.length - 1) + nums
 
-                            $("#printmain").append(QarCode[0])
+                            $("#needPrint").append(QarCode[0])
                             QRCode.toCanvas(document.getElementById("QarCode" + nums), data[i].smm, {
                                 margin: 1,
                                 width: $("#EditQarCodeWidth").val() || $("#QarCodeWidth").val() || 64
@@ -743,13 +764,16 @@ window.onload = function () {
                         text[c].style.left =
                             Number(text[c].style.left.slice(0, text[c].style.left.length - 2)) +
                             Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
+                        text[c].style.fontWight = 'bold'
+                        text[c].style.fontSize = '16px'
                         // text
                         text[c].firstChild.innerHTML = `${textDataVal[j][text[c].dataset.text]}`;
 
                         text[c].firstChild.setAttribute('style', 'word-wrap:break-word;')
                         text[c].firstChild.setAttribute('style', `width:${boxwidth}px`)
 
-                        $("#printmain").append(text[c])
+                        $("#needPrint").append(text[c])
+                        document.getElementById('needPrint').style.width = text[c].style.left
                         console.log(`正在处理第${c}个文本,${textDataVal[num][newText[c].dataset.text]}`)
                         console.log(`间距倍数:${spacing} 文本框高度:${text[c].style.top}`)
                         console.log(`列数：${status} 文本框宽度:${text[c].style.left}`)
@@ -795,7 +819,7 @@ window.onload = function () {
                         line[c].style.left =
                             Number(line[c].style.left.slice(0, line[c].style.left.length - 2)) +
                             Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
-                        $("#printmain").append(line[c])
+                        $("#needPrint").append(line[c])
                     }
                     status++
                 }
@@ -837,7 +861,7 @@ window.onload = function () {
                             Number(line[0].style.left.slice(0, line[0].style.left.length - 2)) +
                             Number(boxwidth * status) + Number(lrValue * status) + Number(plValue) + 'px'
 
-                        $("#printmain").append(line[0])
+                        $("#needPrint").append(line[0])
                     }
                     status++
                 }
@@ -847,18 +871,35 @@ window.onload = function () {
         // 打印
         function Print () {
             // 修改 pisition值避免出现打印内容重复
-            $("#printmain").children().css('position', 'absolute')
+            $("#needPrint").children().css('position', 'absolute')
+            let allChildren = $("#needPrint").children()
+            let printStatus = false
+            for (let i = 0; i < allChildren.length; i++) {
+                allChildren[i].style.top =
+                    allChildren[i].style.top.slice(0, allChildren[i].style.top.length - 2) - 117 + 'px'
 
 
-            // printJs 插件打印
-            printJS({
-                printable: "printmain",
-                type: "html",
-                css: '/css/print.css',
-                scanStyles: false
-            });
-            // 改回原值避免打印元素整体错位
-            $("#printmain").children().css('position', 'fixed')
+                allChildren[i].style.left =
+                    allChildren[i].style.left.slice(0, allChildren[i].style.left.length - 2) - 30 + 'px'
+
+                if (i == allChildren.length - 1) {
+                    printStatus = true
+                }
+            }
+
+            domtoimage.toSvg(document.getElementById('needPrint'))
+                .then(function (dataUrl) {
+                    document.getElementById('printImg').src = dataUrl;
+                });
+
+            setTimeout(() => {
+                printJS({
+                    printable: "printImg",
+                    type: "html",
+                    css: '/css/print.css',
+                    scanStyles: false
+                });
+            }, 1000);
         }
         $("#printmodal").modal('hide')
         console.timeEnd('print🚑')
@@ -880,7 +921,7 @@ window.onload = function () {
         let result;
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/set",
+            url: "http://webapibeta.mzsale.com/mzato/main/labels/set",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({ "vtype": "showtemplates" }),
@@ -919,6 +960,7 @@ window.onload = function () {
     </div>
 </div>`);
 
+
             if (allTmpl[i].defaultzt == 'T') {
                 $("#del" + i).attr("style", "display:none;");
             }
@@ -946,7 +988,7 @@ window.onload = function () {
 
             // 加载模板
             $("#" + num).click(function () {
-                let x = $("#printmain").children()
+                let x = $("#needPrint").children()
                 for (var i = 0; i < x.length; i++) {
                     if (x[i].id !== 'demo') [
                         x[i].remove()
@@ -955,7 +997,7 @@ window.onload = function () {
 
                 let a = data.code.split('</div>')
                 let b = a.slice(0, a.length - 1).join('</div>')
-                $("#printmain").append(b)
+                $("#needPrint").append(b)
                 for (let l = 0; l < data.allNum; l++) {
                     if (document.getElementById('text' + l)) {
                         console.log('text++')

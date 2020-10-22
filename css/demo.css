@@ -104,7 +104,7 @@ a {
 
 .page.main {
     z-index: 1;
-    min-height: 60px;
+    min-height: 700px;
     overflow: hidden;
 }
 
@@ -349,7 +349,7 @@ code.hljs {
     left: 0px;
     width: 30px;
     height: calc(100vh - 30px);
-    min-height: 600px;
+    min-height: 700px;
 }
 
 .divisions {

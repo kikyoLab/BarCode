@@ -1,10 +1,10 @@
 "use strict";
-// 标签绑定字段数据
+/* 获取标签绑定字段数据 */
 const dataFiled = (function () {
     let result;
     $.ajax({
         type: 'POST',
-        url: localStorage.getItem("erp_serverurl") + "/labels/set",
+        url: "http://api.mzsale.cn/mzsale/web/labels/set",
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "getdatafield" }),
@@ -20,16 +20,16 @@ const dataFiled = (function () {
     return result
 })();
 
-// bootstrap-table设置
+/* bootstrapTable */
 (function () {
     if (!dataFiled) return (alert(`绑定数据接口故障,请联系管理人员`))
-    // 富文本数据绑定下拉栏
+    /* 富文本数据绑定下拉栏 */
     let data = dataFiled.filter(x =>
         x.datafieldid !== 'dysl' &&
         x.datafieldid !== 'recordid' &&
         x.datafieldid !== 'smm'
     )
-
+    /* 循环新增下拉选项 */
     for (var i = 0; i < data.length; i++) {
         $("#databind").append(`<option>${data[i].datafieldname}</option>`)
     }
@@ -46,7 +46,7 @@ $(".textDataBind").attr('style', 'display:none')
 function drag (ele, config = {}) {
     const eleRemove = document.getElementById("remove")
     let removeDragger;
-    // 单击事件 
+    /* 单击事件 */
     ele.addEventListener("click", () => {
         if (!removeDragger) {
             const { removeAllControler, eles } = injectController(ele, config);
@@ -60,23 +60,20 @@ function drag (ele, config = {}) {
             };
             document.addEventListener("mouseup", handleRemove);
         }
+        /* 移除 */
         eleRemove.onclick = function () {
             let eleid = ele.id
             $("#" + eleid).remove()
-            console.log(`${ele.id} is remove `)
         }
     });
 
-    // 双击事件 
+    /* 双击事件 */
     ele.addEventListener("dblclick", () => {
-        console.log(ele.id + ' dbclick event')
+        /* 文本框事件 */
         if (ele.className == "editable refbox") {
-            // 文本框事件 
-            eleId = ele.id;
-            $("#exampleModalCenter").modal({
-                backdrop: 'static'
-            })
             const textType = document.getElementById('textType')
+            $("#exampleModalCenter").modal({ backdrop: 'static' })
+            eleId = ele.id;
             textType.onchange = function () {
                 let val = $("#textType").val()
                 if (val == '数据库数据') {
@@ -86,47 +83,42 @@ function drag (ele, config = {}) {
                     $(".textDataBind").attr('style', 'display:none')
                 }
             }
-            // 获取该元素自定义属性
+            /* 获取该元素自定义属性 */
             let target = document.getElementById('' + eleId)
-            console.log(target.dataset.text)
             if (target.dataset.text) {
                 let targets = dataFiled.filter((x) => x.datafieldid == target.dataset.text)[0].datafieldname
                 $("#databind").val(targets)
             }
-            // 获取 x y 坐标值
+            /* 获取 x y 坐标值 */
             let left = $("#" + eleId).css('left').slice(0, $("#" + eleId).css('left').length - 2)
             let top = $("#" + eleId).css('top').slice(0, $("#" + eleId).css('top').length - 2)
             $("#textXvalue").val(left)
             $("#textYvalue").val(top)
 
-            // 文本赋值
+            /* 文本赋值 */
             um.setContent(
-                $("#" + ele.id)
-                    .children()
-                    .html()
+                $("#" + ele.id).children().html()
             );
-        } else if (ele.className == "BarCodedbclick refbox") {
-            // 一维码事件 
-
+        }
+        /* 一维码事件 */
+        else if (ele.className == "BarCodedbclick refbox") {
             ele.addEventListener("dblclick", () => {
-                // 从session中获取该一维码原始值
+                /* 从session中获取该一维码原始值 */
                 let a = JSON.parse(sessionStorage.getItem(ele.id));
-                $("#EditbarcodeformModalCenter").modal({
-                    backdrop: 'static'
-                });
+                $("#EditbarcodeformModalCenter").modal({ backdrop: 'static' });
                 JsBarcode("#EditBarCodeView", a.data, {
                     format: a.format,
                     height: a.height,
                     width: a.width,
                     font: 'Sans-serif',
                 });
-                // 把原始值展示表单
+                /* 把原始值展示表单 */
                 $("#EditBarCodeID").val(a.data);
                 $("#EditBarCodeType").val(a.format);
                 $("#EditBarCodeHeight").val(a.height);
                 $("#EditBarCodeWidth").val(a.width);
             });
-            // 将表单值赋给一维码
+            /* 将表单值赋给一维码 */
             const EditBarCodeFromOk = document.getElementById("EditBarCodeFormok");
             EditBarCodeFromOk.onclick = function () {
                 JsBarcode("#Bar" + ele.id, $("#EditBarCodeID").val(), {
@@ -135,7 +127,7 @@ function drag (ele, config = {}) {
                     width: $("#EditBarCodeWidth").val(),
                     font: 'Sans-serif',
                 });
-                // 更新值
+                /* 更新值 */
                 const editcodeval = {
                     id: ele.id,
                     data: $("#EditBarCodeID").val(),
@@ -143,24 +135,23 @@ function drag (ele, config = {}) {
                     height: $("#EditBarCodeHeight").val(),
                     width: $("#EditBarCodeWidth").val(),
                 };
+                /* 把更新后的值存入session */
                 sessionStorage.setItem(ele.id, JSON.stringify(editcodeval));
                 $("#EditbarcodeformModalCenter").modal("hide");
             };
-        } else if (ele.className == "QarCodedbclick refbox") {
-            // 二维码事件
+        }
+        /* 二维码事件 */
+        else if (ele.className == "QarCodedbclick refbox") {
             ele.addEventListener("dblclick", () => {
-                // 获取二维码原始值
+                /* 获取二维码原始值 */
                 let b = JSON.parse(sessionStorage.getItem(ele.id));
-                $("#EditqarcodeformModalCenter").modal({
-                    backdrop: 'static'
-                });
+                $("#EditqarcodeformModalCenter").modal({ backdrop: 'static' });
                 QRCode.toCanvas(document.getElementById("EditQarCodeView"), b.data);
-                // 把原始值展示在表单
+                /* 把原始值展示在表单 */
                 $("#EditQarCodeID").val(b.data);
                 $("#EditQarCodeWidth").val(b.width)
             });
-
-            // 把表单值赋给二维码
+            /* 把表单值赋给二维码 */
             const EditQarCodeFromOk = document.getElementById("EditQarCodeFormok");
             EditQarCodeFromOk.onclick = function () {
                 let qrid = ele.id;
@@ -169,13 +160,12 @@ function drag (ele, config = {}) {
                     $("#EditQarCodeID").val(), {
                     width: $("#EditQarCodeWidth").val()
                 });
-
-                // 更新值
+                /* 更新值 */
                 const editqarcodeval = {
                     id: ele.id,
                     data: $("#EditQarCodeID").val(),
                 };
-
+                /* 把更新后的值存入session */
                 sessionStorage.setItem(ele.id, JSON.stringify(editqarcodeval));
                 $("#EditqarcodeformModalCenter").modal("hide");
             };
@@ -184,14 +174,15 @@ function drag (ele, config = {}) {
 
     function injectController (ele, config) {
         /* 获取初始位置 */
-        const { x, y, width, height } = ele.getBoundingClientRect();
+        const { left, top, width, height } = ele.getBoundingClientRect();
         const bodyMargin = getPxNumber(getComputedStyle(document.body).margin);
         /* 控件容器 */
         const controlWrapper = document.createElement("div");
         /* 设置目标元素和容器样式 */
         const _style_ = new Proxy(controlWrapper.style, {
+            /*  获取 controlWrapper的width height left top */
             get (o, key) {
-                /* get controlWrapper.style.xxx的xxx样式值 */
+                /* 获取 controlWrapper.style.xxx的xxx样式值 */
                 let originalStyleValue = Reflect.get(o, key);
                 /* 修改 key */
                 if (["width", "height", "left", "top"].includes(key) && !originalStyleValue) {
@@ -201,7 +192,7 @@ function drag (ele, config = {}) {
             },
             set (o, key, val) {
                 const pxNumber = getPxNumber(val);
-                /* 目标元素style */
+                /* 目标元素 style */
                 if (["left", "top"].includes(key)) {
                     ele.style[key] = `${pxNumber - bodyMargin}px`;
                 } else if (["width", "height"].includes(key)) {
@@ -216,12 +207,13 @@ function drag (ele, config = {}) {
             position: "fixed",
             width: `${width}px`,
             height: `${height}px`,
-            top: `${y}px`,
-            left: `${x}px`,
+            top: `${top}px`,
+            left: `${left}px`,
             /* 拖拽移动 */
             cursor: "all-scroll",
             border: "1px dashed #000",
         });
+
         controlWrapper._style_ = _style_;
         const { removeControler, eles } = createControler(
             controlWrapper,
@@ -377,13 +369,13 @@ const BarCodeFormModel = document.getElementById("BarCodeFormModel");
 const BarCodeFormOk = document.getElementById("BarCodeFormok");
 let j = 0;
 
-// 一维码原始生成
+/* 一维码原始生成 */
 BarCodeFormModel.onclick = function () {
     $("#barcodeformModalCenter").modal({
         backdrop: 'static'
     });
 
-    // 一维码修改预览
+    /* 一维码修改预览 */
     JsBarcode("#BarCodeView", "data", {
         format: "CODE128",
         height: parseInt($("#BarCodeHeight").val()),
@@ -391,11 +383,11 @@ BarCodeFormModel.onclick = function () {
     });
 };
 
-// 确定生成
+/* 一维码确定生成 */
 BarCodeFormOk.onclick = function () {
-    $("#printmain").append(
+    $("#needPrint").append(
         `<div id=${"Code" + j} style="position: fixed; margin: 0;display：inline; overflow: hidden;z-index:2" class="BarCodedbclick refbox">
-		<svg id=${"BarCode" + j}></svg>
+        <svg id=${"BarCode" + j}></svg>
 		</div>`
     );
 
@@ -405,11 +397,12 @@ BarCodeFormOk.onclick = function () {
         width: $("#BarCodeWidth").val(),
         font: 'Sans-serif',
     });
-    // 加上拖拽事件并初始化
+
+    /* 加上拖拽事件并初始化 */
     drag(document.getElementById("Code" + j), { minSize: 52 });
     $("#BarCode" + j).click()
 
-    // 将值存入session
+    /* 将值存入session */
     $("#barcodeformModalCenter").modal("hide");
     const codeval = {
         id: "Code" + j,
@@ -418,12 +411,13 @@ BarCodeFormOk.onclick = function () {
         height: $("#BarCodeHeight").val(),
         width: $("#BarCodeWidth").val(),
     };
+    /* 存值 */
     sessionStorage.setItem("Code" + j, JSON.stringify(codeval));
     j++;
     allNum++;
 };
 
-// 动态监听一维码表单变动并更新一维码预览图像
+/* 动态监听一维码表单变动并更新一维码预览图像 */
 $("#BarCodeForm").change(function () {
     JsBarcode("#BarCodeView", $("#BarCodeID").val(), {
         format: $("#BarCodeType").val(),
@@ -441,7 +435,7 @@ $("#BarCodeForm").change(function () {
     });
 });
 
-// 动态监听一维码修改表单变动并更新一维码预览图像
+/* 动态监听一维码修改表单变动并更新一维码预览图像 */
 $("#EditBarCodeForm").change(function () {
     JsBarcode("#EditBarCodeView", $("#EditBarCodeID").val(), {
         format: $("#EditBarCodeType").val(),
@@ -471,25 +465,24 @@ QarCodeFormModel.onclick = function () {
         backdrop: 'static'
     });
 
-    // 二维码预览
+    /* 二维码预览 */
     QRCode.toCanvas(document.getElementById("QarCodeView"), "data", {
         errorCorrectionLevel: "H",
     });
 };
 
-// 二维码生成
+/* 二维码生成 */
 QarCodeFormok.onclick = function () {
-    $("#printmain").append(`<div id=${
-        "QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;display：inline;z-index:2" class="QarCodedbclick refbox">
-		<canvas id=${"QarCode" + k}></canvas></div>`
+    $("#needPrint").append(`<div id=${"QrCode" + k} style="position: fixed; margin: 0; overflow: hidden;display：inline;z-index:2" class="QarCodedbclick refbox"><canvas id=${"QarCode" + k}></canvas></div>`
     );
 
+    /* 生成二维码 */
     QRCode.toCanvas(document.getElementById("QarCode" + k), $("#QarCodeID").val(), {
         margin: 1,
         width: $("#QarCodeWidth").val(),
     });
 
-    // 加入拖拽事件并初始化
+    /* 加入拖拽事件并初始化 */
     drag(document.getElementById("QrCode" + k), { minSize: 30 });
     $("#QarCode" + k).click()
 
@@ -500,13 +493,13 @@ QarCodeFormok.onclick = function () {
         width: $("#QarCodeWidth").val()
     };
 
-    // 将值存入session
+    /* 将值存入session */
     sessionStorage.setItem("QrCode" + j, JSON.stringify(qrcodeval));
     k++;
     allNum++;
 };
 
-// 动态监听原始表单变动并更新二维码预览
+/* 动态监听原始表单变动并更新二维码预览 */
 $("#QarCodeForm").change(function () {
     QRCode.toCanvas(
         document.getElementById("QarCodeView"),
@@ -517,7 +510,7 @@ $("#QarCodeForm").change(function () {
     });
 });
 
-// 动态监听修改表单变动并更新二维码预览
+/* 动态监听修改表单变动并更新二维码预览 */
 $("#EditQarCodeForm").change(function () {
     QRCode.toCanvas(
         document.getElementById("EditQarCodeView"),
@@ -528,7 +521,7 @@ $("#EditQarCodeForm").change(function () {
     });
 });
 
-// 图片上传
+/* 图片上传 */
 $("#img_input2").on("change", function (e) {
     let file = e.target.files[0];
     if (!file.type.match("image.*")) {
@@ -543,13 +536,13 @@ $("#img_input2").on("change", function (e) {
             arg.target.result +
             '" alt="preview"/></div';
 
-        $("#printmain").append(img);
+        $("#needPrint").append(img);
         drag(document.getElementById("loadImg"), { minSize: 30 });
 
     };
 });
 
-// 富文本初始化
+/* 富文本初始化 */
 $(function () {
     window.um = UM.getEditor("container", {
         toolbar: [
@@ -558,11 +551,11 @@ $(function () {
     });
 });
 
-// 富文本事件
+/* 富文本事件 */
 let eleId;
 let allNum = 0;
 $("#update").click(function () {
-    // x y 坐标赋值
+    /* x y 坐标赋值 */
     let Xvalue = $("#textXvalue").val() + 'px'
     let Yvalue = $("#textYvalue").val() + 'px'
     $("#" + eleId).css('left', Xvalue)
@@ -574,7 +567,88 @@ $("#update").click(function () {
         let val = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldid
         let valName = dataFiled.filter((x) => x.datafieldname == $("#databind").val())[0].datafieldname
         $("#" + eleId).attr('data-text', val)
-        $("#" + eleId).html(`<p>${valName}</p>`)
+        switch (valName) {
+            case '商品编码':
+                $("#" + eleId).html(`<p>${valName}:001</p>`)
+                break;
+            case '商品名称':
+                $("#" + eleId).html(`<p>${valName}:洁柔湿巾纸</p>`)
+                break;
+            case '单位':
+                $("#" + eleId).html(`<p>${valName}:盒</p>`)
+                break;
+            case '规格':
+                $("#" + eleId).html(`<p>${valName}:100*200</p>`)
+                break;
+            case '商品条码':
+                $("#" + eleId).html(`<p>${valName}:11236547845</p>`)
+                break;
+            case '销项税率':
+                $("#" + eleId).html(`<p>${valName}:2%</p>`)
+                break;
+            case '制作数量':
+                $("#" + eleId).html(`<p>${valName}:100000</p>`)
+                break;
+            case '规格单位':
+                $("#" + eleId).html(`<p>${valName}:/mm</p>`)
+                break;
+            case '会员价格':
+                $("#" + eleId).html(`<p>${valName}:7$</p>`)
+                break;
+            case '零售价格':
+                $("#" + eleId).html(`<p>${valName}:10$</p>`)
+                break;
+            case '促销价格':
+                $("#" + eleId).html(`<p>${valName}:8$</p>`)
+                break;
+            case '促销开始日':
+                $("#" + eleId).html(`<p>${valName}:2020.6.1</p>`)
+                break;
+            case '促销结束日':
+                $("#" + eleId).html(`<p>${valName}:2020.9.1</p>`)
+                break;
+            case '促销数量':
+                $("#" + eleId).html(`<p>${valName}:1000</p>`)
+                break;
+            case '商品等级':
+                $("#" + eleId).html(`<p>${valName}:合格</p>`)
+                break;
+            case '产地':
+                $("#" + eleId).html(`<p>${valName}:成都</p>`)
+                break;
+            case '商品编号':
+                $("#" + eleId).html(`<p>${valName}:001</p>`)
+                break;
+            case '商品颜色':
+                $("#" + eleId).html(`<p>${valName}:粉色</p>`)
+                break;
+            case '生成日期':
+                $("#" + eleId).html(`<p>${valName}:2020.7.1</p>`)
+                break;
+            case '分店编号':
+                $("#" + eleId).html(`<p>${valName}:0086</p>`)
+                break;
+            case '备注信息':
+                $("#" + eleId).html(`<p>${valName}:xxxx</p>`)
+                break
+            case '散货PLU码':
+                $("#" + eleId).html(`<p>${valName}:115631</p>`)
+                break
+            case '主供商家号':
+                $("#" + eleId).html(`<p>${valName}:123456</p>`)
+                break
+            case '自定义属性':
+                $("#" + eleId).html(`<p>${valName}:xxxx</p>`)
+                break
+            case '会员价Str':
+                $("#" + eleId).html(`<p>${valName}:7$</p>`)
+                break
+            case '零售价Str':
+                $("#" + eleId).html(`<p>${valName}:8$</p>`)
+                break
+            case '促销价Str':
+                $("#" + eleId).html(`<p>${valName}:10$</p>`)
+        }
     }
 
     $("#databind").val('')
@@ -590,12 +664,10 @@ const addText = document.getElementById("textBtn");
 const Print = document.getElementById("print");
 let n = 0;
 addText.onclick = function () {
-    $("#printmain")
-        .append(`<div style="position: fixed; margin: 0;overflow: hidden;display：inline;z-index:2" class='editable refbox'
-             id=${"text" + n}><p contenteditable="true">Text</p></div>`);
+    $("#needPrint")
+        .append(`<div style="position: fixed; margin: 0;overflow: hidden;display：inline;z-index:2" class='editable refbox' id=${"text" + n}><p contenteditable="true">Text</p></div>`);
 
     drag(document.getElementById("text" + n), { minSize: 40 });
-    /*     $("#text" + n).click() */
     n++;
     allNum++;
 };
@@ -607,8 +679,7 @@ addText.onclick = function () {
 const addLine = document.getElementById("line");
 let d = 0;
 addLine.onclick = function () {
-    $("#printmain").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;
-	width:200px;height:3px;max-height:4px;min-height:3px;background-color:black;z-index:2"></div>`);
+    $("#needPrint").append(`<div id=${"lineDiv" + d} class='Line refbox' style="position:fixed;top:200px;left:200px; margin: 0; overflow: hidden;width:200px;height:3px;max-height:4px;min-height:3px;background-color:black;z-index:2"></div>`);
 
     drag(document.getElementById("lineDiv" + d), { minSize: 3 });
     d++;
@@ -622,14 +693,13 @@ addLine.onclick = function () {
 const addBox = document.getElementById("box");
 let h = 0;
 addBox.onclick = function () {
-    $("#printmain").append(`<div id="${
-        "boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
+    $("#needPrint").append(`<div id="${"boxDiv" + h}" class='Box refbox ' style="position: fixed;top:117px; margin: 0; overflow: hidden;width:200px;height:180px;border: 1px solid black;z-index:1;"></div>`);
     drag(document.getElementById("boxDiv" + h), { minSize: 30 });
     h++;
     allNum++;
 };
 
-// 模板打印
+/* 模板打印 */
 Print.onclick = function () {
     location.href = "print.html"
 };
@@ -645,12 +715,12 @@ Print.onclick = function () {
  * @param {number} h StorageData => boxDiv.length
  */
 
-const templateBtn = document.getElementById("template");
-const allTmpl = (function () {
+let allTmpl
+function tmpl () {
     let result;
     $.ajax({
         type: 'POST',
-        url: localStorage.getItem("erp_serverurl") + "/labels/set",
+        url: "http://api.mzsale.cn/mzsale/web/labels/set",
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify({ "vtype": "showtemplates" }),
@@ -659,16 +729,18 @@ const allTmpl = (function () {
             if (data.Table[0].result == 'success') result = data.Table
         }
     })
-    return result;
-})();
+    allTmpl = result
+}
+tmpl()
+const templateBtn = document.getElementById("template");
 
-// 模板模态框
+/* 模板模态框 */
 let tmplIdName, tmplName, tmplPrintFormat
 templateBtn.onclick = function () {
     if (!allTmpl) return (console.error('Error: 接口故障,请联系管理人员'))
-    // 初始化
+    /* 初始化 */
     $(".modalrow").html('')
-    // 生成模板预览
+    /* 生成模板预览 */
     for (let i = 0; i < allTmpl.length; i++) {
         let data = JSON.parse(htmlDecode(allTmpl[i].templatecontent))
         $(".modalrow")
@@ -696,18 +768,22 @@ templateBtn.onclick = function () {
 
         let num = i;
         let delId = allTmpl[i].templateid
-        // 删除模板
+        /* 删除模板 */
         $("#del" + num).click(function () {
             $.ajax({
                 type: 'POST',
-                url: localStorage.getItem("erp_serverurl") + "/labels/set",
+                url: "http://api.mzsale.cn/mzsale/web/labels/set",
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
                 async: false,
                 success: function (data) {
                     if (data.Table[0].result == 'success') {
-                        location.reload();
+                        layer.confirm('模板删除成功', setTimeout(() => {
+                            layer.close()
+                            $("#templatemodel").modal("hide")
+                            tmpl()
+                        }, 300))
                     } else {
                         return (console.error(`模板删除接口故障:${data.Table[0].result}`))
                     }
@@ -715,9 +791,9 @@ templateBtn.onclick = function () {
             })
         })
 
-        // 加载模板
+        /* 加载模板 */
         $("#" + num).click(function () {
-            let x = $("#printmain").children()
+            let x = $("#needPrint").children()
             for (var i = 0; i < x.length; i++) {
                 if (x[i].id !== 'demo') [
                     x[i].remove()
@@ -732,16 +808,14 @@ templateBtn.onclick = function () {
 
             let a = data.code.split('</div>')
             let b = a.slice(0, a.length - 1).join('</div>')
-            $("#printmain").append(b)
+            $("#needPrint").append(b)
             data.allNum = data.textlength + data.barcode + data.qarcode
             for (let l = 0; l < data.allNum; l++) {
                 if (document.getElementById('text' + l)) {
-                    console.log('text++')
                     drag(document.getElementById('text' + l), { minSize: 30 })
                 }
 
                 if (document.getElementById('BarCode' + l)) {
-                    console.log('barcode++')
                     JsBarcode("#BarCode" + l, 'default', {
                         width: 1,
                         height: 10,
@@ -751,7 +825,6 @@ templateBtn.onclick = function () {
                 }
 
                 if (document.getElementById('QrCode' + l)) {
-                    console.log('qarcode++')
                     QRCode.toCanvas(document.getElementById('QarCode' + l), 'default', {
                         margin: 1,
                         width: 64
@@ -760,23 +833,20 @@ templateBtn.onclick = function () {
                 }
 
                 if (document.getElementById('lineDiv' + l)) {
-                    console.log('line++')
                     drag(document.getElementById('lineDiv' + l), { minSize: 30 })
                 }
 
                 if (document.getElementById('boxDiv' + l)) {
-                    console.log('box++')
                     drag(document.getElementById('boxDiv' + l), { minSize: 30 })
                 }
             }
 
-            // 初始化 ID 避免重复
+            /* 初始 ID避免重复 */
             n = data.textlength
             j = data.barcode
             k = data.qarcode
             d = data.lineDiv
             h = data.boxDiv
-
             $("#templatemodel").modal("hide");
         });
     }
@@ -785,17 +855,17 @@ templateBtn.onclick = function () {
     });
 };
 
-// 模板保存
+/* 模板保存 */
 const saveTmpl = document.getElementById('save')
 saveTmpl.onclick = function () {
     let width = $("#demo").width()
     let height = $("#demo").height()
-    $("#printmain").width(width)
-    $("#printmain").height(height)
-    html2canvas(document.getElementById("printmain")).then(function (canvas) {
+    $("#needPrint").width(width)
+    $("#needPrint").height(height)
+    html2canvas(document.getElementById("needPrint")).then(function (canvas) {
         let imgUrl = canvas.toDataURL("image/png");
         let value = {
-            code: $("#printmain").html(),
+            code: $("#needPrint").html(),
             img: imgUrl,
             allNum: allNum,
             textlength: n,
@@ -808,18 +878,25 @@ saveTmpl.onclick = function () {
         let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/set",
+            url: "http://api.mzsale.cn/mzsale/web/labels/set",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({
-                "vtype": "addtemplate", "item1": tmplIdName, "item2": tmplName,
-                "item3": sVal, "item4": "测试模板"
+                "vtype": "addtemplate",
+                "item1": tmplIdName,
+                "item2": tmplName,
+                "item3": sVal,
+                "item4": "测试模板"
             }),
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') {
-                    location.reload();
-                } else {
+                    layer.confirm('模板保存成功', setTimeout(() => {
+                        layer.close()
+                        tmpl()
+                    }, 300))
+                }
+                else {
                     return (console.error(`模板保存接口故障:${data.Table[0].result}`))
                 }
             }
@@ -828,24 +905,26 @@ saveTmpl.onclick = function () {
 }
 
 
-// 另存为新模板
+/* 另存为新模板 */
 const saveAsTemplate = document.getElementById("saveAs");
 const createFile = document.getElementById("createFileSureBut")
 saveAsTemplate.onclick = function () {
     $("#createFileModal").modal("show");
     $("#fileId").val(tmplIdName || Math.random().toString(36).substr(2, 9))
+    /* 确定 */
     createFile.onclick = function () {
         let names = $("#fileName").val();
         let id = $("#fileId").val()
-        // 将当前模板框内元素html保存，并生成预览图
+        /* 将当前模板框内 HTML 保存并生成预览图 */
         let width = $("#demo").width()
         let height = $("#demo").height()
-        $("#printmain").width(width)
-        $("#printmain").height(height)
-        html2canvas(document.getElementById("printmain")).then(function (canvas) {
+        $("#needPrint").width(width)
+        $("#needPrint").height(height)
+        /* 生成预览图 */
+        html2canvas(document.getElementById("needPrint")).then(function (canvas) {
             let imgUrl = canvas.toDataURL("image/png");
             let value = {
-                code: $("#printmain").html(),
+                code: $("#needPrint").html(),
                 img: imgUrl,
                 allNum: allNum,
                 textlength: n,
@@ -858,18 +937,25 @@ saveAsTemplate.onclick = function () {
             let sVal = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
             $.ajax({
                 type: 'POST',
-                url: localStorage.getItem("erp_serverurl") + "/labels/set",
+                url: "http://api.mzsale.cn/mzsale/web/labels/set",
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
-                    "vtype": "addtemplate", "item1": id, "item2": names,
-                    "item3": sVal, "item4": "测试模板"
+                    "vtype": "addtemplate",
+                    "item1": id,
+                    "item2": names,
+                    "item3": sVal,
+                    "item4": "测试模板"
                 }),
                 async: false,
                 success: function (data) {
                     if (data.Table[0].result == 'success') {
-                        location.reload();
-                    } else {
+                        layer.confirm('成功另存为新模板', setTimeout(() => {
+                            layer.close()
+                            tmpl()
+                        }, 300))
+                    }
+                    else {
                         return (console.error(`模板保存接口故障:${data.Table[0].result}`))
                     }
                 }
@@ -879,7 +965,7 @@ saveAsTemplate.onclick = function () {
     };
 };
 
-// 模板打印格式保存
+/* 模板打印格式保存 */
 const printFormatSave = document.getElementById('printformatSave')
 printFormatSave.onclick = function () {
     if (tmplPrintFormat) {
@@ -890,10 +976,11 @@ printFormatSave.onclick = function () {
         }, function () {
             layer.close()
         });
-    } else {
+    }
+    else {
         addPrintFormat()
     }
-
+    /* 保存 */
     function addPrintFormat () {
         let value = {
             boxWidth: $("#dataW").val(),
@@ -908,15 +995,18 @@ printFormatSave.onclick = function () {
         let Val = htmlEncode(JSON.stringify(value).replace(/[\r\n]/g, ""))
         $.ajax({
             type: 'POST',
-            url: localStorage.getItem("erp_serverurl") + "/labels/set",
+            url: "http://api.mzsale.cn/mzsale/web/labels/set",
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') {
-                    location.reload();
-                } else {
+                    layer.confirm('打印格式保存成功', setTimeout(() => {
+                        layer.close()
+                    }, 300))
+                }
+                else {
                     return (console.error(`打印格式接口故障:${data.Table[0].result}`))
                 }
             }
@@ -924,16 +1014,16 @@ printFormatSave.onclick = function () {
     }
 }
 
-// 清空还原
+/* 清空按钮 */
 const returnBtn = document.getElementById('return')
 returnBtn.onclick = function () {
-    let x = $("#printmain").children()
+    let x = $("#needPrint").children()
     for (var i = 0; i < x.length; i++) {
         if (x[i].id !== 'demo') [
             x[i].remove()
         ]
     }
-
+    /* 清除内容和值 */
     $("#tmplIdName").text('')
     n = 0
     j = 0

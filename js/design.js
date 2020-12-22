@@ -1,4 +1,13 @@
 "use strict";
+function GetQueryString (name) {
+    let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    let r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
+
+const id = GetQueryString('id')
+const fdbh = GetQueryString('fdbh')
+const companyid = GetQueryString('companyid')
 /* 获取标签绑定字段数据 */
 const dataFiled = (function () {
     let result;
@@ -7,7 +16,7 @@ const dataFiled = (function () {
         url: "http://api.mzsale.cn/mzsale/web/labels/set",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({ "vtype": "getdatafield" }),
+        data: JSON.stringify({ "vtype": "getdatafield", "item1": companyid }),
         async: false,
         success: function (data) {
             if (data.Table[0].result == 'success') {
@@ -723,7 +732,7 @@ function tmpl () {
         url: "http://api.mzsale.cn/mzsale/web/labels/set",
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({ "vtype": "showtemplates" }),
+        data: JSON.stringify({ "vtype": "showtemplates", "item1": companyid }),
         async: false,
         success: function (data) {
             if (data.Table[0].result == 'success') result = data.Table
@@ -775,7 +784,7 @@ templateBtn.onclick = function () {
                 url: "http://api.mzsale.cn/mzsale/web/labels/set",
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
+                data: JSON.stringify({ "vtype": "deltemplate", "item1": delId, "item2": companyid }),
                 async: false,
                 success: function (data) {
                     if (data.Table[0].result == 'success') {
@@ -886,7 +895,8 @@ saveTmpl.onclick = function () {
                 "item1": tmplIdName,
                 "item2": tmplName,
                 "item3": sVal,
-                "item4": "测试模板"
+                "item4": "测试模板",
+                "item5": companyid
             }),
             async: false,
             success: function (data) {
@@ -945,7 +955,8 @@ saveAsTemplate.onclick = function () {
                     "item1": id,
                     "item2": names,
                     "item3": sVal,
-                    "item4": "测试模板"
+                    "item4": "测试模板",
+                    "item5": companyid
                 }),
                 async: false,
                 success: function (data) {
@@ -998,7 +1009,15 @@ printFormatSave.onclick = function () {
             url: "http://api.mzsale.cn/mzsale/web/labels/set",
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify({ "vtype": "setprintformat", "item1": tmplIdName, "item2": "1", "item3": Val }),
+            data: JSON.stringify(
+                {
+                    "vtype": "setprintformat",
+                    "item1": tmplIdName,
+                    "item2": "1",
+                    "item3": Val,
+                    "item4": companyid
+                }
+            ),
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') {

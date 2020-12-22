@@ -4,7 +4,7 @@ window.onload = function () {
     const design = document.getElementById('design')
 
     design.onclick = function () {
-        window.location.href = 'design.html'
+        window.location.href = 'design.html?' + "id=" + id + "&fdbh=" + fdbh + "&companyid=" + companyid
     }
 
     function GetQueryString (name) {
@@ -13,8 +13,9 @@ window.onload = function () {
         if (r != null) return unescape(r[2]); return null;
     }
 
-    let id = GetQueryString('id')
-    let fdbh = GetQueryString('fdbh')
+    const id = GetQueryString('id')
+    const fdbh = GetQueryString('fdbh')
+    const companyid = GetQueryString('companyid')
 
     let result
     setTimeout(() => {
@@ -26,7 +27,7 @@ window.onload = function () {
             data: JSON.stringify({
                 "vtype": "labelprint",
                 "item1": id,
-                "item2": fdbh
+                "item2": fdbh,
             }),
             async: false,
             success: function (data) {
@@ -851,7 +852,7 @@ window.onload = function () {
             url: "http://api.mzsale.cn/mzsale/web/labels/set",
             contentType: 'application/json',
             dataType: 'json',
-            data: JSON.stringify({ "vtype": "showtemplates" }),
+            data: JSON.stringify({ "vtype": "showtemplates", "item1": companyid }),
             async: false,
             success: function (data) {
                 if (data.Table[0].result == 'success') result = data.Table
@@ -901,7 +902,7 @@ window.onload = function () {
                     url: "http://api.mzsale.cn/mzsale/web/labels/set",
                     contentType: 'application/json',
                     dataType: 'json',
-                    data: JSON.stringify({ "vtype": "deltemplate", "item1": delId }),
+                    data: JSON.stringify({ "vtype": "deltemplate", "item1": delId, "item2": companyid }),
                     async: false,
                     success: function (data) {
                         if (data.Table[0].result == 'success') {

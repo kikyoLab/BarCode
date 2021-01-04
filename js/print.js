@@ -13,6 +13,40 @@ window.onload = function () {
         if (r != null) return unescape(r[2]); return null;
     }
 
+    /* 条码校验算法 */
+    function barcodeVerificationAlgorithm (val) {
+        val = val.split('')
+        let number = val[12]
+        let valArr = val.slice(0, val.length - 1)
+        let reserveArr = valArr.reverse()
+        let length = valArr.length + 2
+        let sum = 0
+        let result = 0
+        for (let i = 1; i < length; i++) {
+            if (i % 2 == 0 && i !== 1) {
+                sum += Number(reserveArr[i - 2]) * 3
+            }
+            else if (i !== 1) {
+                sum += Number(reserveArr[i - 2]) * 1
+            }
+        }
+        if (sum % 10 == 0) {
+            result = 0
+        }
+        else {
+            result = 10 - sum % 10
+        }
+
+        if (result == number) {
+            valArr.reverse()[12] = number
+            return valArr
+        }
+        else {
+            valArr.reverse()[12] = valArr
+            return valArr
+        }
+    }
+
     const id = GetQueryString('id')
     const fdbh = GetQueryString('fdbh')
     const companyid = GetQueryString('companyid')
@@ -195,7 +229,8 @@ window.onload = function () {
                             if (name == 'smm') {
                                 let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
                                 if (data[0].smm.length == 13) {
-                                    JsBarcode("#BarCode" + n, data[0].smm, {
+                                    let smm = barcodeVerificationAlgorithm(data[0].smm)
+                                    JsBarcode("#BarCode" + n, smm, {
                                         format: 'EAN13',
                                         height: 40,
                                         width: 1,
@@ -253,7 +288,8 @@ window.onload = function () {
                                     document.getElementById('needPrint').style.height = BarCode[0].style.top
                                     document.getElementById('needPrint').style.width = BarCode[0].style.left
                                     if (data[i].smm.length == 13) {
-                                        JsBarcode("#BarCode" + nums, data[i].smm, {
+                                        let smm = barcodeVerificationAlgorithm(data[i].smm)
+                                        JsBarcode("#BarCode" + nums, smm, {
                                             format: 'EAN13',
                                             height: 40,
                                             width: 1,
@@ -536,7 +572,8 @@ window.onload = function () {
                     if (name == 'smm') {
                         let n = newBarCode[0].id.slice(newBarCode[0].id.length - 1, newBarCode[0].id.length)
                         if (data[0].smm.length == 13) {
-                            JsBarcode("#BarCode" + n, data[0].smm, {
+                            let smm = barcodeVerificationAlgorithm(data[0].smm)
+                            JsBarcode("#BarCode" + n, smm, {
                                 format: 'EAN13',
                                 height: 40,
                                 width: 1,
@@ -594,7 +631,8 @@ window.onload = function () {
                             document.getElementById('needPrint').style.height = BarCode[0].style.top
                             document.getElementById('needPrint').style.width = BarCode[0].style.left
                             if (data[i].smm.length == 13) {
-                                JsBarcode("#BarCode" + nums, data[i].smm, {
+                                let smm = barcodeVerificationAlgorithm(data[i].smm)
+                                JsBarcode("#BarCode" + nums, smm, {
                                     format: 'EAN13',
                                     height: 40,
                                     width: 1,
